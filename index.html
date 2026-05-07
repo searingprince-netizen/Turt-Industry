@@ -11,8 +11,8 @@
    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    // Firestore-ai sethu import panrom
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    // Ippo naama Realtime Database use panrom (Rules success aana database ithu thaan)
+    import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBS9hqZLTGnuoza1wFUE06iNE6nBtapRNs",
@@ -26,7 +26,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app); // Database connect aagidichi
+    const db = getDatabase(app); // Realtime Database connect aagidichi
     const provider = new GoogleAuthProvider();
 
     // Login Function
@@ -37,7 +37,7 @@
         });
     }
 
-    // Monitoring User
+    // Monitoring User Status
     onAuthStateChanged(auth, (user) => {
         const profilePic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
@@ -54,7 +54,7 @@
         }
     });
 
-    // --- PUTHU CODE: Order-ai Firebase-la save panna ---
+    // --- Order Submission (Realtime Database Version) ---
     window.submitOrder = async function() {
         if (!window.isLoggedIn) {
             alert("Please login with Google first!");
@@ -68,16 +68,19 @@
             bodyMaterial: document.getElementById('body-mat').value,
             battery: document.getElementById('batt-cap').value,
             notes: document.getElementById('notes').value,
-            timestamp: serverTimestamp()
+            timestamp: serverTimestamp() // Database server time-ai save pannum
         };
 
         try {
-            await addDoc(collection(db, "orders"), orderData);
-            alert("TURT Industries: Request Saved to Cloud!");
+            // "orders" nu oru list-kulla puthu data-vai push panrom
+            const ordersRef = ref(db, 'orders');
+            await push(ordersRef, orderData);
+            
+            alert("TURT Industries: Request Saved to Realtime Cloud!");
             closeModal('consult-modal');
         } catch (e) {
-            console.error("Error adding document: ", e);
-            alert("Database Error! Check Firebase console permissions.");
+            console.error("Error saving to Realtime DB: ", e);
+            alert("Database Error! Check Realtime Database rules.");
         }
     }
 </script>
