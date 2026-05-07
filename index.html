@@ -8,54 +8,79 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    // Firestore-ai sethu import panrom
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Shan-oda Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBS9hqZLTGnuoza1wFUE06iNE6nBtapRNs",
-            authDomain: "turt-industry.firebaseapp.com",
-            projectId: "turt-industry",
-            storageBucket: "turt-industry.firebasestorage.app",
-            messagingSenderId: "643983461553",
-            appId: "1:643983461553:web:e17457b3f57f0124b96690",
-            measurementId: "G-BQXW78WESF"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyBS9hqZLTGnuoza1wFUE06iNE6nBtapRNs",
+        authDomain: "turt-industry.firebaseapp.com",
+        projectId: "turt-industry",
+        storageBucket: "turt-industry.firebasestorage.app",
+        messagingSenderId: "643983461553",
+        appId: "1:643983461553:web:e17457b3f57f0124b96690",
+        measurementId: "G-BQXW78WESF"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app); // Database connect aagidichi
+    const provider = new GoogleAuthProvider();
 
-        // Real Google Login function
-        window.loginWithGoogle = function() {
-            signInWithPopup(auth, provider).catch((error) => {
-                console.error("Login Error:", error);
-                alert("Login failed: " + error.message);
-            });
+    // Login Function
+    window.loginWithGoogle = function() {
+        signInWithPopup(auth, provider).catch((error) => {
+            console.error("Login Error:", error);
+            alert("Login failed: " + error.message);
+        });
+    }
+
+    // Monitoring User
+    onAuthStateChanged(auth, (user) => {
+        const profilePic = document.getElementById('nav-profile-pic');
+        const portalBtn = document.getElementById('portal-btn');
+        if (user) {
+            window.isLoggedIn = true;
+            profilePic.style.display = 'block';
+            profilePic.src = user.photoURL;
+            portalBtn.innerText = "ACCESS GRANTED";
+            portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+            const loginModal = document.getElementById('login-modal');
+            if(loginModal) loginModal.classList.remove('active');
+        } else {
+            window.isLoggedIn = false;
+        }
+    });
+
+    // --- PUTHU CODE: Order-ai Firebase-la save panna ---
+    window.submitOrder = async function() {
+        if (!window.isLoggedIn) {
+            alert("Please login with Google first!");
+            return;
         }
 
-        // Monitoring user status
-        onAuthStateChanged(auth, (user) => {
-            const profilePic = document.getElementById('nav-profile-pic');
-            const portalBtn = document.getElementById('portal-btn');
-            
-            if (user) {
-                window.isLoggedIn = true;
-                profilePic.style.display = 'block';
-                profilePic.src = user.photoURL;
-                portalBtn.innerText = "ACCESS GRANTED";
-                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
-                
-                // Modal-ai automatic-ah close panna
-                const loginModal = document.getElementById('login-modal');
-                if(loginModal) loginModal.classList.remove('active');
-            } else {
-                window.isLoggedIn = false;
-            }
-        });
-    </script>
+        const orderData = {
+            userEmail: auth.currentUser.email,
+            userName: auth.currentUser.displayName,
+            model: document.getElementById('builder-title').innerText,
+            bodyMaterial: document.getElementById('body-mat').value,
+            battery: document.getElementById('batt-cap').value,
+            notes: document.getElementById('notes').value,
+            timestamp: serverTimestamp()
+        };
 
+        try {
+            await addDoc(collection(db, "orders"), orderData);
+            alert("TURT Industries: Request Saved to Cloud!");
+            closeModal('consult-modal');
+        } catch (e) {
+            console.error("Error adding document: ", e);
+            alert("Database Error! Check Firebase console permissions.");
+        }
+    }
+</script>
     <style>
         body { background-color: #050505; color: #ffffff; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         .hero-gradient { background: radial-gradient(circle at center, #111827 0%, #050505 100%); }
