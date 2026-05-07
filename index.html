@@ -7,6 +7,63 @@
     <title>Turt Industry | Technology Manufacturing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBS9hqZLTGnuoza1wFUE06iNE6nBtapRNs",
+            authDomain: "turt-industry.firebaseapp.com",
+            projectId: "turt-industry",
+            storageBucket: "turt-industry.firebasestorage.app",
+            messagingSenderId: "643983461553",
+            appId: "1:643983461553:web:e17457b3f57f0124b96690",
+            measurementId: "G-BQXW78WESF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        window.loginWithGoogle = function() {
+            signInWithPopup(auth, provider).then((result) => {
+                const user = result.user;
+                updateUI(user);
+                closeModal('login-modal');
+                alert("Identity Verified: Welcome, " + user.displayName);
+                setTimeout(() => { toggleModal('consult-modal'); }, 400);
+            }).catch((error) => {
+                console.error("Login Failed:", error);
+                alert("Security Error: Identity verification failed.");
+            });
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                updateUI(user);
+            } else {
+                window.isLoggedIn = false;
+            }
+        });
+
+        function updateUI(user) {
+            window.isLoggedIn = true;
+            const profilePic = document.getElementById('nav-profile-pic');
+            const portalBtn = document.getElementById('portal-btn');
+            
+            if (profilePic && user.photoURL) {
+                profilePic.style.display = 'block';
+                profilePic.src = user.photoURL;
+            }
+            
+            if (portalBtn) {
+                portalBtn.innerText = "ACCESS GRANTED";
+                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+            }
+        }
+    </script>
+
     <style>
         body { background-color: #050505; color: #ffffff; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         .hero-gradient { background: radial-gradient(circle at center, #111827 0%, #050505 100%); }
@@ -16,11 +73,9 @@
         select, input, textarea { background: #000 !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; padding: 12px; border-radius: 6px; width: 100%; outline: none; transition: border-color 0.3s; }
         select:focus, input:focus, textarea:focus { border-color: #3b82f6 !important; }
         .profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #3b82f6; display: none; object-fit: cover; }
-        .hidden-view { display: none; }
-        
+        .hidden-view { display: none !important; }
         .feature-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; }
         .feature-card:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
-        
         .project-card { position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .project-card:hover { border-color: rgba(59, 130, 246, 0.5); transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(59, 130, 246, 0.1); }
         .image-overlay { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0.4; transition: opacity 0.4s; }
@@ -87,9 +142,9 @@
             <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900">
                 <div class="image-overlay" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop');"></div>
                 <div class="relative z-10">
-                    <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ Neural Exchange Assistant ]</span>
-                    <h3 class="text-2xl font-black mt-2 mb-4">NEXA Next-Gen Ai</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-6">High-speed Virtual Operating & Response Agent Master Unit for real-time industrial logic.</p>
+                    <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ Neural Assistant ]</span>
+                    <h3 class="text-2xl font-black mt-2 mb-4">NEXA Next-Gen AI</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">High-speed Virtual Operating & Response Agent Master Unit for real-time logic.</p>
                     <button onclick="handleConsultation()" class="text-xs font-black uppercase tracking-widest border-b-2 border-blue-500 pb-1 hover:text-blue-400 transition">Access Nexus</button>
                 </div>
             </div>
@@ -97,9 +152,9 @@
             <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900">
                 <div class="image-overlay" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop');"></div>
                 <div class="relative z-10">
-                    <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ Nova Core energy star ]</span>
+                    <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ Nova Core ]</span>
                     <h3 class="text-2xl font-black mt-2 mb-4">ARC UNIT</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-6">Backbone Power of Fusion Unit for Zero-point Energy harvesting and distribution.</p>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-6">Backbone Power of Fusion Unit for Zero-point Energy harvesting.</p>
                     <button onclick="handleConsultation()" class="text-xs font-black uppercase tracking-widest border-b-2 border-blue-500 pb-1 hover:text-blue-400 transition">Energy Specs</button>
                 </div>
             </div>
@@ -133,15 +188,14 @@
                 <p class="text-gray-400 text-sm mt-2">Manage your hardware manufacturing projects</p>
             </div>
             <div class="space-y-4">
-                <div class="space-y-2">
-                    <label class="text-xs uppercase text-gray-500 font-bold tracking-widest">Gmail Address</label>
-                    <input type="email" id="login-email" placeholder="name@Gmail.com" class="w-full">
-                </div>
-                <button onclick="simulateLogin()" class="w-full bg-blue-600 py-4 rounded-lg font-bold text-white hover:bg-blue-500 transition shadow-lg">Continue</button>
-                <div class="flex items-center my-6"><div class="flex-grow border-t border-white/10"></div><span class="px-3 text-xs text-gray-500 uppercase tracking-widest">OR</span><div class="flex-grow border-t border-white/10"></div></div>
-                <button onclick="simulateLogin()" class="w-full bg-white text-black py-4 rounded-lg font-bold flex items-center justify-center gap-3 hover:bg-gray-200 transition text-sm">
+                <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-lg font-bold flex items-center justify-center gap-3 hover:bg-gray-200 transition text-sm">
                     <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5" alt="Google"> Sign in with Google
                 </button>
+                <div class="flex items-center my-6"><div class="flex-grow border-t border-white/10"></div><span class="px-3 text-xs text-gray-500 uppercase tracking-widest">OR EMAIL</span><div class="flex-grow border-t border-white/10"></div></div>
+                <div class="space-y-2">
+                    <input type="email" placeholder="name@Gmail.com" class="w-full">
+                </div>
+                <button class="w-full bg-blue-600 py-4 rounded-lg font-bold text-white hover:bg-blue-500 transition shadow-lg opacity-50 cursor-not-allowed">Continue</button>
             </div>
             <div class="text-center mt-10"><p class="text-sm text-gray-400">Don't have an account? <button onclick="switchPortalView('signup')" class="text-blue-500 font-bold hover:underline ml-1">Create ID</button></p></div>
         </div>
@@ -150,22 +204,12 @@
             <div class="text-center mb-10">
                 <div class="text-blue-500 font-black text-xs uppercase tracking-[0.4em] mb-4">New Identity</div>
                 <h1 class="text-3xl font-bold text-white">Create Turt ID</h1>
-                <p class="text-gray-400 text-sm mt-2">Join the future of industrial manufacturing</p>
             </div>
             <div class="space-y-4">
-                <div class="space-y-2">
-                    <label class="text-xs uppercase text-gray-500 font-bold tracking-widest">User Name</label>
-                    <input type="text" placeholder="Name" class="w-full">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs uppercase text-gray-500 font-bold tracking-widest">Gmail Address</label>
-                    <input type="email" placeholder="name@Gmail.com" class="w-full">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-xs uppercase text-gray-500 font-bold tracking-widest">Secure Password</label>
-                    <input type="password" placeholder="Create Strong Password" class="w-full">
-                </div>
-                <button onclick="simulateLogin()" class="w-full bg-blue-600 py-4 rounded-lg font-bold text-white hover:bg-blue-500 transition shadow-lg mt-4">Join with Turt</button>
+                <input type="text" placeholder="Name" class="w-full">
+                <input type="email" placeholder="Gmail Address" class="w-full">
+                <input type="password" placeholder="Secure Password" class="w-full">
+                <button onclick="loginWithGoogle()" class="w-full bg-blue-600 py-4 rounded-lg font-bold mt-4">Join with Turt</button>
             </div>
             <div class="text-center mt-10"><p class="text-sm text-gray-400">Already have an ID? <button onclick="switchPortalView('signin')" class="text-blue-500 font-bold hover:underline ml-1">Sign in</button></p></div>
         </div>
@@ -181,45 +225,23 @@
             <div class="space-y-3">
                 <button onclick="openBuilder('Turt Phone')" class="w-full text-left p-4 bg-zinc-900 border border-blue-500/20 rounded-xl hover:border-blue-500 transition font-bold text-sm">Turt Phone</button>
                 <button onclick="openBuilder('Phoenix Hub')" class="w-full text-left p-4 bg-zinc-900 border border-blue-500/20 rounded-xl hover:border-blue-500 transition font-bold text-sm">Phoenix Hub</button>
-                <button onclick="alert('Not Available')" class="w-full text-left p-4 bg-black/50 border border-white/5 rounded-xl text-gray-600 cursor-not-allowed italic text-sm">Other Models</button>
             </div>
         </div>
 
         <div id="builder-container" class="w-full md:w-2/3 hidden">
-            <h2 id="builder-title" class="text-3xl font-black mb-8 border-b-2 border-blue-500 pb-2 text-white tracking-tighter italic">BUILD</h2>
+            <h2 id="builder-title" class="text-3xl font-black mb-8 border-b-2 border-blue-500 pb-2 text-white tracking-tighter italic uppercase">BUILD</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Body Material</label>
-                    <select id="body-mat">
-                        <option>Titanium</option>
-                        <option>Aluminium</option>
-                        <option>Plastic</option>
-                    </select>
+                    <select id="body-mat"><option>Titanium</option><option>Aluminium</option></select>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Back Panel</label>
-                    <select id="back-pan">
-                        <option>Titanium</option>
-                        <option>Aluminium</option>
-                        <option>Glass</option>
-                        <option>Plastic</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Battery Capacity</label>
-                    <select id="batt-cap">
-                        <option>7500mAh</option>
-                        <option>10000mAh</option>
-                        <option>5000mAh</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Color</label>
-                    <input type="text" id="custom-color" placeholder="Color/Hex code">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Battery</label>
+                    <select id="batt-cap"><option>7500mAh</option><option>10000mAh</option></select>
                 </div>
                 <div class="md:col-span-2">
                     <label class="text-[10px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Notes</label>
-                    <textarea id="notes" rows="3" placeholder="Enter special requirements..."></textarea>
+                    <textarea id="notes" rows="3" placeholder="Requirements..."></textarea>
                 </div>
             </div>
             <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest hover:bg-blue-500 transition shadow-lg">Submit Request</button>
@@ -229,63 +251,37 @@
 </div>
 
 <script>
-    let isLoggedIn = false;
+    window.isLoggedIn = false;
 
-    // Open Modal Function
     function toggleModal(id) { 
         const modal = document.getElementById(id);
         if(modal) modal.classList.add('active'); 
     }
     
-    // Close Modal Function
     function closeModal(id) { 
         const modal = document.getElementById(id);
         if(modal) modal.classList.remove('active'); 
     }
 
-    // Toggle Sign-In / Sign-Up Views inside Portal Modal
     function switchPortalView(view) {
-        const signin = document.getElementById('signin-view');
-        const signup = document.getElementById('signup-view');
         if (view === 'signup') {
-            signin.classList.add('hidden-view');
-            signup.classList.remove('hidden-view');
+            document.getElementById('signin-view').classList.add('hidden-view');
+            document.getElementById('signup-view').classList.remove('hidden-view');
         } else {
-            signup.classList.add('hidden-view');
-            signin.classList.remove('hidden-view');
+            document.getElementById('signup-view').classList.add('hidden-view');
+            document.getElementById('signin-view').classList.remove('hidden-view');
         }
     }
 
-    // Checking Security status before granting consultation access
     function handleConsultation() {
-        if (!isLoggedIn) {
-            alert("Security Check: Please login or create your Turt Portal ID first.");
+        if (!window.isLoggedIn) {
+            alert("Security Check: Please login to your Turt Portal first.");
             toggleModal('login-modal');
         } else {
             toggleModal('consult-modal');
         }
     }
 
-    // Simulated login process
-    function simulateLogin() {
-        isLoggedIn = true;
-        const profilePic = document.getElementById('nav-profile-pic');
-        const portalBtn = document.getElementById('portal-btn');
-        
-        profilePic.style.display = 'block';
-        profilePic.src = "https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png"; 
-        
-        portalBtn.innerText = "ACCESS GRANTED";
-        portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
-        
-        closeModal('login-modal');
-        alert("Portal Access Granted. Identity Verified.");
-        
-        // Auto transition into consultation builder
-        setTimeout(() => { toggleModal('consult-modal'); }, 400);
-    }
-
-    // Open Custom Builder Engine
     function openBuilder(name) {
         document.getElementById('builder-placeholder').style.display = 'none';
         const container = document.getElementById('builder-container');
@@ -293,13 +289,11 @@
         document.getElementById('builder-title').innerText = "CONFIG: " + name;
     }
 
-    // Order Submission Handler
     function submitOrder() {
-        alert("SUCCESS: Your Custom Build request has been submitted successfully! The Turt Industry team will contact you soon.");
+        alert("SUCCESS: Your Custom Build request has been submitted! We will contact you soon.");
         closeModal('consult-modal');
     }
 
-    // Close modalls when clicked outside the card elements
     window.onclick = function(event) {
         if (event.target.classList.contains('modal')) {
             event.target.classList.remove('active');
