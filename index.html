@@ -9,19 +9,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
 <style>
-    /* Intha 'modal' class-ai mattum replace pannunga */
     .modal {
-        display: none;      /* Intha line thaan invisible aakkum */
-        pointer-events: none; /* Intha line thaan 'invisible wall'-ai udakkum */
+        display: none !important; /* Forcefully hide */
         opacity: 0;
+        pointer-events: none !important;
         transition: opacity 0.3s ease;
     }
 
-    /* Modal active aagumpothu mattum click-ai allow pannanum */
     .modal.active {
-        display: flex;
-        pointer-events: auto; /* Active-la irukkumpothu mattum click work aagum */
+        display: flex !important; /* Forcefully show only when active */
         opacity: 1;
+        pointer-events: auto !important;
         backdrop-filter: blur(8px);
     }
 </style>
@@ -284,7 +282,7 @@
     </div>
 </div>
 
-<div id="history-modal" class="modal fixed inset-0 bg-black/90 flex items-center justify-center z-50 px-4">
+<div id="history-modal" class="modal hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50 px-4">
     <div class="bg-zinc-900 border border-zinc-800 w-full max-w-2xl rounded-2xl p-8 max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-white italic tracking-tighter">TURT_HISTORY // ARCHIVE</h2>
