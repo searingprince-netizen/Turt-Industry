@@ -9,18 +9,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
 <style>
-    .modal {
-        display: none !important; /* Forcefully hide */
-        opacity: 0;
-        pointer-events: none !important;
-        transition: opacity 0.3s ease;
+    /* 1. Buttons & Links-ai mela thooki vaikkum (Clickable aakkum) */
+    button, a {
+        position: relative;
+        z-index: 60 !important;
+        cursor: pointer;
+        pointer-events: auto !important;
     }
 
-    .modal.active {
-        display: flex !important; /* Forcefully show only when active */
+    /* 2. Modal Style - Ippo ithu clicks-ai block pannaathu */
+    .modal {
+        display: none; 
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 100; /* Buttons-ai vida mela irukanum modal open aagumpothu */
+    }
+
+    /* 3. Modal Active aagumpothu mattum display aagum */
+    .modal.flex {
+        display: flex !important;
         opacity: 1;
-        pointer-events: auto !important;
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(12px);
+    }
+
+    /* Navbar-ku ulla irukka buttons-ku special power */
+    nav button {
+        isolation: isolate;
     }
 </style>
 </head>
