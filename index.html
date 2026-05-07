@@ -8,22 +8,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
-    <style>
-        .modal {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .modal.active {
-            display: flex;
-            opacity: 1;
-        }
-        
-        /* Modal background konjam blur panna nalla irukkum */
-        .modal.active {
-            backdrop-filter: blur(8px);
-        }
-    </style>
+<style>
+    /* Intha 'modal' class-ai mattum replace pannunga */
+    .modal {
+        display: none;      /* Intha line thaan invisible aakkum */
+        pointer-events: none; /* Intha line thaan 'invisible wall'-ai udakkum */
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    /* Modal active aagumpothu mattum click-ai allow pannanum */
+    .modal.active {
+        display: flex;
+        pointer-events: auto; /* Active-la irukkumpothu mattum click work aagum */
+        opacity: 1;
+        backdrop-filter: blur(8px);
+    }
+</style>
 </head>
     
    <script type="module">
