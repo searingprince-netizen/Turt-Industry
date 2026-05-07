@@ -8,6 +8,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
+    <style>
+        .modal {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        /* Modal background konjam blur panna nalla irukkum */
+        .modal.active {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+    
    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -265,12 +283,26 @@
     </div>
 </div>
 
+<div id="history-modal" class="modal fixed inset-0 bg-black/90 flex items-center justify-center z-50 px-4">
+    <div class="bg-zinc-900 border border-zinc-800 w-full max-w-2xl rounded-2xl p-8 max-h-[80vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-white italic tracking-tighter">TURT_HISTORY // ARCHIVE</h2>
+            <button onclick="closeModal('history-modal')" class="text-zinc-400 hover:text-white transition-colors">✕</button>
+        </div>
+        <div id="history-list" class="space-y-4">
+            <p class="text-zinc-600 text-center py-10 animate-pulse text-xs tracking-widest">INITIALIZING SECURE LINK...</p>
+        </div>
+    </div>
+</div>
+
 <script>
     window.isLoggedIn = false;
 
+    // Modal open/close panna
     function toggleModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
+    // Consultation button click panna
     function handleConsultation() {
         if (!window.isLoggedIn) {
             alert("Security Check: Please login to your Turt Portal first.");
@@ -280,14 +312,18 @@
         }
     }
 
+    // Config builder open panna
     function openBuilder(name) {
         document.getElementById('builder-placeholder').style.display = 'none';
         document.getElementById('builder-container').classList.remove('hidden');
         document.getElementById('builder-title').innerText = "CONFIG: " + name;
     }
 
+    // Modal veliya click panna close aaga
     window.onclick = function(event) {
-        if (event.target.classList.contains('modal')) { event.target.classList.remove('active'); }
+        if (event.target.classList.contains('modal')) { 
+            event.target.classList.remove('active'); 
+        }
     }
 </script>
 
