@@ -189,13 +189,20 @@
     </div>
 </div>
 
-<div id="history-modal" class="modal">
-    <div class="bg-zinc-900 border border-zinc-800 w-full max-w-2xl rounded-2xl p-8 max-h-[80vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-white italic tracking-tighter">TURT_HISTORY // ARCHIVE</h2>
-            <button onclick="closeModal('history-modal')" class="text-zinc-400 hover:text-white transition-colors">✕</button>
+<div id="history-modal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+    <div class="max-w-2xl w-full bg-[#0a0a0a] border border-white/10 rounded-3xl relative flex flex-col shadow-2xl max-h-[80vh]">
+        
+        <div class="p-6 border-b border-white/5 flex justify-between items-center">
+            <h2 class="text-white font-black italic tracking-tighter text-xl uppercase">Order Archives</h2>
+            
+            <button onclick="closeModal('history-modal')" class="text-zinc-500 hover:text-white transition p-2">
+                <i class="fa-solid fa-xmark text-2xl"></i> 
+            </button>
         </div>
-        <div id="history-list" class="space-y-4"></div>
+
+        <div id="history-list" class="p-6 overflow-y-auto custom-scrollbar">
+            </div>
+        
     </div>
 </div>
 
@@ -350,26 +357,8 @@
         }
     };
 </script>
-    window.isLoggedIn = false;
-    function toggleModal(id) { 
-        const m = document.getElementById(id); 
-        if (m) { m.classList.remove('hidden'); m.classList.add('flex'); } 
-    }
-    function closeModal(id) { 
-        const m = document.getElementById(id); 
-        if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } 
-    }
-    function handleConsultation() {
-        if (!window.isLoggedIn) { alert("Security Check: Please login to your Turt Portal first."); toggleModal('login-modal'); } 
-        else { toggleModal('consult-modal'); }
-    }
-    function openBuilder(name) {
-        document.getElementById('builder-placeholder').style.display = 'none';
-        document.getElementById('builder-container').classList.remove('hidden');
-        document.getElementById('builder-title').innerText = "CONFIG: " + name;
-    }
-    window.onclick = (e) => { if (e.target.classList.contains('modal')) { e.target.classList.add('hidden'); e.target.classList.remove('flex'); } };
+    TURT INDUSTRY - The Future of Hardware.
 </script>
-
+    
 </body>
 </html>
