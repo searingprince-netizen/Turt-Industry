@@ -229,7 +229,7 @@
 
     window.isLoggedIn = false;
 
-    // --- INGA PASTE PANNINGA ---
+    // --- 1. MODAL CONTROL ---
     window.handleConsultation = function() {
         if (!window.isLoggedIn) {
             alert("Security Check: Please login to your Turt Portal first.");
@@ -252,24 +252,27 @@
         if (modal) {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            modal.style.display = 'none'; // Safe close
-        }
-    };
-
-    // --- 1. MODAL CLOSE LOGIC ---
-    window.closeModal = function(id) {
-        const modal = document.getElementById(id);
-        if (modal) {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
             modal.style.display = 'none';
         }
     };
 
-    // --- 2. LOGIN LOGIC ---
+    // --- 2. CONFIGURATION BUILDER (Turt Phone & Phoenix Hub fix) ---
+    window.openBuilder = function(name) {
+        const placeholder = document.getElementById('builder-placeholder');
+        const container = document.getElementById('builder-container');
+        const title = document.getElementById('builder-title');
+
+        if (placeholder && container && title) {
+            placeholder.style.display = 'none';
+            container.classList.remove('hidden');
+            container.classList.add('flex');
+            title.innerText = name;
+        }
+    };
+
+    // --- 3. AUTH LOGIC ---
     window.loginWithGoogle = async () => {
         try {
-            console.log("Portal Access Requested...");
             await signInWithPopup(auth, provider);
         } catch (error) {
             console.error("Auth Error:", error);
@@ -277,7 +280,6 @@
         }
     };
 
-    // --- 3. AUTH OBSERVER (Sariya Close Panappattathu) ---
     onAuthStateChanged(auth, (user) => {
         const loginModal = document.getElementById('login-modal');
         const profilePic = document.getElementById('nav-profile-pic');
@@ -305,20 +307,17 @@
         }
     });
 
-    // --- 4. SUBMIT ORDER ---
+    // --- 4. DATA OPERATIONS (History & Submit) ---
     window.submitOrder = async function() {
         if (!window.isLoggedIn) return alert("Please login first!");
-        
-        const colorEl = document.getElementById('custom-color');
-        const backPanEl = document.getElementById('back-pan');
         
         const orderData = {
             userEmail: auth.currentUser.email,
             model: document.getElementById('builder-title').innerText,
             bodyMaterial: document.getElementById('body-mat').value,
-            backPanel: backPanEl ? backPanEl.value : 'Standard',
+            backPanel: document.getElementById('back-pan')?.value || 'Standard',
             battery: document.getElementById('batt-cap').value,
-            color: colorEl ? colorEl.value : 'Default',
+            color: document.getElementById('custom-color')?.value || 'Default',
             notes: document.getElementById('notes').value,
             timestamp: serverTimestamp()
         };
@@ -326,34 +325,29 @@
         try {
             await push(ref(db, 'orders'), orderData);
             alert("TURT Industries: Request Saved!");
-            if (colorEl) colorEl.value = '';
-            document.getElementById('notes').value = '';
             closeModal('consult-modal');
         } catch (e) { 
-            console.error("Order Error:", e); 
             alert("Error saving request.");
         }
     };
 
-    // --- 5. VIEW HISTORY ---
     window.viewHistory = async function() {
         if (!auth.currentUser) return alert("Please login first!");
         
         const list = document.getElementById('history-list');
-        list.innerHTML = '<p class="text-center text-blue-500 py-10 animate-pulse font-mono tracking-widest text-[10px]">DECRYPTING ARCHIVES...</p>';
+        list.innerHTML = '<p class="text-center text-blue-500 py-10 animate-pulse font-mono text-[10px]">DECRYPTING ARCHIVES...</p>';
         
         const histModal = document.getElementById('history-modal');
         if (histModal) {
             histModal.classList.remove('hidden');
             histModal.classList.add('flex');
-            histModal.style.display = 'flex';
         }
 
         try {
             const q = query(ref(db, 'orders'), orderByChild('userEmail'), equalTo(auth.currentUser.email));
             const snap = await get(q);
-
             list.innerHTML = '';
+
             if (!snap.exists()) {
                 list.innerHTML = '<p class="text-zinc-500 text-center py-10 font-mono text-[10px]">NO ARCHIVES FOUND.</p>';
                 return;
@@ -362,38 +356,23 @@
             snap.forEach(child => {
                 const d = child.val();
                 list.innerHTML += `
-                    <div class="p-5 bg-zinc-900/60 border border-white/5 border-l-2 border-l-blue-500 rounded-r-xl mb-4 backdrop-blur-sm hover:border-white/20 transition-all duration-300 text-left">
+                    <div class="p-5 bg-zinc-900/60 border border-white/5 border-l-2 border-l-blue-500 rounded-r-xl mb-4 text-left">
                         <div class="flex justify-between items-start mb-3">
-                            <p class="text-blue-500 text-[8px] font-black uppercase tracking-[0.2em]">UNIT_REF: ${child.key.slice(-6).toUpperCase()}</p>
-                            <p class="text-zinc-600 text-[8px] font-bold tracking-widest uppercase">${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : 'REALTIME'}</p>
+                            <p class="text-blue-500 text-[8px] font-black uppercase">UNIT_REF: ${child.key.slice(-6).toUpperCase()}</p>
+                            <p class="text-zinc-600 text-[8px] font-bold">${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : 'REALTIME'}</p>
                         </div>
-                        <h3 class="text-white font-black italic text-lg uppercase tracking-tighter mb-4">${d.model || 'Standard Unit'}</h3>
-                        <div class="grid grid-cols-2 gap-y-3 gap-x-4 border-t border-white/5 pt-4">
-                            <div class="flex flex-col">
-                                <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Chassis</span>
-                                <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.bodyMaterial || 'Standard'}</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Back Panel</span>
-                                <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.backPanel || 'Default'}</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Energy Unit</span>
-                                <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.battery || 'Standard'}</span>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Signature Finish</span>
-                                <span class="text-[10px] text-blue-400 font-bold uppercase tracking-tight">${d.color || 'Onyx Black'}</span>
-                            </div>
+                        <h3 class="text-white font-black italic text-lg uppercase">${d.model || 'Standard Unit'}</h3>
+                        <div class="grid grid-cols-2 gap-y-3 pt-4 border-t border-white/5">
+                            <div class="flex flex-col"><span class="text-[7px] text-zinc-500 uppercase">Chassis</span><span class="text-[10px] text-zinc-300 font-bold">${d.bodyMaterial}</span></div>
+                            <div class="flex flex-col"><span class="text-[7px] text-zinc-500 uppercase">Energy Unit</span><span class="text-[10px] text-zinc-300 font-bold">${d.battery}</span></div>
                         </div>
-                        ${d.notes ? `<div class="mt-4 pt-3 border-t border-white/5"><p class="text-[9px] text-zinc-500 italic">"${d.notes}"</p></div>` : ''}
                     </div>`;
             });
         } catch (e) {
-            console.error("Fetch Error:", e);
             list.innerHTML = '<p class="text-red-500 text-center py-10">Protocol Failure</p>';
         }
     };
+</script>
 </script>
     TURT INDUSTRY - The Future of Hardware.
 </script>
