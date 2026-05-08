@@ -229,50 +229,10 @@
 
     window.isLoggedIn = false;
 
-    // --- 1. MODAL CONTROL ---
-    window.handleConsultation = function() {
-        if (!window.isLoggedIn) {
-            alert("Security Check: Please login to your Turt Portal first.");
-            const loginM = document.getElementById('login-modal');
-            if(loginM) {
-                loginM.classList.remove('hidden');
-                loginM.classList.add('flex');
-            }
-        } else {
-            const consultM = document.getElementById('consult-modal');
-            if(consultM) {
-                consultM.classList.remove('hidden');
-                consultM.classList.add('flex');
-            }
-        }
-    };
-
-    window.closeModal = function(id) {
-        const modal = document.getElementById(id);
-        if (modal) {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            modal.style.display = 'none';
-        }
-    };
-
-    // --- 2. CONFIGURATION BUILDER (Turt Phone & Phoenix Hub fix) ---
-    window.openBuilder = function(name) {
-        const placeholder = document.getElementById('builder-placeholder');
-        const container = document.getElementById('builder-container');
-        const title = document.getElementById('builder-title');
-
-        if (placeholder && container && title) {
-            placeholder.style.display = 'none';
-            container.classList.remove('hidden');
-            container.classList.add('flex');
-            title.innerText = name;
-        }
-    };
-
-    // --- 3. AUTH LOGIC ---
+    // --- 1. PORTAL & MODAL LOGIC ---
     window.loginWithGoogle = async () => {
         try {
+            console.log("Portal Access Requested...");
             await signInWithPopup(auth, provider);
         } catch (error) {
             console.error("Auth Error:", error);
@@ -280,68 +240,96 @@
         }
     };
 
+    window.handleConsultation = function() {
+        if (!window.isLoggedIn) {
+            alert("Security Check: Please login to your Turt Portal first.");
+            const loginM = document.getElementById('login-modal');
+            if(loginM) { loginM.classList.replace('hidden', 'flex'); }
+        } else {
+            const consultM = document.getElementById('consult-modal');
+            if(consultM) { consultM.classList.replace('hidden', 'flex'); }
+        }
+    };
+
+    window.closeModal = function(id) {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.classList.replace('flex', 'hidden');
+            modal.style.display = 'none';
+        }
+    };
+
+    // --- 2. CONFIGURATION BUILDER (Look Fix) ---
+    window.openBuilder = function(name) {
+        const placeholder = document.getElementById('builder-placeholder');
+        const container = document.getElementById('builder-container');
+        const title = document.getElementById('builder-title');
+
+        if (placeholder && container && title) {
+            placeholder.style.display = 'none';
+            // Layout-ai clean-ah kaatta 'flex-col' and 'w-full' use pannuvom
+            container.classList.remove('hidden');
+            container.classList.add('flex', 'flex-col', 'w-full'); 
+            title.innerText = name;
+        }
+    };
+
+    // --- 3. AUTH OBSERVER ---
     onAuthStateChanged(auth, (user) => {
-        const loginModal = document.getElementById('login-modal');
         const profilePic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
+        const loginModal = document.getElementById('login-modal');
 
         if (user) {
             window.isLoggedIn = true;
             if (profilePic) { profilePic.style.display = 'block'; profilePic.src = user.photoURL; }
             if (portalBtn) {
                 portalBtn.innerText = "ACCESS GRANTED";
-                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+                portalBtn.classList.remove('bg-blue-600');
+                portalBtn.classList.add('bg-zinc-800');
             }
-            if (loginModal) {
-                loginModal.classList.add('hidden');
-                loginModal.style.display = 'none';
-            }
+            if (loginModal) closeModal('login-modal');
         } else {
             window.isLoggedIn = false;
             if (profilePic) profilePic.style.display = 'none';
             if (portalBtn) {
                 portalBtn.innerText = "Portal Access";
-                portalBtn.classList.remove('bg-zinc-800');
-                portalBtn.classList.add('bg-blue-600');
+                portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
             }
         }
     });
 
-    // --- 4. DATA OPERATIONS (History & Submit) ---
+    // --- 4. SUBMIT & HISTORY ---
     window.submitOrder = async function() {
         if (!window.isLoggedIn) return alert("Please login first!");
         
-        const orderData = {
-            userEmail: auth.currentUser.email,
-            model: document.getElementById('builder-title').innerText,
-            bodyMaterial: document.getElementById('body-mat').value,
-            backPanel: document.getElementById('back-pan')?.value || 'Standard',
-            battery: document.getElementById('batt-cap').value,
-            color: document.getElementById('custom-color')?.value || 'Default',
-            notes: document.getElementById('notes').value,
-            timestamp: serverTimestamp()
-        };
-        
         try {
+            const orderData = {
+                userEmail: auth.currentUser.email,
+                model: document.getElementById('builder-title').innerText,
+                bodyMaterial: document.getElementById('body-mat').value,
+                backPanel: document.getElementById('back-pan')?.value || 'Standard',
+                battery: document.getElementById('batt-cap').value,
+                color: document.getElementById('custom-color')?.value || 'Default',
+                notes: document.getElementById('notes').value,
+                timestamp: serverTimestamp()
+            };
+            
             await push(ref(db, 'orders'), orderData);
             alert("TURT Industries: Request Saved!");
             closeModal('consult-modal');
-        } catch (e) { 
-            alert("Error saving request.");
+        } catch (e) {
+            alert("System Error: Request not saved.");
         }
     };
 
     window.viewHistory = async function() {
-        if (!auth.currentUser) return alert("Please login first!");
-        
+        if (!auth.currentUser) return;
         const list = document.getElementById('history-list');
-        list.innerHTML = '<p class="text-center text-blue-500 py-10 animate-pulse font-mono text-[10px]">DECRYPTING ARCHIVES...</p>';
-        
         const histModal = document.getElementById('history-modal');
-        if (histModal) {
-            histModal.classList.remove('hidden');
-            histModal.classList.add('flex');
-        }
+        
+        if (histModal) histModal.classList.replace('hidden', 'flex');
+        list.innerHTML = '<p class="text-blue-500 animate-pulse text-[10px]">SYNCING...</p>';
 
         try {
             const q = query(ref(db, 'orders'), orderByChild('userEmail'), equalTo(auth.currentUser.email));
@@ -349,28 +337,20 @@
             list.innerHTML = '';
 
             if (!snap.exists()) {
-                list.innerHTML = '<p class="text-zinc-500 text-center py-10 font-mono text-[10px]">NO ARCHIVES FOUND.</p>';
+                list.innerHTML = '<p class="text-zinc-600 text-[10px]">ARCHIVES EMPTY.</p>';
                 return;
             }
 
             snap.forEach(child => {
                 const d = child.val();
                 list.innerHTML += `
-                    <div class="p-5 bg-zinc-900/60 border border-white/5 border-l-2 border-l-blue-500 rounded-r-xl mb-4 text-left">
-                        <div class="flex justify-between items-start mb-3">
-                            <p class="text-blue-500 text-[8px] font-black uppercase">UNIT_REF: ${child.key.slice(-6).toUpperCase()}</p>
-                            <p class="text-zinc-600 text-[8px] font-bold">${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : 'REALTIME'}</p>
-                        </div>
-                        <h3 class="text-white font-black italic text-lg uppercase">${d.model || 'Standard Unit'}</h3>
-                        <div class="grid grid-cols-2 gap-y-3 pt-4 border-t border-white/5">
-                            <div class="flex flex-col"><span class="text-[7px] text-zinc-500 uppercase">Chassis</span><span class="text-[10px] text-zinc-300 font-bold">${d.bodyMaterial}</span></div>
-                            <div class="flex flex-col"><span class="text-[7px] text-zinc-500 uppercase">Energy Unit</span><span class="text-[10px] text-zinc-300 font-bold">${d.battery}</span></div>
-                        </div>
+                    <div class="p-4 bg-white/5 border-l-2 border-blue-500 mb-2 rounded-r-lg">
+                        <p class="text-[8px] text-zinc-500 uppercase">Ref: ${child.key.slice(-5)}</p>
+                        <h4 class="text-white font-bold text-sm">${d.model}</h4>
+                        <p class="text-[9px] text-zinc-400">${d.bodyMaterial} | ${d.battery}</p>
                     </div>`;
             });
-        } catch (e) {
-            list.innerHTML = '<p class="text-red-500 text-center py-10">Protocol Failure</p>';
-        }
+        } catch (e) { list.innerHTML = 'FAILED.'; }
     };
 </script>
 </script>
