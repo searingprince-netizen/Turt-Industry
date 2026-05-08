@@ -219,10 +219,9 @@
     const db = getDatabase(app);
     const provider = new GoogleAuthProvider();
 
-    // UI Global State
     window.isLoggedIn = false;
 
-    // LOGIN FUNCTION (Global Access Fix)
+    // 1. LOGIN LOGIC
     window.loginWithGoogle = async () => {
         try {
             console.log("Portal Access Requested...");
@@ -233,7 +232,7 @@
         }
     };
 
-    // AUTH OBSERVER
+    // 2. AUTH OBSERVER
     onAuthStateChanged(auth, (user) => {
         const loginModal = document.getElementById('login-modal');
         const profilePic = document.getElementById('nav-profile-pic');
@@ -246,10 +245,8 @@
                 portalBtn.innerText = "ACCESS GRANTED";
                 portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
             }
-            // Close login modal automatically
             if (loginModal) {
                 loginModal.classList.add('hidden');
-                loginModal.classList.remove('flex');
                 loginModal.style.display = 'none';
             }
         } else {
@@ -262,108 +259,97 @@
         }
     });
 
-    // SUBMIT ORDER (Fixed with Color and Back Panel)
-window.submitOrder = async function() {
-    if (!window.isLoggedIn) return alert("Please login first!");
-    
-    // Grabbing new fields from HTML
-    const colorVal = document.getElementById('custom-color').value;
-    const backPanVal = document.getElementById('back-pan').value;
-    
-    const orderData = {
-        userEmail: auth.currentUser.email,
-        model: document.getElementById('builder-title').innerText,
-        bodyMaterial: document.getElementById('body-mat').value,
-        backPanel: backPanVal,   // Intha line-ai sethurukkaen
-        battery: document.getElementById('batt-cap').value,
-        color: colorVal,         // Intha line-ai sethurukkaen
-        notes: document.getElementById('notes').value,
-        timestamp: serverTimestamp()
+    // 3. SUBMIT ORDER
+    window.submitOrder = async function() {
+        if (!window.isLoggedIn) return alert("Please login first!");
+        
+        // Safety checks for inputs
+        const colorEl = document.getElementById('custom-color');
+        const backPanEl = document.getElementById('back-pan');
+        
+        const orderData = {
+            userEmail: auth.currentUser.email,
+            model: document.getElementById('builder-title').innerText,
+            bodyMaterial: document.getElementById('body-mat').value,
+            backPanel: backPanEl ? backPanEl.value : 'Standard',
+            battery: document.getElementById('batt-cap').value,
+            color: colorEl ? colorEl.value : 'Default',
+            notes: document.getElementById('notes').value,
+            timestamp: serverTimestamp()
+        };
+        
+        try {
+            await push(ref(db, 'orders'), orderData);
+            alert("TURT Industries: Request Saved!");
+            if (colorEl) colorEl.value = '';
+            document.getElementById('notes').value = '';
+            if (typeof closeModal === 'function') closeModal('consult-modal');
+        } catch (e) { 
+            console.error("Order Error:", e); 
+            alert("Error saving request.");
+        }
     };
-    
-    try {
-        await push(ref(db, 'orders'), orderData);
-        alert("TURT Industries: Request Saved!");
-        
-        // Form-ai reset panna
-        document.getElementById('custom-color').value = '';
-        document.getElementById('notes').value = '';
-        
-        if (typeof closeModal === 'function') closeModal('consult-modal');
-    } catch (e) { 
-        console.error("Order Error:", e); 
-        alert("Error saving request.");
-    }
-};
-   // VIEW HISTORY (Enhanced Futuristic UI)
-window.viewHistory = async function() {
-    if (!auth.currentUser) return alert("Please login first!");
-    
-    const list = document.getElementById('history-list');
-    list.innerHTML = '<p class="text-center text-blue-500 py-10 animate-pulse font-mono tracking-widest text-[10px]">DECRYPTING ARCHIVES...</p>';
-    
-    const histModal = document.getElementById('history-modal');
-    if (histModal) {
-        histModal.classList.remove('hidden');
-        histModal.classList.add('flex');
-        histModal.style.display = 'flex';
-    }
 
-    try {
-        const userEmail = auth.currentUser.email;
-        const ordersRef = ref(db, 'orders');
-        const q = query(ordersRef, orderByChild('userEmail'), equalTo(userEmail));
-        const snap = await get(q);
-
-        list.innerHTML = '';
-        if (!snap.exists()) {
-            list.innerHTML = '<p class="text-zinc-500 text-center py-10 font-mono text-[10px]">NO ARCHIVES FOUND IN DATABASE.</p>';
-            return;
+    // 4. VIEW HISTORY
+    window.viewHistory = async function() {
+        if (!auth.currentUser) return alert("Please login first!");
+        
+        const list = document.getElementById('history-list');
+        list.innerHTML = '<p class="text-center text-blue-500 py-10 animate-pulse font-mono tracking-widest text-[10px]">DECRYPTING ARCHIVES...</p>';
+        
+        const histModal = document.getElementById('history-modal');
+        if (histModal) {
+            histModal.classList.remove('hidden');
+            histModal.classList.add('flex');
+            histModal.style.display = 'flex';
         }
 
-        snap.forEach(child => {
-            const d = child.val();
-            list.innerHTML += `
-                <div class="p-5 bg-zinc-900/60 border border-white/5 border-l-2 border-l-blue-500 rounded-r-xl mb-4 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
-                    <div class="flex justify-between items-start mb-3">
-                        <p class="text-blue-500 text-[8px] font-black uppercase tracking-[0.2em]">UNIT_REF: ${child.key.slice(-6).toUpperCase()}</p>
-                        <p class="text-zinc-600 text-[8px] font-bold tracking-widest uppercase">${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : 'REALTIME'}</p>
-                    </div>
-                    
-                    <h3 class="text-white font-black italic text-lg uppercase tracking-tighter mb-4">${d.model || 'Standard Unit'}</h3>
-                    
-                    <div class="grid grid-cols-2 gap-y-3 gap-x-4 border-t border-white/5 pt-4">
-                        <div class="flex flex-col">
-                            <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Chassis</span>
-                            <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.bodyMaterial || 'Standard'}</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Back Panel</span>
-                            <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.backPanel || 'Default'}</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Energy Unit</span>
-                            <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.battery || 'Standard'}</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Signature Finish</span>
-                            <span class="text-[10px] text-blue-400 font-bold uppercase tracking-tight">${d.color || 'Onyx Black'}</span>
-                        </div>
-                    </div>
+        try {
+            const q = query(ref(db, 'orders'), orderByChild('userEmail'), equalTo(auth.currentUser.email));
+            const snap = await get(q);
 
-                    ${d.notes ? `
-                    <div class="mt-4 pt-3 border-t border-white/5">
-                        <p class="text-[9px] text-zinc-500 italic font-medium leading-relaxed">"${d.notes}"</p>
-                    </div>` : ''}
-                </div>`;
-        });
-    } catch (e) {
-        console.error("Fetch Error:", e);
-        list.innerHTML = '<p class="text-red-500 text-center py-10 text-[9px] font-mono">ENCRYPTION ERROR: PROTOCOL_FAILURE</p>';
-    }
-};
+            list.innerHTML = '';
+            if (!snap.exists()) {
+                list.innerHTML = '<p class="text-zinc-500 text-center py-10 font-mono text-[10px]">NO ARCHIVES FOUND.</p>';
+                return;
+            }
 
-<script>
+            snap.forEach(child => {
+                const d = child.val();
+                list.innerHTML += `
+                    <div class="p-5 bg-zinc-900/60 border border-white/5 border-l-2 border-l-blue-500 rounded-r-xl mb-4 backdrop-blur-sm hover:border-white/20 transition-all duration-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <p class="text-blue-500 text-[8px] font-black uppercase tracking-[0.2em]">UNIT_REF: ${child.key.slice(-6).toUpperCase()}</p>
+                            <p class="text-zinc-600 text-[8px] font-bold tracking-widest uppercase">${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : 'REALTIME'}</p>
+                        </div>
+                        <h3 class="text-white font-black italic text-lg uppercase tracking-tighter mb-4">${d.model || 'Standard Unit'}</h3>
+                        <div class="grid grid-cols-2 gap-y-3 gap-x-4 border-t border-white/5 pt-4">
+                            <div class="flex flex-col">
+                                <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Chassis</span>
+                                <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.bodyMaterial || 'Standard'}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Back Panel</span>
+                                <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.backPanel || 'Default'}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Energy Unit</span>
+                                <span class="text-[10px] text-zinc-300 font-bold uppercase">${d.battery || 'Standard'}</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[7px] text-zinc-500 uppercase font-black tracking-widest">Signature Finish</span>
+                                <span class="text-[10px] text-blue-400 font-bold uppercase tracking-tight">${d.color || 'Onyx Black'}</span>
+                            </div>
+                        </div>
+                        ${d.notes ? `<div class="mt-4 pt-3 border-t border-white/5"><p class="text-[9px] text-zinc-500 italic">"${d.notes}"</p></div>` : ''}
+                    </div>`;
+            });
+        } catch (e) {
+            console.error("Fetch Error:", e);
+            list.innerHTML = '<p class="text-red-500 text-center py-10 text-[9px] font-mono uppercase">Protocol Error</p>';
+        }
+    };
+</script>
     window.isLoggedIn = false;
     function toggleModal(id) { 
         const m = document.getElementById(id); 
