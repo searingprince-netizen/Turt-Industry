@@ -237,11 +237,10 @@
 
     window.isLoggedIn = false;
 
-    // --- 1. MODAL CONTROL (Fixed Logic) ---
+    // --- 1. MODAL CONTROL ---
     window.toggleModal = function(id) {
         const modal = document.getElementById(id);
         if (modal) {
-            // "flex" class-ai add panna thaan tailwind-la modal theriyum
             modal.classList.toggle('flex');
             modal.style.display = modal.classList.contains('flex') ? 'flex' : 'none';
         }
@@ -268,42 +267,23 @@
         try {
             await signInWithPopup(auth, provider);
         } catch (error) {
-            console.error(error);
             alert("Login Failed: " + error.message);
         }
     };
 
-    // --- 2. BUILDER ENGINE ---
-    window.openBuilder = function(name) {
-        const placeholder = document.getElementById('builder-placeholder');
-        const container = document.getElementById('builder-container');
-        const title = document.getElementById('builder-title');
-
-        if (placeholder && container) {
-            placeholder.style.display = 'none';
-            container.classList.remove('hidden');
-            title.innerText = "CONFIG: " + name;
-        }
-    };
-
-    // --- 3. AUTH OBSERVER ---
+    // --- 2. AUTH OBSERVER ---
     onAuthStateChanged(auth, (user) => {
         const profilePic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
-
         if (user) {
             window.isLoggedIn = true;
-            if (profilePic) { 
-                profilePic.style.display = 'block'; 
-                profilePic.src = user.photoURL; 
-            }
+            if (profilePic) { profilePic.style.display = 'block'; profilePic.src = user.photoURL; }
             if (portalBtn) {
                 portalBtn.innerText = "ACCESS GRANTED";
-                portalBtn.classList.remove('bg-blue-600');
-                portalBtn.classList.add('bg-zinc-800');
+                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
             }
             window.closeModal('login-modal');
-            window.loadArchives(); 
+            window.loadArchives(); // Login aanathum archives load aagum
         } else {
             window.isLoggedIn = false;
             if (profilePic) profilePic.style.display = 'none';
@@ -314,65 +294,62 @@
         }
     });
 
-    // --- 4. DATA OPERATIONS ---
-window.submitOrder = async function() {
-    if (!window.isLoggedIn || !auth.currentUser) {
-        alert("Please login first!");
-        return;
-    }
-    
-    // Form data-vai fetch pannuvom
-    const modelName = document.getElementById('builder-title').innerText.replace('CONFIG: ', '');
-    const bodyMat = document.getElementById('body-mat').value;
-    const backPan = document.getElementById('back-pan').value;
-    const battCap = document.getElementById('batt-cap').value;
-
-    const orderData = {
-        userEmail: auth.currentUser.email,
-        model: modelName,
-        bodyMaterial: bodyMat,
-        backPanel: backPan,
-        battery: battCap,
-        timestamp: serverTimestamp() // Import-la irunthu varuthu
-    };
-    
-    try {
-        // 'db' variable mela initialize aagi irukanum
-        const ordersRef = ref(db, 'orders'); 
-        await push(ordersRef, orderData);
+    // --- 3. DATA OPERATIONS (SUBMIT) ---
+    window.submitOrder = async function() {
+        if (!window.isLoggedIn || !auth.currentUser) return;
         
-        alert("SUCCESS: Data stored in Firebase!");
-        window.loadArchives(); 
-        window.closeModal('consult-modal');
-    } catch (e) {
-        console.error("Firebase Error:", e);
-        alert("Error: " + e.message);
-    }
-};
+        try {
+            const orderData = {
+                userEmail: auth.currentUser.email,
+                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
+                bodyMaterial: document.getElementById('body-mat').value,
+                backPanel: document.getElementById('back-pan').value,
+                battery: document.getElementById('batt-cap').value,
+                timestamp: serverTimestamp()
+            };
 
+            await push(ref(db, 'orders'), orderData);
+            alert("SUCCESS: Request Stored!");
+            window.loadArchives(); // Submit panna udanae list refresh aagum
+            window.closeModal('consult-modal');
+        } catch (e) {
+            console.error(e);
+            alert("Error: " + e.message);
+        }
+    };
+
+    // --- 4. LOAD ARCHIVES (HISTORY FIX) ---
     window.loadArchives = async function() {
-        const miniList = document.getElementById('mini-history');
+        // UNGA HTML-la intha IDs kandippa irukkanum: 'mini-history' matrum 'full-history-list'
+        const miniList = document.getElementById('mini-history'); 
         const fullList = document.getElementById('full-history-list');
+        
         if (!auth.currentUser) return;
 
         try {
             const q = query(ref(db, 'orders'), orderByChild('userEmail'), equalTo(auth.currentUser.email));
             const snap = await get(q);
             
+            let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest">Order Archives</p>';
+            
             if (snap.exists()) {
-                let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest">Order Archives</p>';
                 snap.forEach(child => {
                     const d = child.val();
                     html += `
                         <div class="mb-3 p-3 bg-white/5 border border-white/5 rounded-lg">
-                            <p class="text-white text-[11px] font-bold uppercase tracking-tighter">${d.model}</p>
+                            <p class="text-white text-[11px] font-bold uppercase">${d.model}</p>
                             <p class="text-zinc-500 text-[9px] uppercase">${d.bodyMaterial} | ${d.battery}</p>
                         </div>`;
                 });
-                if (miniList) miniList.innerHTML = html;
-                if (fullList) fullList.innerHTML = html;
+            } else {
+                html += '<p class="text-zinc-600 text-[10px]">No history found.</p>';
             }
-        } catch (e) { console.error("Archive Load Error:", e); }
+            
+            if (miniList) miniList.innerHTML = html;
+            if (fullList) fullList.innerHTML = html;
+        } catch (e) { 
+            console.error("Archive Load Error:", e); 
+        }
     };
 </script>
 </body>
