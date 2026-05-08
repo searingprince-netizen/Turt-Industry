@@ -189,27 +189,27 @@
     const db = getDatabase(app);
     const provider = new GoogleAuthProvider();
 
-    window.loginWithGoogle = () => { signInWithPopup(auth, provider).catch(e => console.error(e)); };
+    // Elements
+    const loginModal = document.getElementById('login-modal');
+    const profilePic = document.getElementById('nav-profile-pic');
+    const portalBtn = document.getElementById('portal-btn');
 
-<script type="module">
-    // ... unga Firebase imports inga irukkanum ...
+    // 1. LOGIN FUNCTION
+    window.loginWithGoogle = () => { 
+        signInWithPopup(auth, provider)
+            .then(() => console.log("Success"))
+            .catch(e => console.error("Login Error:", e)); 
+    };
 
+    // 2. AUTH STATE (Auto Close Modal)
     onAuthStateChanged(auth, (user) => {
-        const loginModal = document.getElementById('login-modal');
-        const profilePic = document.getElementById('nav-profile-pic'); // Fixed
-        const portalBtn = document.getElementById('portal-btn');      // Fixed
-
         if (user) {
             window.isLoggedIn = true;
-            if (profilePic) {
-                profilePic.style.display = 'block';
-                profilePic.src = user.photoURL;
-            }
+            if (profilePic) { profilePic.style.display = 'block'; profilePic.src = user.photoURL; }
             if (portalBtn) {
                 portalBtn.innerText = "ACCESS GRANTED";
                 portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
             }
-            // Auto Close Modal
             if (loginModal) {
                 loginModal.classList.add('hidden');
                 loginModal.classList.remove('flex');
@@ -220,9 +220,9 @@
         }
     });
 
+    // 3. SUBMIT ORDER
     window.submitOrder = async function() {
         if (!window.isLoggedIn) return alert("Please login first!");
-        
         const orderData = {
             userEmail: auth.currentUser.email,
             model: document.getElementById('builder-title').innerText,
@@ -231,57 +231,39 @@
             notes: document.getElementById('notes').value,
             timestamp: serverTimestamp()
         };
-        
         try {
             await push(ref(db, 'orders'), orderData);
             alert("TURT Industries: Request Saved!");
             closeModal('consult-modal');
-        } catch (e) { 
-            console.error("Order Error:", e); 
-        }
+        } catch (e) { console.error("Order Error:", e); }
     };
 
+    // 4. VIEW HISTORY
     window.viewHistory = async function() {
         if (!auth.currentUser) return alert("Please login first!");
-        
         const list = document.getElementById('history-list');
         list.innerHTML = '<p class="text-center text-zinc-500 py-10 animate-pulse">ACCESSING ARCHIVES...</p>';
         
-        // Modal Open Logic
         const histModal = document.getElementById('history-modal');
-        if (histModal) {
-            histModal.classList.remove('hidden');
-            histModal.classList.add('flex');
-        }
+        if (histModal) { histModal.classList.remove('hidden'); histModal.classList.add('flex'); }
 
         try {
             const userEmail = auth.currentUser.email;
-            const ordersRef = ref(db, 'orders');
-            const q = query(ordersRef, orderByChild('userEmail'), equalTo(userEmail));
+            const q = query(ref(db, 'orders'), orderByChild('userEmail'), equalTo(userEmail));
             const snap = await get(q);
-
             list.innerHTML = '';
-            if (!snap.exists()) {
-                list.innerHTML = '<p class="text-zinc-500 text-center py-10">NO ARCHIVES FOUND.</p>';
-                return;
-            }
-
+            if (!snap.exists()) { list.innerHTML = '<p class="text-zinc-500 text-center py-10">NO ARCHIVES FOUND.</p>'; return; }
+            
             snap.forEach(child => {
                 const d = child.val();
                 list.innerHTML += `
                     <div class="p-4 bg-zinc-800/50 border-l-2 border-blue-500 rounded-r-lg mb-3 shadow-lg">
-                        <p class="text-blue-400 text-[10px] font-mono">REF: ${child.key.slice(-6).toUpperCase()}</p>
-                        <h3 class="text-white font-bold">${d.model || 'Unknown Model'}</h3>
-                        <div class="flex justify-between items-center mt-1">
-                            <p class="text-zinc-500 text-[10px] uppercase">${d.bodyMaterial || 'Standard'}</p>
-                            <p class="text-zinc-600 text-[10px]">${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : 'RECENT'}</p>
-                        </div>
+                        <p class="text-blue-400 text-[10px] font-mono uppercase">Order Success</p>
+                        <h3 class="text-white font-bold">${d.model || 'Unknown'}</h3>
+                        <p class="text-zinc-500 text-xs">${d.bodyMaterial} | ${d.battery}</p>
                     </div>`;
             });
-        } catch (e) {
-            console.error("Fetch Error:", e);
-            list.innerHTML = '<p class="text-red-500 text-center py-10 text-[10px]">DATABASE ERROR: CHECK ACCESS RULES.</p>';
-        }
+        } catch (e) { console.error("Fetch Error:", e); }
     };
 </script>
 
