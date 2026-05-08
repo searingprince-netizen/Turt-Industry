@@ -315,29 +315,40 @@
     });
 
     // --- 4. DATA OPERATIONS ---
-    window.submitOrder = async function() {
-        if (!window.isLoggedIn || !auth.currentUser) return;
-        
-        const orderData = {
-            userEmail: auth.currentUser.email,
-            model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
-            bodyMaterial: document.getElementById('body-mat').value,
-            backPanel: document.getElementById('back-pan').value,
-            battery: document.getElementById('batt-cap').value,
-            color: document.getElementById('custom-color').value || 'Default',
-            notes: document.getElementById('notes').value,
-            timestamp: serverTimestamp()
-        };
-        
-        try {
-            await push(ref(db, 'orders'), orderData);
-            alert("SUCCESS: Your Custom Build request has been submitted!");
-            window.loadArchives(); 
-            window.closeModal('consult-modal');
-        } catch (e) {
-            alert("Error saving request.");
-        }
+window.submitOrder = async function() {
+    if (!window.isLoggedIn || !auth.currentUser) {
+        alert("Please login first!");
+        return;
+    }
+    
+    // Form data-vai fetch pannuvom
+    const modelName = document.getElementById('builder-title').innerText.replace('CONFIG: ', '');
+    const bodyMat = document.getElementById('body-mat').value;
+    const backPan = document.getElementById('back-pan').value;
+    const battCap = document.getElementById('batt-cap').value;
+
+    const orderData = {
+        userEmail: auth.currentUser.email,
+        model: modelName,
+        bodyMaterial: bodyMat,
+        backPanel: backPan,
+        battery: battCap,
+        timestamp: serverTimestamp() // Import-la irunthu varuthu
     };
+    
+    try {
+        // 'db' variable mela initialize aagi irukanum
+        const ordersRef = ref(db, 'orders'); 
+        await push(ordersRef, orderData);
+        
+        alert("SUCCESS: Data stored in Firebase!");
+        window.loadArchives(); 
+        window.closeModal('consult-modal');
+    } catch (e) {
+        console.error("Firebase Error:", e);
+        alert("Error: " + e.message);
+    }
+};
 
     window.loadArchives = async function() {
         const miniList = document.getElementById('mini-history');
