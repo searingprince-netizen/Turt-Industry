@@ -237,24 +237,20 @@
 
     window.isLoggedIn = false;
 
-    // --- 1. MODAL CONTROL ---
+    // --- 1. MODAL CONTROL (Fixed Logic) ---
     window.toggleModal = function(id) {
         const modal = document.getElementById(id);
         if (modal) {
-            modal.classList.toggle('active');
-            // Modal open aagum pothu display:flex aaganum (neenga CSS-la style kuduthirupinga)
-            if (modal.classList.contains('active')) {
-                modal.style.display = 'flex';
-            } else {
-                modal.style.display = 'none';
-            }
+            // "flex" class-ai add panna thaan tailwind-la modal theriyum
+            modal.classList.toggle('flex');
+            modal.style.display = modal.classList.contains('flex') ? 'flex' : 'none';
         }
     };
 
     window.closeModal = function(id) {
         const modal = document.getElementById(id);
         if (modal) {
-            modal.classList.remove('active');
+            modal.classList.remove('flex');
             modal.style.display = 'none';
         }
     };
@@ -272,6 +268,7 @@
         try {
             await signInWithPopup(auth, provider);
         } catch (error) {
+            console.error(error);
             alert("Login Failed: " + error.message);
         }
     };
@@ -306,7 +303,7 @@
                 portalBtn.classList.add('bg-zinc-800');
             }
             window.closeModal('login-modal');
-            window.loadArchives(); // Accessing via window
+            window.loadArchives(); 
         } else {
             window.isLoggedIn = false;
             if (profilePic) profilePic.style.display = 'none';
@@ -345,7 +342,6 @@
     window.loadArchives = async function() {
         const miniList = document.getElementById('mini-history');
         const fullList = document.getElementById('full-history-list');
-        
         if (!auth.currentUser) return;
 
         try {
@@ -362,7 +358,6 @@
                             <p class="text-zinc-500 text-[9px] uppercase">${d.bodyMaterial} | ${d.battery}</p>
                         </div>`;
                 });
-                
                 if (miniList) miniList.innerHTML = html;
                 if (fullList) fullList.innerHTML = html;
             }
