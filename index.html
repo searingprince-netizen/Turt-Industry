@@ -240,20 +240,31 @@
     // --- 1. MODAL CONTROL ---
     window.toggleModal = function(id) {
         const modal = document.getElementById(id);
-        if (modal) modal.classList.toggle('active');
+        if (modal) {
+            modal.classList.toggle('active');
+            // Modal open aagum pothu display:flex aaganum (neenga CSS-la style kuduthirupinga)
+            if (modal.classList.contains('active')) {
+                modal.style.display = 'flex';
+            } else {
+                modal.style.display = 'none';
+            }
+        }
     };
 
     window.closeModal = function(id) {
         const modal = document.getElementById(id);
-        if (modal) modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+        }
     };
 
     window.handleConsultation = function() {
         if (!window.isLoggedIn) {
             alert("Security Check: Please login to your Turt Portal first.");
-            toggleModal('login-modal');
+            window.toggleModal('login-modal');
         } else {
-            toggleModal('consult-modal');
+            window.toggleModal('consult-modal');
         }
     };
 
@@ -294,8 +305,8 @@
                 portalBtn.classList.remove('bg-blue-600');
                 portalBtn.classList.add('bg-zinc-800');
             }
-            closeModal('login-modal');
-            loadArchives(); // Load historical data on login
+            window.closeModal('login-modal');
+            window.loadArchives(); // Accessing via window
         } else {
             window.isLoggedIn = false;
             if (profilePic) profilePic.style.display = 'none';
@@ -324,15 +335,14 @@
         try {
             await push(ref(db, 'orders'), orderData);
             alert("SUCCESS: Your Custom Build request has been submitted!");
-            loadArchives(); 
-            closeModal('consult-modal');
+            window.loadArchives(); 
+            window.closeModal('consult-modal');
         } catch (e) {
             alert("Error saving request.");
         }
     };
 
-    async function loadArchives() {
-        // Rendu history sections-ukkum load pannuvom (Side panel & Full Archive)
+    window.loadArchives = async function() {
         const miniList = document.getElementById('mini-history');
         const fullList = document.getElementById('full-history-list');
         
@@ -357,8 +367,7 @@
                 if (fullList) fullList.innerHTML = html;
             }
         } catch (e) { console.error("Archive Load Error:", e); }
-    }
-</script>
+    };
 </script>
 </body>
 </html>
