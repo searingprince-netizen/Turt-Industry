@@ -37,10 +37,10 @@
     <div class="flex items-center space-x-6 text-sm uppercase tracking-widest font-bold">
         <a href="#projects" class="hover:text-blue-400 transition hidden md:block">Projects</a>
         <div id="user-profile" class="flex items-center gap-4">
-            <button onclick="viewHistory()" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 px-3 py-2 rounded transition-all tracking-tighter shrink-0">
-                MY_HISTORY // ARCHIVE
+            <button onclick="toggleModal('history-modal')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 px-3 py-2 rounded transition-all tracking-tighter shrink-0">
+                ARCHIVE 
             </button>
-            <img id="nav-profile-pic" src="" class="profile-img" alt="User">
+            <img id="nav-profile-pic" src="" class="profile-img" alt="User" style="display:none; width:40px; height:40px; border-radius:50%; border:2px solid #3b82f6;">
             <button id="portal-btn" onclick="toggleModal('login-modal')" class="bg-blue-600 px-6 py-2 rounded-md hover:bg-blue-700 transition shadow-lg shadow-blue-900/20 whitespace-nowrap">
                 Portal Access
             </button>
@@ -50,7 +50,7 @@
 
 <section class="hero-gradient min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
-    <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter uppercase">The Future of <br><span class="text-blue-500">Hardware.</span></h1>
+    <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter uppercase leading-tight">The Future of <br><span class="text-blue-500">Hardware.</span></h1>
     <p class="text-gray-500 max-w-2xl text-lg mb-10 font-light">Precision engineering and advanced technology manufacturing for the next generation of global infrastructure.</p>
     <div class="flex gap-6 mb-20">
         <a href="#projects" class="border border-white/10 px-10 py-4 hover:bg-white hover:text-black transition duration-500 font-bold uppercase tracking-widest text-xs">View Projects</a>
@@ -58,15 +58,15 @@
     </div>
 
     <div class="grid md:grid-cols-3 gap-8 max-w-6xl w-full px-6 pb-20 z-10">
-        <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500">
+        <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
             <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Automated Precision</div>
             <p class="text-gray-400 text-sm">AI-driven manufacturing lines ensuring 99.9% accuracy.</p>
         </div>
-        <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500">
+        <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
             <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Scalable Tech</div>
             <p class="text-gray-400 text-sm">From prototypes to mass production in record time.</p>
         </div>
-        <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500">
+        <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
             <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Global Export</div>
             <p class="text-gray-400 text-sm">Direct logistics from our facilities to your HQ.</p>
         </div>
@@ -82,8 +82,8 @@
         </header>
 
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900">
-                <div class="image-overlay" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800&auto=format&fit=crop');"></div>
+            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900 relative overflow-hidden group">
+                <div class="image-overlay absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800&auto=format&fit=crop');"></div>
                 <div class="relative z-10">
                     <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ NeuroSync ]</span>
                     <h3 class="text-2xl font-black mt-2 mb-4">Synaplink Cerebro Array</h3>
@@ -91,8 +91,8 @@
                     <button onclick="handleConsultation()" class="text-xs font-black uppercase tracking-widest border-b-2 border-blue-500 pb-1 hover:text-blue-400 transition">View Specifications</button>
                 </div>
             </div>
-            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900">
-                <div class="image-overlay" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop');"></div>
+            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900 relative overflow-hidden group">
+                <div class="image-overlay absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop');"></div>
                 <div class="relative z-10">
                     <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ NEXA ]</span>
                     <h3 class="text-2xl font-black mt-2 mb-4">NEXA Next-Gen Ai</h3>
@@ -100,8 +100,8 @@
                     <button onclick="handleConsultation()" class="text-xs font-black uppercase tracking-widest border-b-2 border-blue-500 pb-1 hover:text-blue-400 transition">Access Nexus</button>
                 </div>
             </div>
-            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900">
-                <div class="image-overlay" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop');"></div>
+            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900 relative overflow-hidden group">
+                <div class="image-overlay absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop');"></div>
                 <div class="relative z-10">
                     <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ Nova Core ]</span>
                     <h3 class="text-2xl font-black mt-2 mb-4">ARC UNIT</h3>
@@ -144,19 +144,18 @@
                 <button onclick="openBuilder('Phoenix Hub')" class="w-full text-left p-4 bg-zinc-900 border border-blue-500/20 rounded-xl hover:border-blue-500 transition font-bold text-sm text-white">Phoenix Hub</button>
             </div>
 
-            <div id="history-list" class="mt-10 border-t border-white/5 pt-6 overflow-y-auto max-h-[300px]">
+            <div id="mini-history" class="mt-10 border-t border-white/5 pt-6 overflow-y-auto max-h-[300px]">
                 <p class="text-[9px] text-zinc-600 uppercase tracking-widest">Archives Ready</p>
             </div>
         </div>
 
-        <div class="w-full md:w-2/3 flex flex-col justify-center">
-            
+        <div class="w-full md:w-2/3 flex flex-col justify-center min-h-[400px]">
             <div id="builder-placeholder" class="h-64 flex flex-col items-center justify-center text-center p-10 border-2 border-dashed border-white/5 rounded-3xl">
                 <div class="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center mb-4">
                     <i class="fa-solid fa-microchip text-blue-500"></i>
                 </div>
                 <h3 class="text-white font-bold uppercase tracking-widest text-[10px]">System Standby</h3>
-                <p class="text-zinc-600 text-[9px] mt-2">INITIALIZE A MODEL TO START CONFIGURATION</p>
+                <p class="text-zinc-600 text-[9px] mt-2 uppercase">Initialize a model to start configuration</p>
             </div>
 
             <div id="builder-container" class="hidden">
@@ -165,7 +164,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                         <label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Body Material</label>
-                        <select id="body-mat" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg outline-none focus:border-blue-500 text-sm">
+                        <select id="body-mat" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg text-sm">
                             <option>Titanium</option>
                             <option>Aluminium</option>
                             <option>Plastic</option>
@@ -173,7 +172,7 @@
                     </div>
                     <div>
                         <label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Back Panel</label>
-                        <select id="back-pan" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg outline-none focus:border-blue-500 text-sm">
+                        <select id="back-pan" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg text-sm">
                             <option>Titanium</option>
                             <option>Aluminium</option>
                             <option>Glass</option>
@@ -182,7 +181,7 @@
                     </div>
                     <div>
                         <label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Energy Unit</label>
-                        <select id="batt-cap" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg outline-none focus:border-blue-500 text-sm">
+                        <select id="batt-cap" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg text-sm">
                             <option>7500mAh</option>
                             <option>10000mAh</option>
                             <option>5000mAh</option>
@@ -190,11 +189,11 @@
                     </div>
                     <div>
                         <label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Signature Finish</label>
-                        <input type="text" id="custom-color" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg outline-none focus:border-blue-500 text-sm" placeholder="e.g. Onyx Black">
+                        <input type="text" id="custom-color" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg text-sm" placeholder="e.g. Onyx Black">
                     </div>
                     <div class="md:col-span-2">
                         <label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Special Requirements</label>
-                        <textarea id="notes" rows="2" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg outline-none focus:border-blue-500 text-sm" placeholder="Any specific details..."></textarea>
+                        <textarea id="notes" rows="2" class="w-full bg-black border border-white/10 text-white p-3 rounded-lg text-sm" placeholder="Any specific details..."></textarea>
                     </div>
                 </div>
 
@@ -204,25 +203,15 @@
     </div>
 </div>
 
-        <div id="builder-placeholder" class="w-full md:w-2/3 flex items-center justify-center text-gray-600 italic">Select a model to begin configuration.</div>
-    </div>
-</div>
-
-<div id="history-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-    
+<div id="history-modal" class="modal">
     <div class="max-w-xl w-full bg-zinc-950 border border-white/10 rounded-3xl relative flex flex-col shadow-2xl max-h-[85vh]">
-        
         <div class="p-6 border-b border-white/5 flex justify-between items-center">
             <h2 class="text-white font-black italic tracking-tighter text-xl uppercase">Archives</h2>
-            
-            <button onclick="closeModal('history-modal')" class="text-zinc-500 hover:text-white transition-all p-2 bg-white/5 rounded-full">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
+            <button onclick="closeModal('history-modal')" class="text-zinc-500 hover:text-white transition-all p-2 bg-white/5 rounded-full">✕</button>
         </div>
 
-        <div id="history-list" class="p-6 overflow-y-auto custom-scrollbar flex-grow">
+        <div id="full-history-list" class="p-6 overflow-y-auto custom-scrollbar flex-grow">
             </div>
-        
     </div>
 </div>
 
@@ -248,21 +237,24 @@
 
     window.isLoggedIn = false;
 
-    // --- 1. MODAL & PORTAL CONTROL ---
-    window.handleConsultation = function() {
-        if (!window.isLoggedIn) {
-            alert("Security Check: Please login to your Turt Portal first.");
-            const loginM = document.getElementById('login-modal');
-            if(loginM) loginM.classList.add('active');
-        } else {
-            const consultM = document.getElementById('consult-modal');
-            if(consultM) consultM.classList.add('active');
-        }
+    // --- 1. MODAL CONTROL ---
+    window.toggleModal = function(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.toggle('active');
     };
 
     window.closeModal = function(id) {
         const modal = document.getElementById(id);
         if (modal) modal.classList.remove('active');
+    };
+
+    window.handleConsultation = function() {
+        if (!window.isLoggedIn) {
+            alert("Security Check: Please login to your Turt Portal first.");
+            toggleModal('login-modal');
+        } else {
+            toggleModal('consult-modal');
+        }
     };
 
     window.loginWithGoogle = async () => {
@@ -273,9 +265,8 @@
         }
     };
 
-    // --- 2. BUILDER ENGINE (Original Dual-Column Design) ---
+    // --- 2. BUILDER ENGINE ---
     window.openBuilder = function(name) {
-        // Placeholder-ai maraithu builder-ai kaattuvom
         const placeholder = document.getElementById('builder-placeholder');
         const container = document.getElementById('builder-container');
         const title = document.getElementById('builder-title');
@@ -287,11 +278,10 @@
         }
     };
 
-    // --- 3. AUTH OBSERVER (Button/Profile Pic Fix) ---
+    // --- 3. AUTH OBSERVER ---
     onAuthStateChanged(auth, (user) => {
         const profilePic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
-        const loginModal = document.getElementById('login-modal');
 
         if (user) {
             window.isLoggedIn = true;
@@ -305,8 +295,7 @@
                 portalBtn.classList.add('bg-zinc-800');
             }
             closeModal('login-modal');
-            // Login aana udanae history-ai load panni side panel-la kaattalaam
-            loadArchives();
+            loadArchives(); // Load historical data on login
         } else {
             window.isLoggedIn = false;
             if (profilePic) profilePic.style.display = 'none';
@@ -319,7 +308,7 @@
 
     // --- 4. DATA OPERATIONS ---
     window.submitOrder = async function() {
-        if (!window.isLoggedIn) return;
+        if (!window.isLoggedIn || !auth.currentUser) return;
         
         const orderData = {
             userEmail: auth.currentUser.email,
@@ -335,7 +324,7 @@
         try {
             await push(ref(db, 'orders'), orderData);
             alert("SUCCESS: Your Custom Build request has been submitted!");
-            loadArchives(); // Update the list immediately
+            loadArchives(); 
             closeModal('consult-modal');
         } catch (e) {
             alert("Error saving request.");
@@ -343,31 +332,34 @@
     };
 
     async function loadArchives() {
-        const historyList = document.getElementById('history-list'); // Intha ID-la oru div unga side column-la irukanum
-        if (!historyList || !auth.currentUser) return;
+        // Rendu history sections-ukkum load pannuvom (Side panel & Full Archive)
+        const miniList = document.getElementById('mini-history');
+        const fullList = document.getElementById('full-history-list');
+        
+        if (!auth.currentUser) return;
 
         try {
             const q = query(ref(db, 'orders'), orderByChild('userEmail'), equalTo(auth.currentUser.email));
             const snap = await get(q);
             
             if (snap.exists()) {
-                let html = '<h3 class="text-[10px] font-bold text-blue-500 uppercase mb-4 tracking-widest">Order Archives</h3>';
+                let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest">Order Archives</p>';
                 snap.forEach(child => {
                     const d = child.val();
                     html += `
-                        <div class="mb-3 p-3 bg-black/40 border border-white/5 rounded-lg">
+                        <div class="mb-3 p-3 bg-white/5 border border-white/5 rounded-lg">
                             <p class="text-white text-[11px] font-bold uppercase tracking-tighter">${d.model}</p>
                             <p class="text-zinc-500 text-[9px] uppercase">${d.bodyMaterial} | ${d.battery}</p>
                         </div>`;
                 });
-                historyList.innerHTML = html;
+                
+                if (miniList) miniList.innerHTML = html;
+                if (fullList) fullList.innerHTML = html;
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Archive Load Error:", e); }
     }
 </script>
-</script>
-    TURT INDUSTRY - The Future of Hardware.
-</script>
     
+<div class="hidden">TURT INDUSTRY - The Future of Hardware.</div>
 </body>
 </html>
