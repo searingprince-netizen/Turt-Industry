@@ -458,7 +458,7 @@
             if(modalName) modalName.innerText = user.displayName;
             if(modalEmailTop) modalEmailTop.innerText = user.email;
 
-            // --- INGA THAAN UNGA ACCOUNT LIST UPDATE AAGUDHU ---
+            // --- UPDATED ACCOUNT LIST LOGIC ---
             const accountItem = document.getElementById('active-account-item');
             if (accountItem) {
                 accountItem.innerHTML = `
@@ -468,18 +468,18 @@
                             <p class="text-white text-sm font-bold">${user.displayName || 'Turt User'}</p>
                             <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
                         </div>
-                        <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Default</span>
+                        <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Connected</span>
                     </div>
 
                     <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 opacity-60 mt-4">
                         <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center">
-                            <i class="fa-solid fa-user-slash text-zinc-700 text-xs"></i>
+                            <i class="fa-solid fa-link-slash text-zinc-700 text-xs"></i>
                         </div>
                         <div class="flex-grow">
                             <p class="text-zinc-500 text-sm font-bold italic">Secondary Node</p>
-                            <p class="text-zinc-800 text-[9px] lowercase font-mono">offline...</p>
+                            <p class="text-zinc-800 text-[9px] lowercase font-mono">waiting for authentication...</p>
                         </div>
-                        <span class="text-[8px] text-zinc-700 font-bold uppercase border border-zinc-800 px-2 py-1 rounded">Inactive</span>
+                        <span class="text-[8px] text-zinc-700 font-bold uppercase border border-zinc-800 px-2 py-1 rounded">Standby</span>
                     </div>
                 `;
             }
