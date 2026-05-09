@@ -203,7 +203,7 @@
 </footer>
 
 <div id="login-modal" class="modal">
-    <div class="max-w-md w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col shadow-2xl backdrop-blur-xl relative z-10">
+    <div class="max-w-md w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col shadow-2xl backdrop-blur-xl relative z-50 m-4">
         
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
 
@@ -214,7 +214,7 @@
                 <img id="auth-profile-pic" src="" class="w-20 h-20 rounded-full border-2 border-blue-500 shadow-xl object-cover mb-4">
                 <h2 id="auth-name" class="text-3xl font-black uppercase italic tracking-tighter text-white">Guest</h2>
                 <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Status: Restricted</p>
-                <a href="https://myaccount.google.com/" target="_blank" class="text-[10px] font-bold text-zinc-500 mt-6 border-b border-zinc-700 pb-1 uppercase tracking-tighter hover:text-white transition">Manage your Google Account</a>
+                <a href="https://myaccount.google.com/" target="_blank" class="text-[10px] font-bold text-zinc-500 mt-6 border-b border-zinc-700 pb-1 uppercase tracking-tighter hover:text-white transition">Manage Account</a>
             </div>
         </div>
 
@@ -239,8 +239,8 @@
             </div>
         </div>
 
-        <div id="auth-controls-panel" class="hidden p-8 space-y-4 border-b border-white/5 bg-black relative z-10">
-            <button class="w-full text-left flex items-center gap-3 p-4 rounded-xl border border-white/5 hover:border-blue-500 transition group bg-white/5">
+        <div id="auth-controls-panel" class="hidden p-8 space-y-4 bg-black relative z-10 border-b border-white/5">
+            <button onclick="loginWithGoogle()" class="w-full text-left flex items-center gap-3 p-4 rounded-xl border border-white/5 hover:border-blue-500 transition group bg-white/5">
                 <i class="fa-solid fa-user-plus text-zinc-600 group-hover:text-blue-500 text-sm"></i>
                 <span class="text-sm font-bold uppercase italic group-hover:text-blue-400">Add another account</span>
             </button>
@@ -251,11 +251,11 @@
         </div>
 
         <div class="px-8 py-5 text-center bg-zinc-950 relative z-10">
-            <p class="text-[9px] text-zinc-800 uppercase tracking-widest font-bold">Privacy policy | Terms of Service</p>
+            <p class="text-[9px] text-zinc-800 uppercase tracking-widest font-bold italic">Turt Systems | Security Protocol v4.0</p>
         </div>
     </div>
 </div>
-
+    
 <div id="consult-modal" class="modal">
     <div class="max-w-5xl w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl">
         <div class="w-full md:w-1/3 bg-zinc-900/50 p-8 border-r border-white/5 flex flex-col">
@@ -402,10 +402,14 @@
 onAuthStateChanged(auth, (user) => {
     const navPic = document.getElementById('nav-profile-pic');
     const portalBtn = document.getElementById('portal-btn');
+    
+    // Panels
     const modalMainInfo = document.getElementById('auth-main-panel');
     const modalSignedOut = document.getElementById('auth-out-panel');
     const modalControls = document.getElementById('auth-controls-panel');
     const modalMoreAccounts = document.getElementById('auth-more-panel');
+
+    // Data Fields
     const modalPic = document.getElementById('auth-profile-pic');
     const modalName = document.getElementById('auth-name');
     const modalEmailTop = document.getElementById('auth-email-top');
@@ -416,26 +420,28 @@ onAuthStateChanged(auth, (user) => {
         navPic.src = user.photoURL;
         portalBtn.innerText = "ACCESS GRANTED";
 
+        // Show Profile Panels
         if(modalSignedOut) modalSignedOut.classList.add('hidden');
         if(modalMainInfo) modalMainInfo.classList.remove('hidden');
         if(modalControls) modalControls.classList.remove('hidden');
         if(modalMoreAccounts) modalMoreAccounts.classList.remove('hidden');
 
+        // Fill Dynamic Data
         if(modalPic) modalPic.src = user.photoURL;
         if(modalName) modalName.innerText = user.displayName;
         if(modalEmailTop) modalEmailTop.innerText = user.email;
 
-        // --- ACCOUNT LIST REFRESH ---
+        // Account List Logic
         const accountItem = document.getElementById('active-account-item');
         if (accountItem) {
             accountItem.innerHTML = `
                 <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition">
                     <img src="${user.photoURL}" class="w-10 h-10 rounded-full border border-blue-500/50">
                     <div class="flex-grow">
-                        <p class="text-white text-sm font-bold">${user.displayName || 'Turt User'}</p>
+                        <p class="text-white text-sm font-bold">${user.displayName}</p>
                         <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
                     </div>
-                    <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded">Connected</span>
+                    <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Connected</span>
                 </div>
 
                 <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 opacity-50 mt-4">
@@ -444,9 +450,9 @@ onAuthStateChanged(auth, (user) => {
                     </div>
                     <div class="flex-grow">
                         <p class="text-zinc-500 text-sm font-bold italic">Secondary Node</p>
-                        <p class="text-zinc-800 text-[9px] lowercase font-mono">waiting for auth...</p>
+                        <p class="text-zinc-800 text-[9px] lowercase font-mono italic">waiting for auth...</p>
                     </div>
-                    <span class="text-[8px] text-zinc-700 font-bold uppercase border border-zinc-800 px-2 py-1 rounded">Standby</span>
+                    <span class="text-[8px] text-zinc-700 font-bold uppercase border border-zinc-800 px-2 py-1 rounded tracking-tighter tracking-tighter">Standby</span>
                 </div>
             `;
         }
