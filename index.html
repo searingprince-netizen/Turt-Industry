@@ -209,15 +209,11 @@
 
         <div id="auth-main-panel" class="hidden p-8 border-b border-white/5 relative z-10">
             <button onclick="closeModal('login-modal')" class="absolute top-6 right-6 text-zinc-600 hover:text-white transition">✕</button>
-            
             <div class="flex flex-col items-center text-center">
                 <p id="auth-email-top" class="text-[10px] text-zinc-600 font-mono tracking-widest lowercase mb-6">initializing auth...</p>
-                
                 <img id="auth-profile-pic" src="" class="w-20 h-20 rounded-full border-2 border-blue-500 shadow-xl object-cover mb-4">
-                
                 <h2 id="auth-name" class="text-3xl font-black uppercase italic tracking-tighter text-white">Guest</h2>
                 <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Status: Restricted</p>
-                
                 <a href="https://myaccount.google.com/" target="_blank" class="text-[10px] font-bold text-zinc-500 mt-6 border-b border-zinc-700 pb-1 uppercase tracking-tighter hover:text-white transition">Manage your Google Account</a>
             </div>
         </div>
@@ -228,7 +224,6 @@
                 <div class="text-blue-500 font-black text-xs uppercase tracking-[0.4em] mb-4">Turt Portal</div>
                 <h1 class="text-3xl font-bold text-white uppercase italic">Access Control</h1>
             </div>
-            
             <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-lg font-bold flex items-center justify-center gap-3 hover:bg-gray-200 transition text-sm">
                 <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5"> Sign in with Google
             </button>
@@ -239,28 +234,8 @@
                 <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">More accounts</p>
                 <i class="fa-solid fa-chevron-down text-zinc-700 text-xs"></i>
             </div>
-    
             <div id="auth-account-list" class="space-y-4 mt-5">
                 <div id="active-account-item"></div>
-            </div>
-        </div>
-                <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition">
-                    <img src="https://lh3.googleusercontent.com/a-/ALV-UjW..." class="w-10 h-10 rounded-full border border-blue-500/50">
-                    <div class="flex-grow">
-                        <p class="text-white text-sm font-bold"></p>
-                        <p class="text-zinc-600 text-[9px] lowercase font-mono"></p>
-                    </div>
-                    <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded">Default</span>
-                </div>
-                <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-red-500 transition">
-                    <img src="https://lh3.googleusercontent.com/a-/ALV-UjX..." class="w-10 h-10 rounded-full opacity-50">
-                    <div class="flex-grow">
-                        <p class="text-zinc-400 text-sm font-bold"></p>
-                        <p class="text-zinc-700 text-[9px] lowercase font-mono"></p>
-                    </div>
-                    <button class="bg-blue-600 text-[9px] font-bold px-3 py-1.5 rounded uppercase hover:bg-blue-500">Sign in</button>
-                    <button class="text-[12px] text-zinc-700 hover:text-white">Remove</button>
-                </div>
             </div>
         </div>
 
@@ -269,10 +244,9 @@
                 <i class="fa-solid fa-user-plus text-zinc-600 group-hover:text-blue-500 text-sm"></i>
                 <span class="text-sm font-bold uppercase italic group-hover:text-blue-400">Add another account</span>
             </button>
-            
-            <button onclick="logout()" class="w-full text-left flex items-center gap-3 p-4 rounded-xl border border-white/5 hover:border-blue-500 transition group bg-white/5">
+            <button onclick="logout()" class="w-full text-left flex items-center gap-3 p-4 rounded-xl border border-white/5 hover:border-red-500/50 transition group bg-white/5">
                 <i class="fa-solid fa-arrow-right-from-bracket text-zinc-600 group-hover:text-red-500 text-sm"></i>
-                <span class="text-sm font-bold uppercase italic group-hover:text-blue-400">Sign out of all accounts</span>
+                <span class="text-sm font-bold uppercase italic group-hover:text-red-400">Sign out of all accounts</span>
             </button>
         </div>
 
