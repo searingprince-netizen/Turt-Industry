@@ -362,6 +362,8 @@
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
 
+    // --- State Initialization ---
+    window.secondaryUser = null; 
     window.isLoggedIn = false;
 
     // --- Modal Functions ---
@@ -385,21 +387,18 @@
 
     window.loginWithGoogle = async () => {
         try {
+            provider.setCustomParameters({ prompt: 'select_account' });
             const result = await signInWithPopup(auth, provider);
             const newUser = result.user;
 
-            // Logged in user primary illama vera account-ah irundha secondary-ah vaippom
+            // Secondary node logic: If already logged in, save the new login as secondary
             if (window.isLoggedIn && auth.currentUser && auth.currentUser.email !== newUser.email) {
                 window.secondaryUser = {
                     name: newUser.displayName,
                     email: newUser.email,
                     pic: newUser.photoURL
                 };
-                
-                // UI-ai force refresh panna auth observer function-ai manual-ah trigger panrom
-                // Idhu unga account list-la secondary mail-ai ippo kaattum
-                const event = new Event('authstatechanged_manual');
-                window.dispatchEvent(event);
+                window.updateAccountUI(auth.currentUser, window.secondaryUser);
             }
         } catch (e) { 
             console.error("Auth Error: " + e.message); 
@@ -407,8 +406,12 @@
     };
 
     window.logout = async () => {
-        try { await auth.signOut(); closeModal('login-modal'); } 
-        catch (e) { alert("Logout Error: " + e.message); }
+        try { 
+            await auth.signOut(); 
+            window.secondaryUser = null; 
+            window.isLoggedIn = false;
+            closeModal('login-modal'); 
+        } catch (e) { alert("Logout Error: " + e.message); }
     };
 
     window.openBuilder = (name) => {
@@ -417,11 +420,40 @@
         document.getElementById('builder-title').innerText = "CONFIG: " + name;
     };
 
+    // --- UI Update Function ---
+    window.updateAccountUI = (primaryUser, secondary) => {
+        const accountItem = document.getElementById('active-account-item');
+        if (!accountItem || !primaryUser) return;
+
+        accountItem.innerHTML = `
+            <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition group">
+                <img src="${primaryUser.photoURL}" class="w-10 h-10 rounded-full border border-blue-500/50">
+                <div class="flex-grow">
+                    <p class="text-white text-sm font-bold">${primaryUser.displayName}</p>
+                    <p class="text-zinc-600 text-[9px] lowercase font-mono">${primaryUser.email}</p>
+                </div>
+                <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Connected</span>
+            </div>
+
+            <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 ${secondary ? '' : 'opacity-50'} mt-4">
+                <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center overflow-hidden">
+                    ${secondary ? `<img src="${secondary.pic}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-link-slash text-zinc-700 text-xs"></i>'}
+                </div>
+                <div class="flex-grow">
+                    <p class="${secondary ? 'text-white' : 'text-zinc-500'} text-sm font-bold italic">${secondary ? secondary.name : 'Secondary Node'}</p>
+                    <p class="text-zinc-800 text-[9px] lowercase font-mono italic">${secondary ? secondary.email : 'waiting for auth...'}</p>
+                </div>
+                <span class="text-[8px] ${secondary ? 'text-green-500 border-green-500/30' : 'text-zinc-700 border-zinc-800'} font-bold uppercase border px-2 py-1 rounded tracking-tighter">
+                    ${secondary ? 'Linked' : 'Standby'}
+                </span>
+            </div>
+        `;
+    };
+
     // --- Auth Observer ---
     onAuthStateChanged(auth, (user) => {
         const navPic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
-        
         const modalMainInfo = document.getElementById('auth-main-panel');
         const modalSignedOut = document.getElementById('auth-out-panel');
         const modalControls = document.getElementById('auth-controls-panel');
@@ -448,36 +480,8 @@
             if(modalName) modalName.innerText = user.displayName;
             if(modalEmailTop) modalEmailTop.innerText = user.email;
 
-            // Account List Logic (Replace this inside onAuthStateChanged)
-        const accountItem = document.getElementById('active-account-item');
-        if (accountItem) {
-            const secondary = window.secondaryUser; // Check if second account exists
-            
-            accountItem.innerHTML = `
-                <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition group">
-                    <img src="${user.photoURL}" class="w-10 h-10 rounded-full border border-blue-500/50">
-                    <div class="flex-grow">
-                        <p class="text-white text-sm font-bold">${user.displayName}</p>
-                        <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
-                    </div>
-                    <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Connected</span>
-                </div>
-
-                <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 ${secondary ? '' : 'opacity-50'} mt-4">
-                    <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center overflow-hidden">
-                        ${secondary ? `<img src="${secondary.pic}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-link-slash text-zinc-700 text-xs"></i>'}
-                    </div>
-                    <div class="flex-grow">
-                        <p class="${secondary ? 'text-white' : 'text-zinc-500'} text-sm font-bold italic">${secondary ? secondary.name : 'Secondary Node'}</p>
-                        <p class="text-zinc-800 text-[9px] lowercase font-mono italic">${secondary ? secondary.email : 'waiting for auth...'}</p>
-                    </div>
-                    <span class="text-[8px] ${secondary ? 'text-green-500 border-green-500/30' : 'text-zinc-700 border-zinc-800'} font-bold uppercase border px-2 py-1 rounded tracking-tighter">
-                        ${secondary ? 'Linked' : 'Standby'}
-                    </span>
-                </div>
-            `;
-        }
-            
+            // Refresh the dual account list UI
+            window.updateAccountUI(user, window.secondaryUser);
             window.loadArchives();
         } else {
             window.isLoggedIn = false;
@@ -496,7 +500,6 @@
     // --- Database Functions ---
     window.submitOrder = async () => {
         if (!window.isLoggedIn || !auth.currentUser) return;
-        
         const btn = document.querySelector("#builder-container button");
         btn.innerText = "TRANSMITTING...";
         btn.disabled = true;
@@ -512,36 +515,26 @@
                 specialRequirements: document.getElementById('special-req').value,
                 timestamp: serverTimestamp()
             };
-
             await push(ref(db, 'orders'), orderData);
             alert("SUCCESS: Hardware specifications archived.");
             window.loadArchives();
             closeModal('consult-modal');
-        } catch (e) {
-            alert("Transmission Error: " + e.message);
-        } finally {
-            btn.innerText = "Secure Transmission";
-            btn.disabled = false;
-        }
+        } catch (e) { alert("Transmission Error: " + e.message); }
+        finally { btn.innerText = "Secure Transmission"; btn.disabled = false; }
     };
 
     window.loadArchives = async () => {
         const miniList = document.getElementById('mini-history');
         const fullList = document.getElementById('full-history-list');
-        
         if (!auth.currentUser) return;
-
         try {
             const ordersRef = ref(db, 'orders');
             const q = query(ordersRef, orderByChild('userEmail'), equalTo(auth.currentUser.email));
             const snap = await get(q);
-            
             let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
-            
             if (snap.exists()) {
                 const data = [];
                 snap.forEach(child => { data.push(child.val()); });
-                
                 data.reverse().forEach(d => {
                     html += `
                         <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
@@ -558,15 +551,10 @@
                             ${d.specialRequirements ? `<div class="mt-3 pt-3 border-t border-white/5"><p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p></div>` : ''}
                         </div>`;
                 });
-            } else {
-                html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>';
-            }
-            
+            } else { html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>'; }
             if (miniList) miniList.innerHTML = html;
             if (fullList) fullList.innerHTML = html;
-        } catch (e) { 
-            console.error("Archive Load Error: ", e);
-        }
+        } catch (e) { console.error("Archive Load Error: ", e); }
     };
 </script>
 </body>
