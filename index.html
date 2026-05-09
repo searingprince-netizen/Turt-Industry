@@ -44,16 +44,16 @@
     .project-slider-track {
         display: flex;
         width: max-content;
-        /* Gap-ai inga zero aakitu, card-kku padding kuduthurukaen for smooth loop */
         gap: 0; 
-        animation: scroll-h 40s linear infinite;
+        /* Triple set logic: 60 seconds for 15 cards */
+        animation: scroll-h 60s linear infinite;
     }
 
     .project-card-h {
-        width: 410px; /* Card width + gap (380 + 30) */
+        width: 410px; /* Card (380) + Gap (30) */
         height: 520px;
         flex-shrink: 0;
-        padding-right: 30px; /* Inga thaan gap maintain aaguthu */
+        padding-right: 30px;
     }
 
     .card-inner {
@@ -68,10 +68,9 @@
         justify-content: flex-end;
         padding: 35px;
         background: #000;
-        transition: all 0.5s ease;
+        transition: transform 0.5s ease;
     }
 
-    /* Image Opacity 55% */
     .card-inner::before {
         content: "";
         position: absolute;
@@ -84,29 +83,21 @@
         z-index: 1;
     }
 
-    /* Hover: Brightness 100% */
-    .card-inner:hover::before {
-        opacity: 1;
-    }
+    .card-inner:hover::before { opacity: 1; }
+    .card-inner:hover { transform: translateY(-10px); border-color: #3b82f6; }
 
-    .card-inner:hover {
-        transform: translateY(-10px);
-        border-color: #3b82f6;
-    }
-
-    /* Text 100% Visibility */
     .card-info-bg {
         position: relative;
-        z-index: 2;
+        z-index: 5;
         background: linear-gradient(to top, rgba(0,0,0,1) 40%, transparent);
         margin: -35px;
         padding: 70px 35px 35px 35px;
     }
 
-    /* THE FIX: Exactly -50% with no offsets */
+    /* THE MAGIC FIX: Exactly -33.33% because we have 3 identical sets */
     @keyframes scroll-h {
         0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
+        100% { transform: translateX(-33.3333%); }
     }
 
     .project-slider-container:hover .project-slider-track {
@@ -182,115 +173,23 @@
     <div class="project-slider-container">
         <div class="project-slider-track">
             
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div>
-                    </div>
-                </div>
-            </div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p><div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p><div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p><div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div></div></div></div>
 
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div>
-                    </div>
-                </div>
-            </div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p><div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p><div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p><div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div></div></div></div>
 
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span>
-                        <h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3>
-                        <p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p>
-                        <div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div>
-                    </div>
-                </div>
-            </div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p><div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p><div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p><div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div></div></div></div>
 
         </div>
     </div>
