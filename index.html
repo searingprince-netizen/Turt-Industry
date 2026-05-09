@@ -18,7 +18,7 @@
         .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
         .modal.flex { display: flex !important; }
 
-        select, input, textarea { background: #000 !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; padding: 12px; border-radius: 8px; width: 100%; outline: none; transition: all 0.3s; }
+        select, input, textarea { background: #111 !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; padding: 12px; border-radius: 8px; width: 100%; outline: none; transition: all 0.3s; }
         select:focus, input:focus, textarea:focus { border-color: #3b82f6 !important; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
         
         .profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; }
@@ -139,64 +139,64 @@
 
 <div id="consult-modal" class="modal">
     <div class="max-w-5xl w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl">
-        <div class="w-full md:w-1/3 bg-zinc-900/50 p-8 border-r border-white/5">
-            <div class="flex justify-between items-center mb-10">
-                <h2 class="text-blue-500 font-black text-xs uppercase tracking-widest">Select Model</h2>
-                <button onclick="closeModal('consult-modal')" class="md:hidden text-white">✕</button>
-            </div>
-            
-            <div class="space-y-3 mb-10">
-                <button onclick="openBuilder('Turt Phone')" class="w-full text-left p-4 rounded-xl border border-white/5 hover:border-blue-500 hover:bg-blue-500/5 transition group">
-                    <span class="text-xs font-bold text-white group-hover:text-blue-400">TURT PHONE</span>
+        <div class="w-full md:w-1/3 bg-zinc-900/50 p-8 border-r border-white/5 flex flex-col">
+            <h2 class="text-blue-500 font-black text-xs uppercase tracking-widest mb-8">Select Model</h2>
+            <div class="space-y-4">
+                <button onclick="openBuilder('Turt Phone')" class="w-full text-left p-5 rounded-xl border border-white/5 bg-zinc-900/50 hover:border-blue-500 transition group">
+                    <span class="block text-sm font-bold uppercase italic group-hover:text-blue-400">Turt Phone</span>
+                    <span class="text-[9px] text-zinc-500 uppercase">Flagship Hardware</span>
                 </button>
-                <button onclick="openBuilder('Phoenix Hub')" class="w-full text-left p-4 rounded-xl border border-white/5 hover:border-blue-500 hover:bg-blue-500/5 transition group">
-                    <span class="text-xs font-bold text-white group-hover:text-blue-400">PHOENIX HUB</span>
+                <button onclick="openBuilder('Phoenix Hub')" class="w-full text-left p-5 rounded-xl border border-white/5 bg-zinc-900/50 hover:border-blue-500 transition group">
+                    <span class="block text-sm font-bold uppercase italic group-hover:text-blue-400">Phoenix Hub</span>
+                    <span class="text-[9px] text-zinc-500 uppercase">Neural Gateway</span>
                 </button>
             </div>
-
-            <div id="mini-history" class="mt-10 border-t border-white/5 pt-6 overflow-y-auto max-h-[250px] custom-scrollbar">
+            <div id="mini-history" class="mt-10 border-t border-white/5 pt-6 flex-grow overflow-y-auto custom-scrollbar">
                 <p class="text-[9px] text-zinc-600 uppercase tracking-widest">System Ready</p>
             </div>
         </div>
 
-        <div class="w-full md:w-2/3 p-8 md:p-12 relative flex flex-col justify-center min-h-[500px]">
-             <button onclick="closeModal('consult-modal')" class="hidden md:block absolute top-8 right-8 text-zinc-500 hover:text-white transition">✕</button>
-
-            <div id="builder-placeholder" class="text-center p-10 border-2 border-dashed border-white/5 rounded-3xl">
-                <div class="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mb-4 mx-auto">
-                    <i class="fa-solid fa-microchip text-blue-500 text-xl animate-pulse"></i>
+        <div class="w-full md:w-2/3 p-10 relative bg-black/40">
+            <button onclick="closeModal('consult-modal')" class="absolute top-8 right-8 text-zinc-500 hover:text-white transition">✕</button>
+            
+            <div id="builder-placeholder" class="h-full flex flex-col items-center justify-center text-center opacity-50">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-full mb-4 flex items-center justify-center">
+                    <i class="fa-solid fa-microchip text-blue-500 animate-pulse"></i>
                 </div>
-                <h3 class="text-white font-bold uppercase tracking-widest text-[11px]">System Standby</h3>
-                <p class="text-zinc-600 text-[9px] mt-2 uppercase tracking-tighter">Initialize a hardware model to begin configuration</p>
+                <h3 class="font-bold uppercase italic text-xs">System Standby</h3>
+                <p class="text-[9px] text-zinc-600 mt-2">INITIALIZE A MODEL TO START CONFIGURATION</p>
             </div>
 
             <div id="builder-container" class="hidden">
-                <h2 id="builder-title" class="text-2xl font-black mb-8 text-white uppercase italic tracking-tighter border-b border-blue-500/30 pb-2">BUILD</h2>
+                <h2 id="builder-title" class="text-3xl font-black mb-8 text-white uppercase italic tracking-tighter border-b border-blue-500/30 pb-4">CONFIG</h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Frame Material</label>
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Body Material</label>
                         <select id="body-mat">
-                            <option>Titanium Grade 5</option>
+                            <option>Grade 5 Titanium</option>
                             <option>Aerospace Aluminium</option>
                             <option>Carbon Fiber</option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Core Unit</label>
-                        <select id="batt-cap">
-                            <option>7500mAh Solid State</option>
-                            <option>10000mAh Fusion</option>
-                            <option>5000mAh Standard</option>
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Energy Unit</label>
+                        <select id="energy-unit">
+                            <option>7,500 mAh (Solid State)</option>
+                            <option>10,000 mAh (Fusion Core)</option>
+                            <option>5,000 mAh (Standard)</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="text-[9px] font-bold text-gray-500 uppercase mb-2 block tracking-widest">Special Requirements / Specs</label>
-                        <textarea id="notes" rows="3" placeholder="Describe any custom hardware modifications..."></textarea>
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish / Color</label>
+                        <input type="text" id="finish-notes" placeholder="e.g. Matte Cobalt Blue">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Special Requirements</label>
+                        <textarea id="special-req" rows="3" placeholder="Describe any custom hardware modifications..."></textarea>
                     </div>
                 </div>
-
-                <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest hover:bg-blue-500 transition shadow-lg text-white text-xs">Transmit Specification</button>
+                <button onclick="submitOrder()" class="w-full bg-blue-600 py-5 mt-10 font-black uppercase tracking-widest text-sm hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Secure Transmission</button>
             </div>
         </div>
     </div>
@@ -204,11 +204,11 @@
 
 <div id="history-modal" class="modal">
     <div class="max-w-xl w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
-            <h2 class="text-white font-black italic tracking-tighter text-xl uppercase">Archives</h2>
+        <div class="p-8 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
+            <h2 class="text-white font-black italic tracking-tighter text-2xl uppercase">System Archives</h2>
             <button onclick="closeModal('history-modal')" class="text-zinc-500 hover:text-white">✕</button>
         </div>
-        <div id="full-history-list" class="p-6 overflow-y-auto custom-scrollbar flex-grow">
+        <div id="full-history-list" class="p-8 overflow-y-auto custom-scrollbar flex-grow">
             </div>
     </div>
 </div>
@@ -235,26 +235,19 @@
 
     window.isLoggedIn = false;
 
-    // --- Modal Controls ---
+    // --- Modal Functions ---
     window.toggleModal = (id) => {
         const modal = document.getElementById(id);
-        if (modal) {
-            modal.classList.add('flex');
-            modal.style.display = 'flex';
-        }
+        if (modal) modal.classList.toggle('flex');
     };
 
     window.closeModal = (id) => {
         const modal = document.getElementById(id);
-        if (modal) {
-            modal.classList.remove('flex');
-            modal.style.display = 'none';
-        }
+        if (modal) modal.classList.remove('flex');
     };
 
     window.handleConsultation = () => {
         if (!window.isLoggedIn) {
-            alert("Security Protocol: Access Turt Portal first.");
             window.toggleModal('login-modal');
         } else {
             window.toggleModal('consult-modal');
@@ -262,50 +255,37 @@
     };
 
     window.loginWithGoogle = async () => {
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (error) {
-            alert("Auth Error: " + error.message);
-        }
+        try { await signInWithPopup(auth, provider); } 
+        catch (e) { alert("Auth Error: " + e.message); }
     };
 
     window.openBuilder = (name) => {
-        const placeholder = document.getElementById('builder-placeholder');
-        const container = document.getElementById('builder-container');
-        const title = document.getElementById('builder-title');
-
-        if (placeholder && container) {
-            placeholder.style.display = 'none';
-            container.classList.remove('hidden');
-            container.style.display = 'block';
-            title.innerText = "CONFIG: " + name;
-        }
+        document.getElementById('builder-placeholder').classList.add('hidden');
+        document.getElementById('builder-container').classList.remove('hidden');
+        document.getElementById('builder-title').innerText = "CONFIG: " + name;
     };
 
-    // --- Auth State ---
+    // --- Auth Observer ---
     onAuthStateChanged(auth, (user) => {
         const profilePic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
         if (user) {
             window.isLoggedIn = true;
-            if (profilePic) { profilePic.style.display = 'block'; profilePic.src = user.photoURL; }
-            if (portalBtn) {
-                portalBtn.innerText = "ACCESS GRANTED";
-                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
-            }
-            window.closeModal('login-modal');
+            profilePic.style.display = 'block';
+            profilePic.src = user.photoURL;
+            portalBtn.innerText = "ACCESS GRANTED";
+            portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+            closeModal('login-modal');
             window.loadArchives();
         } else {
             window.isLoggedIn = false;
-            if (profilePic) profilePic.style.display = 'none';
-            if (portalBtn) {
-                portalBtn.innerText = "Portal Access";
-                portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
-            }
+            profilePic.style.display = 'none';
+            portalBtn.innerText = "Portal Access";
+            portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
         }
     });
 
-    // --- Database Operations ---
+    // --- Database Functions ---
     window.submitOrder = async () => {
         if (!window.isLoggedIn || !auth.currentUser) return;
         
@@ -318,19 +298,20 @@
                 userEmail: auth.currentUser.email,
                 model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
                 bodyMaterial: document.getElementById('body-mat').value,
-                battery: document.getElementById('batt-cap').value,
-                notes: document.getElementById('notes').value,
+                energyUnit: document.getElementById('energy-unit').value,
+                finishNotes: document.getElementById('finish-notes').value,
+                specialRequirements: document.getElementById('special-req').value,
                 timestamp: serverTimestamp()
             };
 
             await push(ref(db, 'orders'), orderData);
-            alert("Success: Hardware specifications archived.");
+            alert("SUCCESS: Hardware specifications archived.");
             window.loadArchives();
-            window.closeModal('consult-modal');
+            closeModal('consult-modal');
         } catch (e) {
-            alert("Transmission Failed: " + e.message);
+            alert("Transmission Error: " + e.message);
         } finally {
-            btn.innerText = "Transmit Specification";
+            btn.innerText = "Secure Transmission";
             btn.disabled = false;
         }
     };
@@ -351,9 +332,12 @@
                 snap.forEach(child => { data.push(child.val()); });
                 data.reverse().forEach(d => {
                     html += `
-                        <div class="mb-3 p-4 bg-white/5 border border-white/5 rounded-xl hover:border-blue-500/30 transition">
-                            <p class="text-white text-[10px] font-bold uppercase tracking-widest">${d.model}</p>
-                            <p class="text-zinc-500 text-[9px] uppercase mt-1">${d.bodyMaterial} • ${d.battery}</p>
+                        <div class="mb-4 p-5 bg-zinc-900/50 border border-white/5 rounded-2xl">
+                            <div class="flex justify-between items-start mb-2">
+                                <p class="text-white text-xs font-black uppercase italic italic tracking-tighter">${d.model}</p>
+                                <span class="text-[8px] text-blue-500 font-bold uppercase">Stored</span>
+                            </div>
+                            <p class="text-zinc-500 text-[10px] uppercase leading-tight">${d.bodyMaterial} • ${d.energyUnit}</p>
                         </div>`;
                 });
             } else {
@@ -362,9 +346,7 @@
             
             if (miniList) miniList.innerHTML = html;
             if (fullList) fullList.innerHTML = html;
-        } catch (e) {
-            console.error(e);
-        }
+        } catch (e) { console.error(e); }
     };
 </script>
 </body>
