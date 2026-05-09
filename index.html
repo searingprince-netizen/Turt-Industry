@@ -236,13 +236,14 @@
 
         <div id="auth-more-panel" class="hidden px-8 py-5 border-b border-white/5 bg-zinc-950 relative z-10">
             <div class="flex justify-between items-center cursor-pointer" onclick="document.getElementById('auth-account-list').classList.toggle('hidden')">
-                <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Hide more accounts</p>
-                <i class="fa-solid fa-chevron-up text-zinc-700 text-xs"></i>
+                <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">More accounts</p>
+                <i class="fa-solid fa-chevron-down text-zinc-700 text-xs"></i>
             </div>
-            
+    
             <div id="auth-account-list" class="space-y-4 mt-5">
                 <div id="active-account-item"></div>
             </div>
+        </div>
                 <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition">
                     <img src="https://lh3.googleusercontent.com/a-/ALV-UjW..." class="w-10 h-10 rounded-full border border-blue-500/50">
                     <div class="flex-grow">
@@ -424,82 +425,68 @@
         document.getElementById('builder-title').innerText = "CONFIG: " + name;
     };
 
-// --- Auth Observer (Dynamic UI Logic) ---
-    onAuthStateChanged(auth, (user) => {
-        const navPic = document.getElementById('nav-profile-pic');
-        const portalBtn = document.getElementById('portal-btn');
-        
-        // Panels
-        const modalMainInfo = document.getElementById('auth-main-panel');
-        const modalSignedOut = document.getElementById('auth-out-panel');
-        const modalControls = document.getElementById('auth-controls-panel');
-        const modalMoreAccounts = document.getElementById('auth-more-panel');
+onAuthStateChanged(auth, (user) => {
+    const navPic = document.getElementById('nav-profile-pic');
+    const portalBtn = document.getElementById('portal-btn');
+    const modalMainInfo = document.getElementById('auth-main-panel');
+    const modalSignedOut = document.getElementById('auth-out-panel');
+    const modalControls = document.getElementById('auth-controls-panel');
+    const modalMoreAccounts = document.getElementById('auth-more-panel');
+    const modalPic = document.getElementById('auth-profile-pic');
+    const modalName = document.getElementById('auth-name');
+    const modalEmailTop = document.getElementById('auth-email-top');
 
-        // Data Fields
-        const modalPic = document.getElementById('auth-profile-pic');
-        const modalName = document.getElementById('auth-name');
-        const modalEmailTop = document.getElementById('auth-email-top');
+    if (user) {
+        window.isLoggedIn = true;
+        navPic.style.display = 'block';
+        navPic.src = user.photoURL;
+        portalBtn.innerText = "ACCESS GRANTED";
 
-        if (user) {
-            window.isLoggedIn = true;
-            navPic.style.display = 'block';
-            navPic.src = user.photoURL;
-            portalBtn.innerText = "ACCESS GRANTED";
-            portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+        if(modalSignedOut) modalSignedOut.classList.add('hidden');
+        if(modalMainInfo) modalMainInfo.classList.remove('hidden');
+        if(modalControls) modalControls.classList.remove('hidden');
+        if(modalMoreAccounts) modalMoreAccounts.classList.remove('hidden');
 
-            // Show Profile Panel, Hide Login Button
-            if(modalSignedOut) modalSignedOut.classList.add('hidden');
-            if(modalMainInfo) modalMainInfo.classList.remove('hidden');
-            if(modalControls) modalControls.classList.remove('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.remove('hidden');
+        if(modalPic) modalPic.src = user.photoURL;
+        if(modalName) modalName.innerText = user.displayName;
+        if(modalEmailTop) modalEmailTop.innerText = user.email;
 
-            // Fill Dynamic Data
-            if(modalPic) modalPic.src = user.photoURL;
-            if(modalName) modalName.innerText = user.displayName;
-            if(modalEmailTop) modalEmailTop.innerText = user.email;
-
-            // --- UPDATED ACCOUNT LIST LOGIC ---
-            const accountItem = document.getElementById('active-account-item');
-            if (accountItem) {
-                accountItem.innerHTML = `
-                    <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition group">
-                        <img src="${user.photoURL}" class="w-10 h-10 rounded-full border border-blue-500/50">
-                        <div class="flex-grow">
-                            <p class="text-white text-sm font-bold">${user.displayName || 'Turt User'}</p>
-                            <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
-                        </div>
-                        <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Connected</span>
+        // --- ACCOUNT LIST REFRESH ---
+        const accountItem = document.getElementById('active-account-item');
+        if (accountItem) {
+            accountItem.innerHTML = `
+                <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition">
+                    <img src="${user.photoURL}" class="w-10 h-10 rounded-full border border-blue-500/50">
+                    <div class="flex-grow">
+                        <p class="text-white text-sm font-bold">${user.displayName || 'Turt User'}</p>
+                        <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
                     </div>
+                    <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded">Connected</span>
+                </div>
 
-                    <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 opacity-60 mt-4">
-                        <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center">
-                            <i class="fa-solid fa-link-slash text-zinc-700 text-xs"></i>
-                        </div>
-                        <div class="flex-grow">
-                            <p class="text-zinc-500 text-sm font-bold italic">Secondary Node</p>
-                            <p class="text-zinc-800 text-[9px] lowercase font-mono">waiting for authentication...</p>
-                        </div>
-                        <span class="text-[8px] text-zinc-700 font-bold uppercase border border-zinc-800 px-2 py-1 rounded">Standby</span>
+                <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 opacity-50 mt-4">
+                    <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center">
+                        <i class="fa-solid fa-link-slash text-zinc-700 text-xs"></i>
                     </div>
-                `;
-            }
-            // ------------------------------------------------
-
-            closeModal('login-modal');
-            window.loadArchives();
-        } else {
-            window.isLoggedIn = false;
-            navPic.style.display = 'none';
-            portalBtn.innerText = "Portal Access";
-            portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
-
-            // Show Login Button, Hide Profile Panel
-            if(modalMainInfo) modalMainInfo.classList.add('hidden');
-            if(modalSignedOut) modalSignedOut.classList.remove('hidden');
-            if(modalControls) modalControls.classList.add('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+                    <div class="flex-grow">
+                        <p class="text-zinc-500 text-sm font-bold italic">Secondary Node</p>
+                        <p class="text-zinc-800 text-[9px] lowercase font-mono">waiting for auth...</p>
+                    </div>
+                    <span class="text-[8px] text-zinc-700 font-bold uppercase border border-zinc-800 px-2 py-1 rounded">Standby</span>
+                </div>
+            `;
         }
-    });
+        window.loadArchives();
+    } else {
+        window.isLoggedIn = false;
+        navPic.style.display = 'none';
+        portalBtn.innerText = "Portal Access";
+        if(modalMainInfo) modalMainInfo.classList.add('hidden');
+        if(modalSignedOut) modalSignedOut.classList.remove('hidden');
+        if(modalControls) modalControls.classList.add('hidden');
+        if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+    }
+});
     // --- Database Functions ---
     window.submitOrder = async () => {
         if (!window.isLoggedIn || !auth.currentUser) return;
