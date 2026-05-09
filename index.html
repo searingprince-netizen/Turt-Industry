@@ -203,15 +203,81 @@
 </footer>
 
 <div id="login-modal" class="modal">
-    <div class="max-w-md w-full bg-[#0a0a0a] border border-white/10 p-10 rounded-3xl relative shadow-2xl backdrop-blur-xl">
-        <button onclick="closeModal('login-modal')" class="absolute top-6 right-6 text-gray-500 hover:text-white transition font-bold text-xl">✕</button>
-        <div class="text-center mb-10">
-            <div class="text-blue-500 font-black text-xs uppercase tracking-[0.4em] mb-4">Turt Portal</div>
-            <h1 class="text-3xl font-bold text-white uppercase italic">Sign in</h1>
+    <div class="max-w-md w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col shadow-2xl backdrop-blur-xl relative z-10">
+        
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
+
+        <div id="auth-main-panel" class="hidden p-8 border-b border-white/5 relative z-10">
+            <button onclick="closeModal('login-modal')" class="absolute top-6 right-6 text-zinc-600 hover:text-white transition">✕</button>
+            
+            <div class="flex flex-col items-center text-center">
+                <p id="auth-email-top" class="text-[10px] text-zinc-600 font-mono tracking-widest lowercase mb-6">initializing auth...</p>
+                
+                <img id="auth-profile-pic" src="" class="w-20 h-20 rounded-full border-2 border-blue-500 shadow-xl object-cover mb-4">
+                
+                <h2 id="auth-name" class="text-3xl font-black uppercase italic tracking-tighter text-white">Guest</h2>
+                <p class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Status: Restricted</p>
+                
+                <a href="https://myaccount.google.com/" target="_blank" class="text-[10px] font-bold text-zinc-500 mt-6 border-b border-zinc-700 pb-1 uppercase tracking-tighter hover:text-white transition">Manage your Google Account</a>
+            </div>
         </div>
-        <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-lg font-bold flex items-center justify-center gap-3 hover:bg-gray-200 transition text-sm">
-            <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5"> Google Authentication
-        </button>
+
+        <div id="auth-out-panel" class="p-8 relative z-10">
+            <button onclick="closeModal('login-modal')" class="absolute top-6 right-6 text-zinc-600 hover:text-white transition">✕</button>
+            <div class="text-center mb-8">
+                <div class="text-blue-500 font-black text-xs uppercase tracking-[0.4em] mb-4">Turt Portal</div>
+                <h1 class="text-3xl font-bold text-white uppercase italic">Access Control</h1>
+            </div>
+            
+            <button onclick="loginWithGoogle()" class="w-full bg-white text-black py-4 rounded-lg font-bold flex items-center justify-center gap-3 hover:bg-gray-200 transition text-sm">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5"> Sign in with Google
+            </button>
+        </div>
+
+        <div id="auth-more-panel" class="hidden px-8 py-5 border-b border-white/5 bg-zinc-950 relative z-10">
+            <div class="flex justify-between items-center cursor-pointer" onclick="document.getElementById('auth-account-list').classList.toggle('hidden')">
+                <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Hide more accounts</p>
+                <i class="fa-solid fa-chevron-up text-zinc-700 text-xs"></i>
+            </div>
+            
+            <div id="auth-account-list" class="space-y-4 mt-5">
+                <div id="active-account-item"></div>
+            </div>
+                <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition">
+                    <img src="https://lh3.googleusercontent.com/a-/ALV-UjW..." class="w-10 h-10 rounded-full border border-blue-500/50">
+                    <div class="flex-grow">
+                        <p class="text-white text-sm font-bold"></p>
+                        <p class="text-zinc-600 text-[9px] lowercase font-mono"></p>
+                    </div>
+                    <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded">Default</span>
+                </div>
+                <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-red-500 transition">
+                    <img src="https://lh3.googleusercontent.com/a-/ALV-UjX..." class="w-10 h-10 rounded-full opacity-50">
+                    <div class="flex-grow">
+                        <p class="text-zinc-400 text-sm font-bold"></p>
+                        <p class="text-zinc-700 text-[9px] lowercase font-mono"></p>
+                    </div>
+                    <button class="bg-blue-600 text-[9px] font-bold px-3 py-1.5 rounded uppercase hover:bg-blue-500">Sign in</button>
+                    <button class="text-[12px] text-zinc-700 hover:text-white">Remove</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="auth-controls-panel" class="hidden p-8 space-y-4 border-b border-white/5 bg-black relative z-10">
+            <button class="w-full text-left flex items-center gap-3 p-4 rounded-xl border border-white/5 hover:border-blue-500 transition group bg-white/5">
+                <i class="fa-solid fa-user-plus text-zinc-600 group-hover:text-blue-500 text-sm"></i>
+                <span class="text-sm font-bold uppercase italic group-hover:text-blue-400">Add another account</span>
+            </button>
+            
+            <button onclick="logout()" class="w-full text-left flex items-center gap-3 p-4 rounded-xl border border-white/5 hover:border-blue-500 transition group bg-white/5">
+                <i class="fa-solid fa-arrow-right-from-bracket text-zinc-600 group-hover:text-red-500 text-sm"></i>
+                <span class="text-sm font-bold uppercase italic group-hover:text-blue-400">Sign out of all accounts</span>
+            </button>
+        </div>
+
+        <div class="px-8 py-5 text-center bg-zinc-950 relative z-10">
+            <p class="text-[9px] text-zinc-800 uppercase tracking-widest font-bold">Privacy policy | Terms of Service</p>
+        </div>
     </div>
 </div>
 
@@ -319,6 +385,7 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
 
     window.isLoggedIn = false;
 
@@ -346,125 +413,168 @@
         catch (e) { alert("Auth Error: " + e.message); }
     };
 
+    window.logout = async () => {
+        try { await auth.signOut(); closeModal('login-modal'); } 
+        catch (e) { alert("Logout Error: " + e.message); }
+    };
+
     window.openBuilder = (name) => {
         document.getElementById('builder-placeholder').classList.add('hidden');
         document.getElementById('builder-container').classList.remove('hidden');
         document.getElementById('builder-title').innerText = "CONFIG: " + name;
     };
 
-    // --- Auth Observer ---
+// --- Auth Observer (Dynamic UI Logic) ---
     onAuthStateChanged(auth, (user) => {
-        const profilePic = document.getElementById('nav-profile-pic');
+        const navPic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
+        
+        // Panels
+        const modalMainInfo = document.getElementById('auth-main-panel');
+        const modalSignedOut = document.getElementById('auth-out-panel');
+        const modalControls = document.getElementById('auth-controls-panel');
+        const modalMoreAccounts = document.getElementById('auth-more-panel');
+
+        // Data Fields
+        const modalPic = document.getElementById('auth-profile-pic');
+        const modalName = document.getElementById('auth-name');
+        const modalEmailTop = document.getElementById('auth-email-top');
+
         if (user) {
             window.isLoggedIn = true;
-            profilePic.style.display = 'block';
-            profilePic.src = user.photoURL;
+            navPic.style.display = 'block';
+            navPic.src = user.photoURL;
             portalBtn.innerText = "ACCESS GRANTED";
             portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+
+            // Show Profile Panel, Hide Login Button
+            if(modalSignedOut) modalSignedOut.classList.add('hidden');
+            if(modalMainInfo) modalMainInfo.classList.remove('hidden');
+            if(modalControls) modalControls.classList.remove('hidden');
+            if(modalMoreAccounts) modalMoreAccounts.classList.remove('hidden');
+
+            // Fill Dynamic Data
+            if(modalPic) modalPic.src = user.photoURL;
+            if(modalName) modalName.innerText = user.displayName;
+            if(modalEmailTop) modalEmailTop.innerText = user.email;
+
+            // --- INGA THAAN UNGA ACCOUNT LIST UPDATE AAGUDHU ---
+            const accountItem = document.getElementById('active-account-item');
+            if (accountItem) {
+                accountItem.innerHTML = `
+                    <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition group">
+                        <img src="${user.photoURL}" class="w-10 h-10 rounded-full border border-blue-500/50">
+                        <div class="flex-grow">
+                            <p class="text-white text-sm font-bold">${user.displayName || 'Turt User'}</p>
+                            <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
+                        </div>
+                        <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Default</span>
+                    </div>
+
+                    <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 opacity-60 mt-4">
+                        <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center">
+                            <i class="fa-solid fa-user-slash text-zinc-700 text-xs"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <p class="text-zinc-500 text-sm font-bold italic">Secondary Node</p>
+                            <p class="text-zinc-800 text-[9px] lowercase font-mono">offline...</p>
+                        </div>
+                        <span class="text-[8px] text-zinc-700 font-bold uppercase border border-zinc-800 px-2 py-1 rounded">Inactive</span>
+                    </div>
+                `;
+            }
+            // ------------------------------------------------
+
             closeModal('login-modal');
             window.loadArchives();
         } else {
             window.isLoggedIn = false;
-            profilePic.style.display = 'none';
+            navPic.style.display = 'none';
             portalBtn.innerText = "Portal Access";
             portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
+
+            // Show Login Button, Hide Profile Panel
+            if(modalMainInfo) modalMainInfo.classList.add('hidden');
+            if(modalSignedOut) modalSignedOut.classList.remove('hidden');
+            if(modalControls) modalControls.classList.add('hidden');
+            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
         }
     });
-
     // --- Database Functions ---
-window.submitOrder = async () => {
-    if (!window.isLoggedIn || !auth.currentUser) return;
-    
-    const btn = document.querySelector("#builder-container button");
-    btn.innerText = "TRANSMITTING...";
-    btn.disabled = true;
+    window.submitOrder = async () => {
+        if (!window.isLoggedIn || !auth.currentUser) return;
+        
+        const btn = document.querySelector("#builder-container button");
+        btn.innerText = "TRANSMITTING...";
+        btn.disabled = true;
 
-    try {
-        const orderData = {
-            userEmail: auth.currentUser.email,
-            model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
-            bodyMaterial: document.getElementById('body-mat').value,
-            // --- INTHA LINE-AI ADD PANNUMGA ---
-            backPanel: document.getElementById('back-panel').value, 
-            energyUnit: document.getElementById('energy-unit').value,
-            finishNotes: document.getElementById('finish-notes').value,
-            specialRequirements: document.getElementById('special-req').value,
-            timestamp: serverTimestamp()
-        };
+        try {
+            const orderData = {
+                userEmail: auth.currentUser.email,
+                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
+                bodyMaterial: document.getElementById('body-mat').value,
+                backPanel: document.getElementById('back-panel').value, 
+                energyUnit: document.getElementById('energy-unit').value,
+                finishNotes: document.getElementById('finish-notes').value,
+                specialRequirements: document.getElementById('special-req').value,
+                timestamp: serverTimestamp()
+            };
 
-        await push(ref(db, 'orders'), orderData);
-        alert("SUCCESS: Hardware specifications archived.");
-        window.loadArchives();
-        closeModal('consult-modal');
-    } catch (e) {
-        alert("Transmission Error: " + e.message);
-    } finally {
-        btn.innerText = "Secure Transmission";
-        btn.disabled = false;
-    }
-};
+            await push(ref(db, 'orders'), orderData);
+            alert("SUCCESS: Hardware specifications archived.");
+            window.loadArchives();
+            closeModal('consult-modal');
+        } catch (e) {
+            alert("Transmission Error: " + e.message);
+        } finally {
+            btn.innerText = "Secure Transmission";
+            btn.disabled = false;
+        }
+    };
 
     window.loadArchives = async () => {
-    const miniList = document.getElementById('mini-history');
-    const fullList = document.getElementById('full-history-list');
-    
-    if (!auth.currentUser) {
-        console.log("User not authenticated yet");
-        return;
-    }
+        const miniList = document.getElementById('mini-history');
+        const fullList = document.getElementById('full-history-list');
+        
+        if (!auth.currentUser) return;
 
-    try {
-        const ordersRef = ref(db, 'orders');
-        // Indexing set pannathaala intha query ippo work aagum
-        const q = query(ordersRef, orderByChild('userEmail'), equalTo(auth.currentUser.email));
-        const snap = await get(q);
-        
-        let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
-        
-        if (snap.exists()) {
-            const data = [];
-            snap.forEach(child => { 
-                // Inga thaan "missing fields" issue-ai fix panrom
-                const val = child.val();
-                data.push(val); 
-            });
+        try {
+            const ordersRef = ref(db, 'orders');
+            const q = query(ordersRef, orderByChild('userEmail'), equalTo(auth.currentUser.email));
+            const snap = await get(q);
             
-// Puthiya orders mela vara maathiri reverse panrom
-data.reverse().forEach(d => {
-    html += `
-        <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
-            <div class="flex justify-between items-start mb-3">
-                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.model || 'Unknown Model'}</p>
-                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">Archived</span>
-            </div>
-            <div class="space-y-1">
-                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Material: <span class="text-zinc-200">${d.bodyMaterial || 'N/A'}</span></p>
+            let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
+            
+            if (snap.exists()) {
+                const data = [];
+                snap.forEach(child => { data.push(child.val()); });
                 
-                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Back Panel: <span class="text-zinc-200">${d.backPanel || 'N/A'}</span></p>
-                
-                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Energy: <span class="text-zinc-200">${d.energyUnit || 'N/A'}</span></p>
-                
-                ${d.finishNotes ? `<p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Finish: <span class="text-blue-400/80 italic">${d.finishNotes}</span></p>` : ''}
-            </div>
-            ${d.specialRequirements ? `
-                <div class="mt-3 pt-3 border-t border-white/5">
-                    <p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p>
-                </div>` : ''}
-        </div>`;
-});
-        } else {
-            html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>';
+                data.reverse().forEach(d => {
+                    html += `
+                        <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
+                            <div class="flex justify-between items-start mb-3">
+                                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.model || 'Unknown Model'}</p>
+                                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">Archived</span>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Material: <span class="text-zinc-200">${d.bodyMaterial || 'N/A'}</span></p>
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Back Panel: <span class="text-zinc-200">${d.backPanel || 'N/A'}</span></p>
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Energy: <span class="text-zinc-200">${d.energyUnit || 'N/A'}</span></p>
+                                ${d.finishNotes ? `<p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Finish: <span class="text-blue-400/80 italic">${d.finishNotes}</span></p>` : ''}
+                            </div>
+                            ${d.specialRequirements ? `<div class="mt-3 pt-3 border-t border-white/5"><p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p></div>` : ''}
+                        </div>`;
+                });
+            } else {
+                html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>';
+            }
+            
+            if (miniList) miniList.innerHTML = html;
+            if (fullList) fullList.innerHTML = html;
+        } catch (e) { 
+            console.error("Archive Load Error: ", e);
         }
-        
-        if (miniList) miniList.innerHTML = html;
-        if (fullList) fullList.innerHTML = html;
-        
-    } catch (e) { 
-        console.error("Archive Load Error: ", e);
-        if (fullList) fullList.innerHTML = `<p class="text-red-500 text-[10px]">Error loading archives. Check Firebase Rules.</p>`;
-    }
-};
+    };
 </script>
 </body>
 </html>
