@@ -30,7 +30,67 @@
         
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-    </style>
+
+        /* --- New Horizontal Loop Styles --- */
+        .project-slider-container {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 40px 0;
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .project-slider-track {
+            display: flex;
+            gap: 30px;
+            width: max-content;
+            animation: scroll-h 40s linear infinite;
+        }
+
+        .project-card-h {
+            width: 380px;
+            height: 500px;
+            flex-shrink: 0;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            transition: all 0.4s ease;
+        }
+
+        .card-inner:hover {
+            border-color: #3b82f6;
+            transform: translateY(-5px);
+        }
+
+        .card-info-bg {
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 40%, transparent);
+            margin: -30px;
+            padding: 50px 30px 30px 30px;
+        }
+
+        @keyframes scroll-h {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .project-slider-container:hover .project-slider-track {
+            animation-play-state: paused;
+        }
+        </style>
 </head>
 <body>
 
@@ -77,46 +137,75 @@
     </div>
 </section>
 
-<section id="projects" class="py-32 px-6 bg-[#050505]">
-    <div class="max-w-7xl mx-auto">
-        <header class="mb-20 text-center">
+<section id="projects" class="py-32 bg-[#050505] overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 mb-16 text-center">
+        <header>
             <span class="text-blue-500 font-mono tracking-[0.3em] uppercase text-xs">Industrial Portfolio</span>
-            <h2 class="text-5xl font-black mt-4 tracking-tighter uppercase">Current Projects.</h2>
+            <h2 class="text-5xl font-black mt-4 tracking-tighter uppercase italic">Current Projects.</h2>
             <div class="w-24 h-1 bg-blue-600 mx-auto mt-6"></div>
         </header>
+    </div>
 
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900 relative group">
-                <div class="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800&auto=format&fit=crop');"></div>
-                <div class="relative z-10">
-                    <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ NeuroSync ]</span>
-                    <h3 class="text-2xl font-black mt-2 mb-4">Synaplink Cerebro Array</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-6">Advanced N-Core integration for autonomous manufacturing with neural feedback loops.</p>
-                    <button onclick="handleConsultation()" class="text-xs font-black uppercase tracking-widest border-b-2 border-blue-500 pb-1 hover:text-blue-400 transition">View Specifications</button>
+    <div class="project-slider-container">
+        <div class="project-slider-track">
+            
+            <div class="project-card-h">
+                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');">
+                    <div class="card-info-bg"> <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ NeuroSync ]</span>
+                        <h3 class="text-xl font-black uppercase italic mt-1">Synaplink Cerebro Array</h3>
+                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">Advanced N-Core neural feedback loops.</p>
+                    </div>
                 </div>
             </div>
-            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900 relative group">
-                <div class="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop');"></div>
-                <div class="relative z-10">
-                    <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ NEXA ]</span>
-                    <h3 class="text-2xl font-black mt-2 mb-4">NEXA Next-Gen Ai</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-6">High-speed Virtual Operating & Response Agent Master Unit for real-time industrial logic.</p>
-                    <button onclick="handleConsultation()" class="text-xs font-black uppercase tracking-widest border-b-2 border-blue-500 pb-1 hover:text-blue-400 transition">Access Nexus</button>
+
+            <div class="project-card-h">
+                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');">
+                    <div class="card-info-bg">
+                        <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ NEXA ]</span>
+                        <h3 class="text-xl font-black uppercase italic mt-1">NEXA Master Unit</h3>
+                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">Virtual Operating & Response Agent.</p>
+                    </div>
                 </div>
             </div>
-            <div class="project-card h-[500px] rounded-2xl flex flex-col justify-end p-8 bg-zinc-900 relative group">
-                <div class="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop');"></div>
-                <div class="relative z-10">
-                    <span class="text-blue-400 font-mono text-xs uppercase tracking-widest">[ Nova Core ]</span>
-                    <h3 class="text-2xl font-black mt-2 mb-4">ARC UNIT</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-6">Backbone Power of Fusion Unit for Zero-point Energy harvesting and distribution.</p>
-                    <button onclick="handleConsultation()" class="text-xs font-black uppercase tracking-widest border-b-2 border-blue-500 pb-1 hover:text-blue-400 transition">Energy Specs</button>
+
+            <div class="project-card-h">
+                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');">
+                    <div class="card-info-bg">
+                        <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Nova Core ]</span>
+                        <h3 class="text-xl font-black uppercase italic mt-1">ARC UNIT</h3>
+                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">Zero-point Energy Fusion Backbone.</p>
+                    </div>
                 </div>
             </div>
+
+            <div class="project-card-h">
+                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');">
+                    <div class="card-info-bg">
+                        <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Cyber-Core ]</span>
+                        <h3 class="text-xl font-black uppercase italic mt-1">SENTINEL GATEWAY</h3>
+                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">AI-Driven Firewall & Security Protocols.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card-h">
+                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');">
+                    <div class="card-info-bg">
+                        <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Titan Dynamics ]</span>
+                        <h3 class="text-xl font-black uppercase italic mt-1">EXO-FRAME V2</h3>
+                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">Hydraulic enhancement for industrial labor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><h3 class="text-xl font-black uppercase italic">Synaplink Cerebro</h3></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><h3 class="text-xl font-black uppercase italic">NEXA Master Unit</h3></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><h3 class="text-xl font-black uppercase italic">ARC UNIT</h3></div></div></div>
+
         </div>
     </div>
 </section>
-
+    
 <footer class="py-20 border-t border-white/5 bg-[#050505] text-center">
     <p class="text-[10px] text-gray-700 uppercase tracking-[0.2em] mb-4">© 2026 Turt Industry | Colombo, Sri Lanka</p>
     <div class="flex justify-center">
