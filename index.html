@@ -384,8 +384,26 @@
     };
 
     window.loginWithGoogle = async () => {
-        try { await signInWithPopup(auth, provider); } 
-        catch (e) { alert("Auth Error: " + e.message); }
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const newUser = result.user;
+
+            // Logged in user primary illama vera account-ah irundha secondary-ah vaippom
+            if (window.isLoggedIn && auth.currentUser && auth.currentUser.email !== newUser.email) {
+                window.secondaryUser = {
+                    name: newUser.displayName,
+                    email: newUser.email,
+                    pic: newUser.photoURL
+                };
+                
+                // UI-ai force refresh panna auth observer function-ai manual-ah trigger panrom
+                // Idhu unga account list-la secondary mail-ai ippo kaattum
+                const event = new Event('authstatechanged_manual');
+                window.dispatchEvent(event);
+            }
+        } catch (e) { 
+            console.error("Auth Error: " + e.message); 
+        }
     };
 
     window.logout = async () => {
@@ -430,31 +448,36 @@
             if(modalName) modalName.innerText = user.displayName;
             if(modalEmailTop) modalEmailTop.innerText = user.email;
 
-            // Update Account List Design
-            const accountItem = document.getElementById('active-account-item');
-            if (accountItem) {
-                accountItem.innerHTML = `
-                    <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition group">
-                        <img src="${user.photoURL}" class="w-10 h-10 rounded-full border border-blue-500/50">
-                        <div class="flex-grow">
-                            <p class="text-white text-sm font-bold">${user.displayName}</p>
-                            <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
-                        </div>
-                        <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Connected</span>
+            // Account List Logic (Replace this inside onAuthStateChanged)
+        const accountItem = document.getElementById('active-account-item');
+        if (accountItem) {
+            const secondary = window.secondaryUser; // Check if second account exists
+            
+            accountItem.innerHTML = `
+                <div class="flex items-center gap-4 border border-zinc-800 p-3 rounded-lg bg-black hover:border-blue-500 transition group">
+                    <img src="${user.photoURL}" class="w-10 h-10 rounded-full border border-blue-500/50">
+                    <div class="flex-grow">
+                        <p class="text-white text-sm font-bold">${user.displayName}</p>
+                        <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
                     </div>
+                    <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Connected</span>
+                </div>
 
-                    <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 opacity-50 mt-4">
-                        <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center">
-                            <i class="fa-solid fa-link-slash text-zinc-700 text-xs"></i>
-                        </div>
-                        <div class="flex-grow">
-                            <p class="text-zinc-500 text-sm font-bold italic">Secondary Node</p>
-                            <p class="text-zinc-800 text-[9px] lowercase font-mono italic">waiting for auth...</p>
-                        </div>
-                        <span class="text-[8px] text-zinc-700 font-bold uppercase border border-zinc-800 px-2 py-1 rounded tracking-tighter">Standby</span>
+                <div class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 ${secondary ? '' : 'opacity-50'} mt-4">
+                    <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center overflow-hidden">
+                        ${secondary ? `<img src="${secondary.pic}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-link-slash text-zinc-700 text-xs"></i>'}
                     </div>
-                `;
-            }
+                    <div class="flex-grow">
+                        <p class="${secondary ? 'text-white' : 'text-zinc-500'} text-sm font-bold italic">${secondary ? secondary.name : 'Secondary Node'}</p>
+                        <p class="text-zinc-800 text-[9px] lowercase font-mono italic">${secondary ? secondary.email : 'waiting for auth...'}</p>
+                    </div>
+                    <span class="text-[8px] ${secondary ? 'text-green-500 border-green-500/30' : 'text-zinc-700 border-zinc-800'} font-bold uppercase border px-2 py-1 rounded tracking-tighter">
+                        ${secondary ? 'Linked' : 'Standby'}
+                    </span>
+                </div>
+            `;
+        }
+            
             window.loadArchives();
         } else {
             window.isLoggedIn = false;
