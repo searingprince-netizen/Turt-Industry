@@ -31,66 +31,80 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
 
-        /* --- New Horizontal Loop Styles --- */
-        .project-slider-container {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            padding: 40px 0;
-            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-        }
+       /* --- Industrial Infinite Slider Core --- */
+    .project-slider-container {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        padding: 60px 0;
+        /* Sides-la mella fade aaga intha mask help pannum */
+        mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
 
-        .project-slider-track {
-            display: flex;
-            gap: 30px;
-            width: max-content;
-            animation: scroll-h 40s linear infinite;
-        }
+    .project-slider-track {
+        display: flex;
+        gap: 30px;
+        width: max-content;
+        /* Speed-ai adjust panna 45s-ai kuraikkalaam/koottalaam */
+        animation: scroll-h 45s linear infinite;
+    }
 
-        .project-card-h {
-            width: 380px;
-            height: 500px;
-            flex-shrink: 0;
-        }
+    .project-card-h {
+        width: 380px;
+        height: 500px;
+        flex-shrink: 0;
+    }
 
-        .card-inner {
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 30px;
-            transition: all 0.4s ease;
-        }
+    .card-inner {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        border-radius: 30px;
+        border: 1px solid rgba(255,255,255,0.05);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 30px;
+        transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        /* Neenga ketta 45% Opacity default-ah */
+        opacity: 0.45; 
+        filter: grayscale(20%); /* Oru futuristic look-kaaga */
+    }
 
-        .card-inner:hover {
-            border-color: #3b82f6;
-            transform: translateY(-5px);
-        }
+    /* Hover Brightness & Animation Pause */
+    .card-inner:hover {
+        opacity: 1; /* Brightens to 100% on hover */
+        filter: grayscale(0%);
+        transform: translateY(-15px);
+        border-color: #3b82f6;
+        box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+    }
 
-        .card-info-bg {
-            position: relative;
-            z-index: 2;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 40%, transparent);
-            margin: -30px;
-            padding: 50px 30px 30px 30px;
-        }
+    .card-info-bg {
+        position: relative;
+        z-index: 2;
+        /* Bottom-la irunthu text clear-ah theriya gradient */
+        background: linear-gradient(to top, rgba(0,0,0,0.95) 40%, transparent);
+        margin: -30px;
+        padding: 60px 30px 30px 30px;
+    }
 
-        @keyframes scroll-h {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
+    /* Seamless Loop Animation logic */
+    @keyframes scroll-h {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); } 
+    }
 
-        .project-slider-container:hover .project-slider-track {
-            animation-play-state: paused;
-        }
-        </style>
+    /* Mouse-ai mela kondu pona slider nippura logic */
+    .project-slider-container:hover .project-slider-track {
+        animation-play-state: paused;
+    }
+</style>
 </head>
 <body>
 
@@ -149,58 +163,25 @@
     <div class="project-slider-container">
         <div class="project-slider-track">
             
-            <div class="project-card-h">
-                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');">
-                    <div class="card-info-bg"> <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ NeuroSync ]</span>
-                        <h3 class="text-xl font-black uppercase italic mt-1">Synaplink Cerebro Array</h3>
-                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">Advanced N-Core neural feedback loops.</p>
-                    </div>
-                </div>
-            </div>
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ NeuroSync ]</span><h3 class="text-xl font-black uppercase italic mt-1">Synaplink Cerebro Array</h3></div></div></div>
+            
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ NEXA ]</span><h3 class="text-xl font-black uppercase italic mt-1">NEXA Master Unit</h3></div></div></div>
+            
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Nova Core ]</span><h3 class="text-xl font-black uppercase italic mt-1">ARC UNIT</h3></div></div></div>
+            
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Cyber-Core ]</span><h3 class="text-xl font-black uppercase italic mt-1">SENTINEL GATEWAY</h3></div></div></div>
+            
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Titan Dynamics ]</span><h3 class="text-xl font-black uppercase italic mt-1">EXO-FRAME V2</h3></div></div></div>
 
-            <div class="project-card-h">
-                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ NEXA ]</span>
-                        <h3 class="text-xl font-black uppercase italic mt-1">NEXA Master Unit</h3>
-                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">Virtual Operating & Response Agent.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Nova Core ]</span>
-                        <h3 class="text-xl font-black uppercase italic mt-1">ARC UNIT</h3>
-                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">Zero-point Energy Fusion Backbone.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Cyber-Core ]</span>
-                        <h3 class="text-xl font-black uppercase italic mt-1">SENTINEL GATEWAY</h3>
-                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">AI-Driven Firewall & Security Protocols.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h">
-                <div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');">
-                    <div class="card-info-bg">
-                        <span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Titan Dynamics ]</span>
-                        <h3 class="text-xl font-black uppercase italic mt-1">EXO-FRAME V2</h3>
-                        <p class="text-zinc-400 text-[10px] mt-2 uppercase leading-tight">Hydraulic enhancement for industrial labor.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><h3 class="text-xl font-black uppercase italic">Synaplink Cerebro</h3></div></div></div>
-            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><h3 class="text-xl font-black uppercase italic">NEXA Master Unit</h3></div></div></div>
-            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><h3 class="text-xl font-black uppercase italic">ARC UNIT</h3></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ NeuroSync ]</span><h3 class="text-xl font-black uppercase italic mt-1">Synaplink Cerebro Array</h3></div></div></div>
+            
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ NEXA ]</span><h3 class="text-xl font-black uppercase italic mt-1">NEXA Master Unit</h3></div></div></div>
+            
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Nova Core ]</span><h3 class="text-xl font-black uppercase italic mt-1">ARC UNIT</h3></div></div></div>
+            
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Cyber-Core ]</span><h3 class="text-xl font-black uppercase italic mt-1">SENTINEL GATEWAY</h3></div></div></div>
+            
+            <div class="project-card-h"><div class="card-inner" style="background-image: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase tracking-widest">[ Titan Dynamics ]</span><h3 class="text-xl font-black uppercase italic mt-1">EXO-FRAME V2</h3></div></div></div>
 
         </div>
     </div>
