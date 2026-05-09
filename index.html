@@ -180,11 +180,19 @@
                         </select>
                     </div>
                     <div>
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Back Panel</label>
+                        <select id="back-panel">
+                            <option>Opaque Polymer</option>
+                            <option>Transparent Glass</option>
+                            <option>Frosted Metal</option>
+                        </select>
+                    </div>
+                    <div>
                         <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Energy Unit</label>
                         <select id="energy-unit">
+                            <option>5,000 mAh (Standard)</option>
                             <option>7,500 mAh (Solid State)</option>
                             <option>10,000 mAh (Fusion Core)</option>
-                            <option>5,000 mAh (Standard)</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
@@ -286,35 +294,37 @@
     });
 
     // --- Database Functions ---
-    window.submitOrder = async () => {
-        if (!window.isLoggedIn || !auth.currentUser) return;
-        
-        const btn = document.querySelector("#builder-container button");
-        btn.innerText = "TRANSMITTING...";
-        btn.disabled = true;
+window.submitOrder = async () => {
+    if (!window.isLoggedIn || !auth.currentUser) return;
+    
+    const btn = document.querySelector("#builder-container button");
+    btn.innerText = "TRANSMITTING...";
+    btn.disabled = true;
 
-        try {
-            const orderData = {
-                userEmail: auth.currentUser.email,
-                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
-                bodyMaterial: document.getElementById('body-mat').value,
-                energyUnit: document.getElementById('energy-unit').value,
-                finishNotes: document.getElementById('finish-notes').value,
-                specialRequirements: document.getElementById('special-req').value,
-                timestamp: serverTimestamp()
-            };
+    try {
+        const orderData = {
+            userEmail: auth.currentUser.email,
+            model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
+            bodyMaterial: document.getElementById('body-mat').value,
+            // --- INTHA LINE-AI ADD PANNUMGA ---
+            backPanel: document.getElementById('back-panel').value, 
+            energyUnit: document.getElementById('energy-unit').value,
+            finishNotes: document.getElementById('finish-notes').value,
+            specialRequirements: document.getElementById('special-req').value,
+            timestamp: serverTimestamp()
+        };
 
-            await push(ref(db, 'orders'), orderData);
-            alert("SUCCESS: Hardware specifications archived.");
-            window.loadArchives();
-            closeModal('consult-modal');
-        } catch (e) {
-            alert("Transmission Error: " + e.message);
-        } finally {
-            btn.innerText = "Secure Transmission";
-            btn.disabled = false;
-        }
-    };
+        await push(ref(db, 'orders'), orderData);
+        alert("SUCCESS: Hardware specifications archived.");
+        window.loadArchives();
+        closeModal('consult-modal');
+    } catch (e) {
+        alert("Transmission Error: " + e.message);
+    } finally {
+        btn.innerText = "Secure Transmission";
+        btn.disabled = false;
+    }
+};
 
     window.loadArchives = async () => {
     const miniList = document.getElementById('mini-history');
@@ -341,25 +351,29 @@
                 data.push(val); 
             });
             
-            // Puthiya orders mela vara maathiri reverse panrom
-            data.reverse().forEach(d => {
-                html += `
-                    <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
-                        <div class="flex justify-between items-start mb-3">
-                            <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.model || 'Unknown Model'}</p>
-                            <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">Archived</span>
-                        </div>
-                        <div class="space-y-1">
-                            <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Material: <span class="text-zinc-200">${d.bodyMaterial || 'N/A'}</span></p>
-                            <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Energy: <span class="text-zinc-200">${d.energyUnit || 'N/A'}</span></p>
-                            ${d.finishNotes ? `<p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Finish: <span class="text-blue-400/80 italic">${d.finishNotes}</span></p>` : ''}
-                        </div>
-                        ${d.specialRequirements ? `
-                            <div class="mt-3 pt-3 border-t border-white/5">
-                                <p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p>
-                            </div>` : ''}
-                    </div>`;
-            });
+// Puthiya orders mela vara maathiri reverse panrom
+data.reverse().forEach(d => {
+    html += `
+        <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
+            <div class="flex justify-between items-start mb-3">
+                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.model || 'Unknown Model'}</p>
+                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">Archived</span>
+            </div>
+            <div class="space-y-1">
+                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Material: <span class="text-zinc-200">${d.bodyMaterial || 'N/A'}</span></p>
+                
+                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Back Panel: <span class="text-zinc-200">${d.backPanel || 'N/A'}</span></p>
+                
+                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Energy: <span class="text-zinc-200">${d.energyUnit || 'N/A'}</span></p>
+                
+                ${d.finishNotes ? `<p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Finish: <span class="text-blue-400/80 italic">${d.finishNotes}</span></p>` : ''}
+            </div>
+            ${d.specialRequirements ? `
+                <div class="mt-3 pt-3 border-t border-white/5">
+                    <p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p>
+                </div>` : ''}
+        </div>`;
+});
         } else {
             html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>';
         }
