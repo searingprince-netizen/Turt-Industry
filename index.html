@@ -43,16 +43,17 @@
 
     .project-slider-track {
         display: flex;
-        gap: 30px;
         width: max-content;
-        /* Infinite scroll logic */
+        /* Gap-ai inga zero aakitu, card-kku padding kuduthurukaen for smooth loop */
+        gap: 0; 
         animation: scroll-h 40s linear infinite;
     }
 
     .project-card-h {
-        width: 380px;
+        width: 410px; /* Card width + gap (380 + 30) */
         height: 520px;
         flex-shrink: 0;
+        padding-right: 30px; /* Inga thaan gap maintain aaguthu */
     }
 
     .card-inner {
@@ -83,7 +84,7 @@
         z-index: 1;
     }
 
-    /* Hover: Brightness 100% and Scale */
+    /* Hover: Brightness 100% */
     .card-inner:hover::before {
         opacity: 1;
     }
@@ -93,7 +94,7 @@
         border-color: #3b82f6;
     }
 
-    /* Text always 100% visible */
+    /* Text 100% Visibility */
     .card-info-bg {
         position: relative;
         z-index: 2;
@@ -102,10 +103,10 @@
         padding: 70px 35px 35px 35px;
     }
 
-    /* Jump illama irukka intha logic mukkiyam */
+    /* THE FIX: Exactly -50% with no offsets */
     @keyframes scroll-h {
         0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-50% - 15px)); } /* 15px is half of the gap (30px) */
+        100% { transform: translateX(-50%); }
     }
 
     .project-slider-container:hover .project-slider-track {
@@ -121,7 +122,6 @@
         border-bottom: 1px solid #3b82f6;
         width: max-content;
         cursor: pointer;
-        transition: 0.3s;
     }
 </style>
 </head>
