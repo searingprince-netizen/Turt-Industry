@@ -20,10 +20,9 @@
 ​⚙️ Installation & Setup
 ​To get started with the core modules:
 
-{ git clone https://github.com/yourusername/turt-industry.git
+git clone https://searingprince-netizen.github.io/Turt-Industry/
 cd turt-industry
 pip install -r requirements.txt
-}
 
 🤝 Contributing
 ​We welcome contributions! If you have ideas for new modules or improvements, feel free to open an issue or submit a pull request...
