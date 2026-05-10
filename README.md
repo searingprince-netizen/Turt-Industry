@@ -1,5 +1,5 @@
-
 🌐 Overview
+
 ​Turt Industry is a forward-thinking initiative focused on developing high-performance technology modules, hardware prototyping, and sustainable energy solutions. Our goal is to bridge the gap between complex engineering and efficient real-world applications.
 
 ​🚀 Key Focus Areas
