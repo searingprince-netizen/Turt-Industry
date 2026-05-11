@@ -305,7 +305,8 @@
                         <select id="back-panel">
                             <option>Opaque Polymer</option>
                             <option>Transparent Glass</option>
-                            <option>Frosted Metal</option>
+                            <option>Titanium Alloy</option>
+                            <option>Aerospace Aluminium</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
@@ -631,23 +632,24 @@
                 });
                 
                 // Puthu products mela varathukku reverse pannurom
-                products.reverse().forEach(p => {
-                    html += `
-                    <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
-                        <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
-                            <img src="${p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
-                        <div class="flex justify-between items-center mt-1">
-                            <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
-                            <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id.substring(1, 6)}</span>
-                        </div>
-                        <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || 'NO SPECIFICATIONS PROVIDED'}</p>
-                        <button onclick="window.initiateBuy('${p.id}', '${p.name}')" class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
-                            Initiate Purchase
-                        </button>
-                    </div>`;
-                });
+     products.reverse().forEach(p => {
+         html += `
+         <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
+             <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
+                 <img src="${p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}" 
+                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+             </div>
+             <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
+             <div class="flex justify-between items-center mt-1">
+                 <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
+                 <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id ? p.id.substring(0, 6) : 'N/A'}</span>
+             </div>
+             <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || 'NO SPECIFICATIONS PROVIDED'}</p>
+             <button onclick="window.initiateBuy('${p.id}', '${p.name}')" class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
+                 Initiate Purchase
+             </button>
+         </div>`;
+     });
             } else { 
                 html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">Scanning... No active products found in market nodes.</p></div>'; 
             }
