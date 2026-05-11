@@ -122,7 +122,7 @@
     <div class="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer" onclick="window.scrollTo(0,0)">TURT INDUSTRY</div>
     
     <div class="flex items-center space-x-6 text-sm uppercase tracking-widest font-bold">
-        <button onclick="window.toggleModal('product-upload-modal')" class="hidden md:block px-4 py-1.5 border border-zinc-800 rounded-full text-[10px] font-bold hover:bg-white hover:text-black transition uppercase tracking-widest">
+        <button onclick="window.toggleModal('product-store-modal')" class="hidden md:block px-4 py-1.5 border border-zinc-800 rounded-full text-[10px] font-bold hover:bg-white hover:text-black transition uppercase tracking-widest">
             PRODUCTS
         </button>
 
@@ -571,57 +571,11 @@
         } catch (e) { alert("Error: " + e.message); }
         finally { btn.innerText = "Secure Transmission"; btn.disabled = false; }
     };
-
-    window.loadArchives = async () => {
-        const miniList = document.getElementById('mini-history');
-        if (!auth.currentUser) return;
-        try {
-            const ordersRef = ref(db, 'orders');
-            const q = query(ordersRef, orderByChild('userEmail'), equalTo(auth.currentUser.email));
-            const snap = await get(q);
-            let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
-            if (snap.exists()) {
-                snap.forEach(child => {
-                    const d = child.val();
-                    html += `<div class="mb-4 p-4 bg-zinc-900 border border-white/5 rounded-xl">
-                        <p class="text-white text-[10px] font-bold uppercase italic">${d.model}</p>
-                    </div>`;
-                });
-            } else { html += '<p class="text-zinc-600 text-[10px]">No archives found.</p>'; }
-            if (miniList) miniList.innerHTML = html;
-        } catch (e) { console.error(e); }
-    };
-    
+ 
     window.openBuilder = (name) => {
         document.getElementById('builder-placeholder').classList.add('hidden');
         document.getElementById('builder-container').classList.remove('hidden');
         document.getElementById('builder-title').innerText = "CONFIG: " + name;
-    };
-
-    // --- Database Functions ---
-    window.submitOrder = async () => {
-        if (!window.isLoggedIn || !auth.currentUser) return;
-        const btn = document.querySelector("#builder-container button");
-        btn.innerText = "TRANSMITTING...";
-        btn.disabled = true;
-
-        try {
-            const orderData = {
-                userEmail: auth.currentUser.email,
-                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
-                bodyMaterial: document.getElementById('body-mat').value,
-                backPanel: document.getElementById('back-panel').value, 
-                energyUnit: document.getElementById('energy-unit').value,
-                finishNotes: document.getElementById('finish-notes').value,
-                specialRequirements: document.getElementById('special-req').value,
-                timestamp: serverTimestamp()
-            };
-            await push(ref(db, 'orders'), orderData);
-            alert("SUCCESS: Hardware specifications archived.");
-            window.loadArchives();
-            closeModal('consult-modal');
-        } catch (e) { alert("Transmission Error: " + e.message); }
-        finally { btn.innerText = "Secure Transmission"; btn.disabled = false; }
     };
 
     window.loadArchives = async () => {
@@ -657,6 +611,93 @@
             if (fullList) fullList.innerHTML = html;
         } catch (e) { console.error("Archive Load Error: ", e); }
     };
+
+    // ==========================================
+    // --- MARKETPLACE CORE FUNCTIONS (Shan) ---
+    // ==========================================
+
+    window.saveProductToDB = async () => {
+        const name = document.getElementById('p-name').value;
+        const price = document.getElementById('p-price').value;
+        const desc = document.getElementById('p-desc').value;
+        const img = document.getElementById('p-image').value;
+
+        if(!name || !price) return alert("Please fill Product Name and Price!");
+
+        try {
+            const marketplaceRef = ref(db, 'marketplace');
+            await push(marketplaceRef, {
+                name: name,
+                price: price,
+                desc: desc,
+                img: img,
+                seller: auth.currentUser.email,
+                timestamp: serverTimestamp()
+            });
+            
+            alert("SUCCESS: Product is now LIVE on the market.");
+            
+            // UI Cleanup
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-desc').value = '';
+            document.getElementById('p-image').value = '';
+            
+            document.getElementById('admin-post-section').classList.add('hidden');
+            window.closeModal('product-store-modal');
+            window.loadProducts(); // Refresh the list
+        } catch (e) { 
+            console.error("Marketplace Error:", e);
+            alert("Error: System failed to push product node.");
+        }
+    };
+
+    window.loadProducts = async () => {
+        const grid = document.getElementById('store-grid');
+        if(!grid) return;
+
+        try {
+            const marketplaceRef = ref(db, 'marketplace');
+            const snap = await get(marketplaceRef);
+            let html = '';
+            
+            if (snap.exists()) {
+                const products = [];
+                snap.forEach(child => {
+                    products.push({ id: child.key, ...child.val() });
+                });
+                
+                // Puthu products mela varathukku reverse pannurom
+                products.reverse().forEach(p => {
+                    html += `
+                    <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
+                        <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
+                            <img src="${p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+                        <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
+                        <div class="flex justify-between items-center mt-1">
+                            <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
+                            <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id.substring(1, 6)}</span>
+                        </div>
+                        <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || 'NO SPECIFICATIONS PROVIDED'}</p>
+                        <button onclick="window.initiateBuy('${p.id}', '${p.name}')" class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
+                            Initiate Purchase
+                        </button>
+                    </div>`;
+                });
+            } else { 
+                html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">Scanning... No active products found in market nodes.</p></div>'; 
+            }
+            grid.innerHTML = html;
+        } catch (e) { 
+            console.error("Marketplace Load Error:", e); 
+        }
+    };
+
+    window.initiateBuy = (id, name) => {
+        alert("ACCESSING PAYMENT GATEWAY...\nProduct: " + name + "\n\nFridyi Note: COD and Bank Transfer protocols are being initialized.");
+    };
+    
 </script>
 </body>
 </html>
