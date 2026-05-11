@@ -396,7 +396,7 @@
 
     window.isLoggedIn = false;
 
-    // --- Modal Controls (Archives & Consultations function aagum) ---
+    // --- Modal Functions ---
     window.toggleModal = (id) => {
         const modal = document.getElementById(id);
         if (modal) {
@@ -418,7 +418,7 @@
         }
     };
 
-    // --- Authentication (Pazhaya Login Logic) ---
+    // --- Login/Logout ---
     window.loginWithGoogle = async () => {
         try {
             provider.setCustomParameters({ prompt: 'select_account' });
@@ -434,7 +434,7 @@
         } catch (e) { alert("Logout Error: " + e.message); }
     };
 
-    // --- Auth Observer (UI-ai automatic-ah update pannum) ---
+    // --- Auth Observer ---
     onAuthStateChanged(auth, (user) => {
         const navPic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
@@ -448,27 +448,19 @@
                 portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
             }
             
-            // Login Modal Profile Updates
-            const pPic = document.getElementById('auth-profile-pic');
-            if(pPic) pPic.src = user.photoURL;
-            const uName = document.getElementById('auth-name');
-            if(uName) uName.innerText = user.displayName;
-            const uEmail = document.getElementById('auth-email-top');
-            if(uEmail) uEmail.innerText = user.email;
-
             document.getElementById('auth-out-panel')?.classList.add('hidden');
             document.getElementById('auth-main-panel')?.classList.remove('hidden');
             document.getElementById('auth-controls-panel')?.classList.remove('hidden');
+            
+            if(document.getElementById('auth-profile-pic')) document.getElementById('auth-profile-pic').src = user.photoURL;
+            if(document.getElementById('auth-name')) document.getElementById('auth-name').innerText = user.displayName;
+            if(document.getElementById('auth-email-top')) document.getElementById('auth-email-top').innerText = user.email;
 
-            // Admin Access Check
-            if (user.email === ADMIN_EMAIL) {
-                adminBtn?.classList.remove('hidden');
-            } else {
-                adminBtn?.classList.add('hidden');
-            }
+            if (user.email === ADMIN_EMAIL) adminBtn?.classList.remove('hidden');
+            else adminBtn?.classList.add('hidden');
 
-            window.loadArchives(); // Consultation History load aagum
-            window.loadProducts(); // Marketplace items load aagum
+            window.loadArchives();
+            window.loadProducts();
         } else {
             window.isLoggedIn = false;
             if(navPic) navPic.style.display = 'none';
@@ -478,7 +470,7 @@
         }
     });
 
-    // --- Marketplace Functions (Shan Fix) ---
+    // --- Marketplace Logic (PUSH TO MARKET FIX) ---
     window.saveProductToDB = async () => {
         const name = document.getElementById('p-name').value;
         const price = document.getElementById('p-price').value;
@@ -489,16 +481,28 @@
         if(!name || !price) return alert("Please fill Product Name and Price!");
 
         try {
-            await push(ref(db, 'marketplace'), {
+            const marketplaceRef = ref(db, 'marketplace');
+            await push(marketplaceRef, {
                 name, price, desc, img, qty,
                 status: "active",
                 seller: auth.currentUser.email,
                 timestamp: serverTimestamp()
             });
             alert("SUCCESS: Product is LIVE.");
+            
+            // Clear inputs
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-desc').value = '';
+            document.getElementById('p-image').value = '';
+            document.getElementById('p-qty').value = '';
+            
             document.getElementById('admin-post-section').classList.add('hidden');
             window.loadProducts();
-        } catch (e) { console.error("Marketplace Error:", e); }
+        } catch (e) { 
+            console.error("Marketplace Error:", e);
+            alert("Upload Failed: " + e.message);
+        }
     };
 
     window.deleteProduct = async (productId) => {
@@ -540,11 +544,11 @@
                     }
                 });
             }
-            grid.innerHTML = html || '<p class="text-zinc-700 text-center col-span-full">No active products.</p>';
+            grid.innerHTML = html || '<p class="text-zinc-700 text-center col-span-full py-10 uppercase text-[10px] font-bold">No active products.</p>';
         } catch (e) { console.error("Load Error:", e); }
     };
 
-    // --- Order & Consultation History (Pazhaya Functionalities) ---
+    // --- Order & History (HISTORY FIX) ---
     window.submitOrder = async () => {
         if (!window.isLoggedIn || !auth.currentUser) return;
         const btn = document.querySelector("#builder-container button");
@@ -577,16 +581,27 @@
             const q = query(ref(db, 'orders'), orderByChild('userEmail'), equalTo(auth.currentUser.email));
             const snap = await get(q);
             let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
+            
             if (snap.exists()) {
                 const data = [];
                 snap.forEach(child => { data.push(child.val()); });
                 data.reverse().forEach(d => {
-                    html += `<div class="mb-2 p-3 bg-zinc-900 border border-white/5 rounded-lg text-[10px] uppercase font-bold text-white">${d.model} - Archived</div>`;
+                    html += `
+                    <div class="mb-3 p-4 bg-zinc-900 border border-white/5 rounded-xl hover:border-blue-500/20 transition">
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="text-white text-[10px] font-black uppercase italic">${d.model}</p>
+                            <span class="text-[7px] text-blue-500 font-bold uppercase">Archived</span>
+                        </div>
+                        <p class="text-zinc-500 text-[8px] uppercase tracking-tighter">${d.bodyMaterial} | ${d.energyUnit}</p>
+                    </div>`;
                 });
-            } else { html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">Empty.</p>'; }
+            } else { 
+                html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found.</p>'; 
+            }
+            
             if (miniList) miniList.innerHTML = html;
             if (fullList) fullList.innerHTML = html;
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("History Error:", e); }
     };
 
     window.openBuilder = (name) => {
