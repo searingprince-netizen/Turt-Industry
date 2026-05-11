@@ -280,17 +280,38 @@
         
         <div class="flex-grow p-8">
             </div>
-    </div> </div> <div id="product-upload-modal" class="modal items-center justify-center p-4">
-    <div class="bg-[#0a0a0a] border border-zinc-800 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl">
-        <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
+    </div> </div> <div id="product-store-modal" class="modal items-center justify-center p-4">
+    <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh]">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
             <div>
-                <h2 class="text-white font-bold tracking-tighter">POST NEW PRODUCT</h2>
-                <p class="text-zinc-500 text-[10px] uppercase font-mono">Marketplace Node v1.0</p>
+                <h2 class="text-white font-black tracking-tighter text-xl uppercase">Turt Marketplace</h2>
+                <p class="text-blue-500 text-[10px] font-bold uppercase tracking-widest">Global Hardware Distribution</p>
             </div>
-            <button onclick="window.closeModal('product-upload-modal')" class="text-zinc-500 hover:text-white">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
+            <div class="flex items-center gap-4">
+                <button id="admin-add-btn" onclick="document.getElementById('admin-post-section').classList.toggle('hidden')" class="hidden bg-white text-black px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-tight hover:bg-blue-500 hover:text-white transition">
+                    + Post New Product
+                </button>
+                <button onclick="window.closeModal('product-store-modal')" class="text-zinc-500 hover:text-white text-2xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
         </div>
+
+        <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="p-name" placeholder="PRODUCT NAME" class="bg-black border border-white/10 p-3 rounded-xl text-xs text-white outline-none focus:border-blue-500 uppercase font-bold">
+                <input type="text" id="p-price" placeholder="PRICE (LKR)" class="bg-black border border-white/10 p-3 rounded-xl text-xs text-white outline-none focus:border-blue-500 uppercase font-bold">
+                <input type="text" id="p-image" placeholder="IMAGE URL" class="bg-black border border-white/10 p-3 rounded-xl text-xs text-white outline-none focus:border-blue-500">
+            </div>
+            <textarea id="p-desc" placeholder="TECH SPECS..." class="w-full bg-black border border-white/10 p-3 rounded-xl text-xs text-white outline-none focus:border-blue-500 uppercase font-bold"></textarea>
+            <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all hover:bg-blue-700">Push to Market</button>
+        </div>
+
+        <div id="store-grid" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto flex-grow custom-scrollbar bg-black/20">
+            <p class="text-zinc-700 uppercase text-[10px] tracking-widest italic">Syncing with Market Nodes...</p>
+        </div>
+    </div>
+</div>
         
         <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
             <div class="border-2 border-dashed border-zinc-800 rounded-xl p-10 text-center hover:border-blue-500/50 transition cursor-pointer bg-black/40 group">
@@ -392,6 +413,8 @@
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    const ADMIN_EMAIL = "searingprince@gmail.com";
+    
     const firebaseConfig = {
         apiKey: "AIzaSyBS9hqZLTGnuoza1wFUE06iNE6nBtapRNs",
         authDomain: "turt-industry.firebaseapp.com",
@@ -475,6 +498,9 @@
         const modalSignedOut = document.getElementById('auth-out-panel');
         const modalControls = document.getElementById('auth-controls-panel');
         const modalMoreAccounts = document.getElementById('auth-more-panel');
+        
+        // Admin Button reference
+        const adminBtn = document.getElementById('admin-add-btn');
 
         if (user) {
             window.isLoggedIn = true;
@@ -487,14 +513,23 @@
             if(modalSignedOut) modalSignedOut.classList.add('hidden');
             if(modalMainInfo) modalMainInfo.classList.remove('hidden');
             if(modalControls) modalControls.classList.remove('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden'); // Switching logic hide panniyaachu
+            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
 
             document.getElementById('auth-profile-pic').src = user.photoURL;
             document.getElementById('auth-name').innerText = user.displayName;
             document.getElementById('auth-email-top').innerText = user.email;
 
+            // --- ADMIN LOCK LOGIC START ---
+            if (user.email === ADMIN_EMAIL) {
+                if(adminBtn) adminBtn.classList.remove('hidden');
+            } else {
+                if(adminBtn) adminBtn.classList.add('hidden');
+            }
+            // --- ADMIN LOCK LOGIC END ---
+
             window.updateAccountUI(user);
             window.loadArchives();
+            window.loadProducts(); // Store items-ai load pannum
         } else {
             window.isLoggedIn = false;
             if(navPic) navPic.style.display = 'none';
@@ -506,6 +541,9 @@
             if(modalSignedOut) modalSignedOut.classList.remove('hidden');
             if(modalControls) modalControls.classList.add('hidden');
             if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+            
+            // Log out panna admin button-ai maraikkanum
+            if(adminBtn) adminBtn.classList.add('hidden');
         }
     });
 
