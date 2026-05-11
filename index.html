@@ -122,7 +122,10 @@
     <div class="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer" onclick="window.scrollTo(0,0)">TURT INDUSTRY</div>
     
     <div class="flex items-center space-x-6 text-sm uppercase tracking-widest font-bold">
-        <a href="#projects" class="hover:text-blue-400 transition hidden md:block">Projects</a>
+        <button onclick="window.toggleModal('product-upload-modal')" class="hidden md:block px-4 py-1.5 border border-zinc-800 rounded-full text-[10px] font-bold hover:bg-white hover:text-black transition uppercase tracking-widest">
+            PRODUCTS
+        </button>
+
         <div id="user-profile" class="flex items-center gap-4">
             <button onclick="toggleModal('history-modal')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 px-3 py-2 rounded transition-all tracking-tighter shrink-0">
                 ARCHIVE 
@@ -134,7 +137,7 @@
         </div>
     </div>
 </nav>
-
+    
 <section class="hero-gradient min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
     <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter uppercase leading-tight">The Future of <br><span class="text-blue-500">Hardware.</span></h1>
@@ -274,7 +277,50 @@
                 <p class="text-[9px] text-zinc-600 uppercase tracking-widest">System Ready</p>
             </div>
         </div>
+        
+        <div class="flex-grow p-8">
+            </div>
+    </div> </div> <div id="product-upload-modal" class="modal items-center justify-center p-4">
+    <div class="bg-[#0a0a0a] border border-zinc-800 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl">
+        <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50">
+            <div>
+                <h2 class="text-white font-bold tracking-tighter">POST NEW PRODUCT</h2>
+                <p class="text-zinc-500 text-[10px] uppercase font-mono">Marketplace Node v1.0</p>
+            </div>
+            <button onclick="window.closeModal('product-upload-modal')" class="text-zinc-500 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+            <div class="border-2 border-dashed border-zinc-800 rounded-xl p-10 text-center hover:border-blue-500/50 transition cursor-pointer bg-black/40 group">
+                <i class="fa-solid fa-image text-4xl text-zinc-700 group-hover:text-blue-500 transition mb-3"></i>
+                <p class="text-zinc-500 text-[10px] uppercase font-bold tracking-widest">Select Product Media</p>
+            </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="prod-name" placeholder="PRODUCT NAME" class="bg-zinc-900/50 border border-zinc-800 p-3 rounded-lg text-xs text-white focus:border-blue-500 outline-none uppercase font-bold">
+                <input type="text" id="prod-price" placeholder="PRICE (LKR)" class="bg-zinc-900/50 border border-zinc-800 p-3 rounded-lg text-xs text-white focus:border-blue-500 outline-none uppercase font-bold">
+            </div>
+
+            <textarea id="prod-desc" rows="4" placeholder="DESCRIBE THE TECH SPECIFICATIONS..." class="w-full bg-zinc-900/50 border border-zinc-800 p-3 rounded-lg text-xs text-white focus:border-blue-500 outline-none uppercase font-bold"></textarea>
+            
+            <div class="bg-green-500/5 border border-green-500/10 p-4 rounded-xl flex items-center gap-4">
+                <i class="fa-brands fa-whatsapp text-green-500 text-2xl"></i>
+                <div>
+                    <p class="text-green-500 text-[9px] font-black uppercase">Instant Support Node</p>
+                    <p class="text-zinc-500 text-[10px] font-mono">+94 (WhatsApp)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 border-t border-zinc-800 bg-zinc-900/50">
+            <button onclick="window.postProduct()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-lg text-[10px] uppercase tracking-[0.2em] transition-all">
+                PUBLISH TO MARKET
+            </button>
+        </div>
+    </div>
+</div>
         <div class="w-full md:w-2/3 p-10 relative bg-black/40">
             <button onclick="closeModal('consult-modal')" class="absolute top-8 right-8 text-zinc-500 hover:text-white transition">✕</button>
             
