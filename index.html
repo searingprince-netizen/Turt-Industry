@@ -343,7 +343,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -360,11 +360,8 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
 
     // --- State Initialization ---
-    window.secondaryUser = null; 
-// --- State Initialization (Simplified) ---
     window.isLoggedIn = false;
 
     // --- Modal Functions ---
@@ -386,12 +383,11 @@
         }
     };
 
-    // --- Clean Single Login Logic ---
+    // --- Single Login Logic ---
     window.loginWithGoogle = async () => {
         try {
             provider.setCustomParameters({ prompt: 'select_account' });
             await signInWithPopup(auth, provider);
-            // Auth observer automatic-ah UI-ai refresh pannidum
         } catch (e) { 
             console.error("Auth Error: " + e.message); 
         }
@@ -402,25 +398,13 @@
         try { 
             await auth.signOut(); 
             window.isLoggedIn = false;
-            
-            // Clean UI
             const accountItem = document.getElementById('active-account-item');
             if(accountItem) accountItem.innerHTML = ''; 
-            
             closeModal('login-modal');
-            console.log("System Lockdown: Signed out.");
-        } catch (e) { 
-            alert("Logout Error: " + e.message); 
-        }
+        } catch (e) { alert("Logout Error: " + e.message); }
     };
 
-    window.openBuilder = (name) => {
-        document.getElementById('builder-placeholder').classList.add('hidden');
-        document.getElementById('builder-container').classList.remove('hidden');
-        document.getElementById('builder-title').innerText = "CONFIG: " + name;
-    };
-
-    // --- Clean Single Account UI ---
+    // --- Single User UI Update ---
     window.updateAccountUI = (user) => {
         const accountItem = document.getElementById('active-account-item');
         if (!accountItem || !user) return;
@@ -437,14 +421,14 @@
         `;
     };
 
-// --- Auth Observer (Cleaned) ---
+    // --- Auth Observer ---
     onAuthStateChanged(auth, (user) => {
         const navPic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
         const modalMainInfo = document.getElementById('auth-main-panel');
         const modalSignedOut = document.getElementById('auth-out-panel');
         const modalControls = document.getElementById('auth-controls-panel');
-        const modalMoreAccounts = document.getElementById('auth-more-panel'); // Switch account section
+        const modalMoreAccounts = document.getElementById('auth-more-panel');
 
         if (user) {
             window.isLoggedIn = true;
@@ -457,9 +441,7 @@
             if(modalSignedOut) modalSignedOut.classList.add('hidden');
             if(modalMainInfo) modalMainInfo.classList.remove('hidden');
             if(modalControls) modalControls.classList.remove('hidden');
-            
-            // Secondary account option-ai hide panniduvom
-            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden'); // Switching logic hide panniyaachu
 
             document.getElementById('auth-profile-pic').src = user.photoURL;
             document.getElementById('auth-name').innerText = user.displayName;
@@ -480,6 +462,57 @@
             if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
         }
     });
+
+    // --- DB Functions ---
+    window.submitOrder = async () => {
+        if (!window.isLoggedIn || !auth.currentUser) return;
+        const btn = document.querySelector("#builder-container button");
+        btn.innerText = "TRANSMITTING...";
+        btn.disabled = true;
+        try {
+            const orderData = {
+                userEmail: auth.currentUser.email,
+                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
+                bodyMaterial: document.getElementById('body-mat').value,
+                backPanel: document.getElementById('back-panel').value, 
+                energyUnit: document.getElementById('energy-unit').value,
+                finishNotes: document.getElementById('finish-notes').value,
+                specialRequirements: document.getElementById('special-req').value,
+                timestamp: serverTimestamp()
+            };
+            await push(ref(db, 'orders'), orderData);
+            alert("SUCCESS: Hardware specifications archived.");
+            window.loadArchives();
+            closeModal('consult-modal');
+        } catch (e) { alert("Error: " + e.message); }
+        finally { btn.innerText = "Secure Transmission"; btn.disabled = false; }
+    };
+
+    window.loadArchives = async () => {
+        const miniList = document.getElementById('mini-history');
+        if (!auth.currentUser) return;
+        try {
+            const ordersRef = ref(db, 'orders');
+            const q = query(ordersRef, orderByChild('userEmail'), equalTo(auth.currentUser.email));
+            const snap = await get(q);
+            let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    const d = child.val();
+                    html += `<div class="mb-4 p-4 bg-zinc-900 border border-white/5 rounded-xl">
+                        <p class="text-white text-[10px] font-bold uppercase italic">${d.model}</p>
+                    </div>`;
+                });
+            } else { html += '<p class="text-zinc-600 text-[10px]">No archives found.</p>'; }
+            if (miniList) miniList.innerHTML = html;
+        } catch (e) { console.error(e); }
+    };
+    
+    window.openBuilder = (name) => {
+        document.getElementById('builder-placeholder').classList.add('hidden');
+        document.getElementById('builder-container').classList.remove('hidden');
+        document.getElementById('builder-title').innerText = "CONFIG: " + name;
+    };
 
     // --- Database Functions ---
     window.submitOrder = async () => {
