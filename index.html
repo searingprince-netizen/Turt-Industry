@@ -581,23 +581,45 @@
     // ==========================================
 
     window.saveProductToDB = async () => {
-        const name = document.getElementById('p-name').value;
-        const price = document.getElementById('p-price').value;
-        const desc = document.getElementById('p-desc').value;
-        const img = document.getElementById('p-image').value;
+    const name = document.getElementById('p-name').value;
+    const price = document.getElementById('p-price').value;
+    const desc = document.getElementById('p-desc').value;
+    const img = document.getElementById('p-image').value;
+    const qty = parseInt(document.getElementById('p-qty').value) || 0; // Quantity field
 
-        if(!name || !price) return alert("Please fill Product Name and Price!");
+    if(!name || !price) return alert("Please fill Product Name and Price!");
 
-        try {
-            const marketplaceRef = ref(db, 'marketplace');
-            await push(marketplaceRef, {
-                name: name,
-                price: price,
-                desc: desc,
-                img: img,
-                seller: auth.currentUser.email,
-                timestamp: serverTimestamp()
-            });
+    try {
+        const marketplaceRef = ref(db, 'marketplace');
+        await push(marketplaceRef, {
+            name: name,
+            price: price,
+            desc: desc,
+            img: img,
+            qty: qty, // Inge qty store aagum
+            status: "active",
+            seller: auth.currentUser.email,
+            timestamp: serverTimestamp()
+        });
+        alert("Product Pushed to Market!");
+        document.getElementById('admin-post-section').classList.add('hidden');
+        location.reload(); 
+    } catch (e) { console.error(e); }
+};
+
+         window.deleteProduct = async (productId) => {
+         if(confirm("Are you going to permanently remove this product from the market?")) {
+             try {
+                 const productRef = ref(db, `marketplace/${productId}`);
+                 await remove(productRef); // Firebase Realtime DB delete command
+                 alert("Product Deleted!");
+                 location.reload();
+             } catch (e) {
+                 console.error("Delete Error:", e);
+                 alert("Action Failed.");
+             }
+         }
+     };
             
             alert("SUCCESS: Product is now LIVE on the market.");
             
@@ -616,51 +638,65 @@
         }
     };
 
-    window.loadProducts = async () => {
-        const grid = document.getElementById('store-grid');
-        if(!grid) return;
+window.loadProducts = async () => {
+    const grid = document.getElementById('store-grid');
+    if (!grid) return;
 
-        try {
-            const marketplaceRef = ref(db, 'marketplace');
-            const snap = await get(marketplaceRef);
+    try {
+        const marketplaceRef = ref(db, 'marketplace');
+        const snapshot = await get(marketplaceRef);
+        
+        if (snapshot.exists()) {
             let html = '';
-            
-            if (snap.exists()) {
-                const products = [];
-                snap.forEach(child => {
-                    products.push({ id: child.key, ...child.val() });
-                });
+            const data = snapshot.val();
+            const products = Object.keys(data).map(key => ({
+                id: key,
+                ...data[key]
+            }));
+
+            // Ippo products-ai reverse panni loop pannuvom
+            products.reverse().forEach(p => {
+                const pId = p.id;
                 
-                // Puthu products mela varathukku reverse pannurom
-     products.reverse().forEach(p => {
-         html += `
-         <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
-             <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
-                 <img src="${p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}" 
-                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-             </div>
-             <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
-             <div class="flex justify-between items-center mt-1">
-                 <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
-                 <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id ? p.id.substring(0, 6) : 'N/A'}</span>
-             </div>
-             <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || 'NO SPECIFICATIONS PROVIDED'}</p>
-             <button onclick="window.initiateBuy('${p.id}', '${p.name}')" class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
-                 Initiate Purchase
-             </button>
-         </div>`;
-     });
-            } else { 
-                html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">Scanning... No active products found in market nodes.</p></div>'; 
-            }
-            grid.innerHTML = html;
-        } catch (e) { 
-            console.error("Marketplace Load Error:", e); 
+                // Qty 0-vaa iruntha user-ku kaatta koodathu
+                if(p.qty > 0) {
+                    html += `
+                    <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group relative">
+                        
+                        <button onclick="window.deleteProduct('${pId}')" class="absolute top-3 right-3 bg-red-600/20 text-red-500 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 hover:text-white z-20">
+                            <i class="fa-solid fa-trash-can text-[10px]"></i>
+                        </button>
+
+                        <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
+                            <img src="${p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+                        
+                        <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
+                        
+                        <div class="flex justify-between items-center mt-1">
+                            <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
+                            <span class="text-[8px] text-zinc-500 uppercase font-mono bg-white/5 px-2 py-1 rounded">Stock: ${p.qty}</span>
+                        </div>
+
+                        <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || 'NO SPECIFICATIONS'}</p>
+                        
+                        <button onclick="window.initiateBuy('${pId}', '${p.name}')" class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
+                            Initiate Purchase
+                        </button>
+                    </div>`;
+                }
+            });
+            grid.innerHTML = html || '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic">No stock available at the moment.</p></div>';
+        } else {
+            grid.innerHTML = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">No active products found.</p></div>';
         }
-    };
+    } catch (e) {
+        console.error("Marketplace Load Error:", e);
+    }
+};
 
     window.initiateBuy = (id, name) => {
-        alert("ACCESSING PAYMENT GATEWAY...\nProduct: " + name + "\n\nFridyi Note: COD and Bank Transfer protocols are being initialized.");
+        alert("ACCESSING PAYMENT GATEWAY...\nProduct: " + name + "\n\nNote: COD and Bank Transfer protocols are being initialized.");
     };
     
 </script>
