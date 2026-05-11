@@ -294,114 +294,6 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Body Material</label>
-                        <select id="body-mat" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs">
-                            <option>Grade 5 Titanium</option>
-                            <option>Aerospace Aluminium</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Back Panel</label>
-                        <select id="back-panel" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs">
-                            <option>Opaque Polymer</option>
-                            <option>Transparent Glass</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Energy Unit</label>
-                        <select id="energy-unit" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs">
-                            <option>5,000 mAh (Standard)</option>
-                            <option>10,000 mAh (Fusion Core)</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish Notes</label>
-                        <input type="text" id="finish-notes" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="e.g. Matte Black">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Special Requirements</label>
-                        <textarea id="special-req" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs" rows="3"></textarea>
-                    </div>
-                </div>
-                <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest text-xs text-white hover:bg-blue-500 transition">Secure Transmission</button>
-            </div>
-        </div>
-    </div>
-</div> <div id="product-store-modal" class="modal">
-    <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh] m-4">
-        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
-            <div>
-                <h2 class="text-white font-black tracking-tighter text-xl uppercase">Turt Marketplace</h2>
-                <p class="text-blue-500 text-[10px] font-bold uppercase tracking-widest">Global Hardware Distribution</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <button id="admin-add-btn" onclick="document.getElementById('admin-post-section').classList.toggle('hidden')" class="hidden bg-white text-black px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-tight hover:bg-blue-500 hover:text-white transition">
-                    + Post New Product
-                </button>
-                <button onclick="window.closeModal('product-store-modal')" class="text-zinc-500 hover:text-white text-2xl">✕</button>
-            </div>
-        </div>
-
-        <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="text" id="p-name" class="bg-black border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="PRODUCT NAME">
-                <input type="text" id="p-price" class="bg-black border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="PRICE (LKR)">
-                <input type="text" id="p-image" class="bg-black border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="IMAGE URL">
-            </div>
-            <textarea id="p-desc" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="TECH SPECS..." rows="3"></textarea>
-            <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
-        </div>
-
-        <div id="store-grid" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto flex-grow custom-scrollbar bg-black/20">
-        </div>
-    </div>
-</div>
-        
-        <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-            <div class="border-2 border-dashed border-zinc-800 rounded-xl p-10 text-center hover:border-blue-500/50 transition cursor-pointer bg-black/40 group">
-                <i class="fa-solid fa-image text-4xl text-zinc-700 group-hover:text-blue-500 transition mb-3"></i>
-                <p class="text-zinc-500 text-[10px] uppercase font-bold tracking-widest">Select Product Media</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="prod-name" placeholder="PRODUCT NAME" class="bg-zinc-900/50 border border-zinc-800 p-3 rounded-lg text-xs text-white focus:border-blue-500 outline-none uppercase font-bold">
-                <input type="text" id="prod-price" placeholder="PRICE (LKR)" class="bg-zinc-900/50 border border-zinc-800 p-3 rounded-lg text-xs text-white focus:border-blue-500 outline-none uppercase font-bold">
-            </div>
-
-            <textarea id="prod-desc" rows="4" placeholder="DESCRIBE THE TECH SPECIFICATIONS..." class="w-full bg-zinc-900/50 border border-zinc-800 p-3 rounded-lg text-xs text-white focus:border-blue-500 outline-none uppercase font-bold"></textarea>
-            
-            <div class="bg-green-500/5 border border-green-500/10 p-4 rounded-xl flex items-center gap-4">
-                <i class="fa-brands fa-whatsapp text-green-500 text-2xl"></i>
-                <div>
-                    <p class="text-green-500 text-[9px] font-black uppercase">Instant Support Node</p>
-                    <p class="text-zinc-500 text-[10px] font-mono">+94 (WhatsApp)</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-6 border-t border-zinc-800 bg-zinc-900/50">
-            <button onclick="window.postProduct()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-lg text-[10px] uppercase tracking-[0.2em] transition-all">
-                PUBLISH TO MARKET
-            </button>
-        </div>
-    </div>
-</div>
-        <div class="w-full md:w-2/3 p-10 relative bg-black/40">
-            <button onclick="closeModal('consult-modal')" class="absolute top-8 right-8 text-zinc-500 hover:text-white transition">✕</button>
-            
-            <div id="builder-placeholder" class="h-full flex flex-col items-center justify-center text-center opacity-50">
-                <div class="w-12 h-12 bg-blue-500/20 rounded-full mb-4 flex items-center justify-center">
-                    <i class="fa-solid fa-microchip text-blue-500 animate-pulse"></i>
-                </div>
-                <h3 class="font-bold uppercase italic text-xs">System Standby</h3>
-                <p class="text-[9px] text-zinc-600 mt-2">INITIALIZE A MODEL TO START CONFIGURATION</p>
-            </div>
-
-            <div id="builder-container" class="hidden">
-                <h2 id="builder-title" class="text-3xl font-black mb-8 text-white uppercase italic tracking-tighter border-b border-blue-500/30 pb-4">CONFIG</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Body Material</label>
                         <select id="body-mat">
                             <option>Grade 5 Titanium</option>
                             <option>Aerospace Aluminium</option>
@@ -416,7 +308,7 @@
                             <option>Frosted Metal</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="md:col-span-2">
                         <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Energy Unit</label>
                         <select id="energy-unit">
                             <option>5,000 mAh (Standard)</option>
@@ -425,7 +317,7 @@
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish / Color</label>
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish Notes</label>
                         <input type="text" id="finish-notes" placeholder="e.g. Matte Cobalt Blue">
                     </div>
                     <div class="md:col-span-2">
@@ -433,9 +325,39 @@
                         <textarea id="special-req" rows="3" placeholder="Describe any custom hardware modifications..."></textarea>
                     </div>
                 </div>
-                <button onclick="submitOrder()" class="w-full bg-blue-600 py-5 mt-10 font-black uppercase tracking-widest text-sm hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Secure Transmission</button>
+                <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest text-xs text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Secure Transmission</button>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="product-store-modal" class="modal">
+    <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh] m-4">
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
+            <div>
+                <h2 class="text-white font-black tracking-tighter text-xl uppercase">Turt Marketplace</h2>
+                <p class="text-blue-500 text-[10px] font-bold uppercase tracking-widest">Global Hardware Distribution</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="admin-add-btn" onclick="document.getElementById('admin-post-section').classList.toggle('hidden')" class="hidden bg-white text-black px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-tight hover:bg-blue-500 transition">
+                    + Post New Product
+                </button>
+                <button onclick="window.closeModal('product-store-modal')" class="text-zinc-500 hover:text-white text-2xl">✕</button>
+            </div>
+        </div>
+
+        <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="p-name" placeholder="PRODUCT NAME">
+                <input type="text" id="p-price" placeholder="PRICE (LKR)">
+                <input type="text" id="p-image" placeholder="IMAGE URL">
+            </div>
+            <textarea id="p-desc" placeholder="TECH SPECS..." rows="3"></textarea>
+            <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
+        </div>
+
+        <div id="store-grid" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto flex-grow custom-scrollbar bg-black/20">
+            </div>
     </div>
 </div>
 
@@ -445,9 +367,7 @@
             <h2 class="text-white font-black italic tracking-tighter text-2xl uppercase">System Archives</h2>
             <button onclick="closeModal('history-modal')" class="text-zinc-500 hover:text-white">✕</button>
         </div>
-        
-        <div id="full-history-list" class="p-8 overflow-y-auto custom-scrollbar flex-grow max-h-[500px]">
-            </div>
+        <div id="full-history-list" class="p-8 overflow-y-auto custom-scrollbar flex-grow max-h-[500px]"></div>
     </div>
 </div>
 
