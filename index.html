@@ -385,28 +385,32 @@
     };
 
     // --- SMART LOGIN LOGIC ---
-    window.loginWithGoogle = async () => {
+window.loginWithGoogle = async () => {
         try {
             const primaryBefore = auth.currentUser;
+            // Primary user-ai cache-la vaikkurom, switch panna help aagum
+            if (primaryBefore) {
+                window.primaryUserCache = {
+                    name: primaryBefore.displayName,
+                    email: primaryBefore.email,
+                    pic: primaryBefore.photoURL
+                };
+            }
+
             provider.setCustomParameters({ prompt: 'select_account' });
-            
             const result = await signInWithPopup(auth, provider);
             const newUser = result.user;
 
-            // Check if adding a secondary account
             if (window.isLoggedIn && primaryBefore && primaryBefore.email !== newUser.email) {
                 window.secondaryUser = {
                     name: newUser.displayName,
                     email: newUser.email,
                     pic: newUser.photoURL
                 };
-                // UI update panna current primary-ai focus-la vaikkurom
-                window.updateAccountUI(primaryBefore, window.secondaryUser);
-                alert("Secondary Node Linked: " + newUser.email);
+                window.updateAccountUI(newUser, window.primaryUserCache);
+                alert("Secondary Node Linked.");
             }
-        } catch (e) { 
-            console.error("Auth Error: " + e.message); 
-        }
+        } catch (e) { console.error("Auth Error: " + e.message); }
     };
 
     // --- SWITCH ACCOUNT LOGIC ---
@@ -433,40 +437,55 @@
         } catch (e) { alert("Logout Error: " + e.message); }
     };
 
-    // --- RECTIFIED UI RENDERER (Active vs Switch logic) ---
+   // --- FINAL RECTIFIED UI RENDERER (Smart Swapping) ---
     window.updateAccountUI = (currentUser, secondary) => {
         const accountItem = document.getElementById('active-account-item');
         if (!accountItem || !currentUser) return;
 
-        let html = '';
-        const allUsers = [];
+        let displayUsers = [];
 
-        // 1. Always check who is actually the central active user
-        allUsers.push({ ...currentUser, isActive: true });
+        // 1. Firebase Session-la ippo yaaru login-la irukkangalo, avanga thaan ALWAYS ACTIVE.
+        displayUsers.push({
+            name: currentUser.displayName,
+            email: currentUser.email,
+            pic: currentUser.photoURL,
+            isActive: true
+        });
 
-        // 2. Add secondary if it exists
-        if (secondary) {
-            // Swap logic: secondary account logic active email-oda match aagutha nu check
-            const isSecondaryActive = (secondary.email === currentUser.email);
-            if (!isSecondaryActive) {
-                allUsers.push({ 
-                    displayName: secondary.name, 
-                    email: secondary.email, 
-                    photoURL: secondary.pic, 
-                    isActive: false 
+        // 2. Secondary user data ulla user current-ah login-la illana, avara "Switch" mode-la kaattuvom.
+        if (secondary && secondary.email !== currentUser.email) {
+            displayUsers.push({
+                name: secondary.name,
+                email: secondary.email,
+                pic: secondary.pic,
+                isActive: false
+            });
+        }
+
+        // 3. Oruvelai secondary active-ah irunthu, primary user standby-la irunthaal...
+        // Namma 'primaryUserCache' (kila irukkira login logic-la add panni irukkaen) check pannuvom.
+        if (window.primaryUserCache && window.primaryUserCache.email !== currentUser.email) {
+            const alreadyInList = displayUsers.find(u => u.email === window.primaryUserCache.email);
+            if (!alreadyInList) {
+                displayUsers.push({
+                    name: window.primaryUserCache.name,
+                    email: window.primaryUserCache.email,
+                    pic: window.primaryUserCache.pic,
+                    isActive: false
                 });
             }
         }
 
-        allUsers.forEach(u => {
+        let html = '';
+        displayUsers.forEach(u => {
             html += `
                 <div 
                     ${!u.isActive ? 'onclick="window.switchAccount()"' : ''} 
                     class="flex items-center gap-4 border ${u.isActive ? 'border-blue-500 bg-blue-500/5' : 'border-zinc-800 bg-black/40 cursor-pointer hover:border-green-500/50'} p-3 rounded-lg transition group mt-3 first:mt-0"
                 >
-                    <img src="${u.photoURL}" class="w-10 h-10 rounded-full border ${u.isActive ? 'border-blue-500' : 'border-zinc-700'}">
+                    <img src="${u.pic || u.photoURL}" class="w-10 h-10 rounded-full border ${u.isActive ? 'border-blue-500' : 'border-zinc-700'}">
                     <div class="flex-grow">
-                        <p class="text-white text-sm font-bold ${!u.isActive ? 'group-hover:text-green-400' : ''}">${u.displayName}</p>
+                        <p class="text-white text-sm font-bold ${!u.isActive ? 'group-hover:text-green-400' : ''}">${u.name || u.displayName}</p>
                         <p class="text-zinc-600 text-[9px] lowercase font-mono">${u.email}</p>
                     </div>
                     <span class="text-[8px] font-bold uppercase ${u.isActive ? 'text-blue-500 bg-blue-500/10' : 'text-green-500 border border-green-500/30'} px-2 py-1 rounded">
@@ -477,7 +496,7 @@
         });
         accountItem.innerHTML = html;
     };
-
+    
     // --- Auth Observer ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
