@@ -405,13 +405,26 @@
         }
     };
 
-    window.logout = async () => {
-        try { 
-            await auth.signOut(); 
-            window.secondaryUser = null; 
-            window.isLoggedIn = false;
-            closeModal('login-modal'); 
-        } catch (e) { alert("Logout Error: " + e.message); }
+    window.loginWithGoogle = async () => {
+        try {
+            const primaryBefore = auth.currentUser; // Palaya user-ai nabaigam vachikirom
+            provider.setCustomParameters({ prompt: 'select_account' });
+            
+            const result = await signInWithPopup(auth, provider);
+            const newUser = result.user;
+
+            // Rendu email-um vera vera-nu check pannuvom
+            if (window.isLoggedIn && primaryBefore && primaryBefore.email !== newUser.email) {
+                window.secondaryUser = {
+                    name: newUser.displayName,
+                    email: newUser.email,
+                    pic: newUser.photoURL
+                };
+                // UI-la secondary account-ai update pannuvom
+                window.updateAccountUI(primaryBefore, window.secondaryUser);
+                alert("Secondary Node Linked: " + newUser.email);
+            }
+        } catch (e) { console.error("Auth Error: " + e.message); }
     };
 
     window.openBuilder = (name) => {
@@ -464,6 +477,12 @@
         const modalEmailTop = document.getElementById('auth-email-top');
 
         if (user) {
+            // SAFETY CHECK: Secondary user login aagumpothu primary UI-ai disturb panna koodathu
+            if (window.secondaryUser && user.email === window.secondaryUser.email) {
+                console.log("Secondary Node detected, maintaining primary session UI.");
+                return; 
+            }
+
             window.isLoggedIn = true;
             if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
             if(portalBtn) {
@@ -480,11 +499,12 @@
             if(modalName) modalName.innerText = user.displayName;
             if(modalEmailTop) modalEmailTop.innerText = user.email;
 
-            // Refresh the dual account list UI
+            // Intha function rendu accounts-aiyum monitor panni UI-la kaattum
             window.updateAccountUI(user, window.secondaryUser);
             window.loadArchives();
         } else {
             window.isLoggedIn = false;
+            window.secondaryUser = null; // Logout aagumbothu ellathaiyum clear panniduvom
             if(navPic) navPic.style.display = 'none';
             if(portalBtn) {
                 portalBtn.innerText = "Portal Access";
