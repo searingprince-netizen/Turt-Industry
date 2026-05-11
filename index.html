@@ -374,7 +374,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const ADMIN_EMAIL = "searingprince@gmail.com";
@@ -396,7 +396,7 @@
 
     window.isLoggedIn = false;
 
-    // --- Modal Functions ---
+    // --- Modal Controls ---
     window.toggleModal = (id) => {
         const modal = document.getElementById(id);
         if (modal) {
@@ -410,15 +410,7 @@
         if (modal) modal.classList.remove('flex');
     };
 
-    window.handleConsultation = () => {
-        if (!window.isLoggedIn) {
-            window.toggleModal('login-modal');
-        } else {
-            window.toggleModal('consult-modal');
-        }
-    };
-
-    // --- Login/Logout ---
+    // --- Auth Logic ---
     window.loginWithGoogle = async () => {
         try {
             provider.setCustomParameters({ prompt: 'select_account' });
@@ -429,48 +421,31 @@
     window.logout = async () => {
         try { 
             await auth.signOut(); 
-            window.isLoggedIn = false;
             location.reload();
-        } catch (e) { alert("Logout Error: " + e.message); }
+        } catch (e) { console.error(e); }
     };
 
-    // --- Auth Observer ---
     onAuthStateChanged(auth, (user) => {
-        const navPic = document.getElementById('nav-profile-pic');
-        const portalBtn = document.getElementById('portal-btn');
         const adminBtn = document.getElementById('admin-add-btn');
-
         if (user) {
             window.isLoggedIn = true;
-            if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
-            if(portalBtn) {
-                portalBtn.innerText = "ACCESS GRANTED";
-                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
-            }
+            if (user.email === ADMIN_EMAIL) adminBtn?.classList.remove('hidden');
+            window.loadArchives();
+            window.loadProducts();
             
-            document.getElementById('auth-out-panel')?.classList.add('hidden');
-            document.getElementById('auth-main-panel')?.classList.remove('hidden');
-            document.getElementById('auth-controls-panel')?.classList.remove('hidden');
-            
+            // Profile UI Updates
             if(document.getElementById('auth-profile-pic')) document.getElementById('auth-profile-pic').src = user.photoURL;
             if(document.getElementById('auth-name')) document.getElementById('auth-name').innerText = user.displayName;
             if(document.getElementById('auth-email-top')) document.getElementById('auth-email-top').innerText = user.email;
-
-            if (user.email === ADMIN_EMAIL) adminBtn?.classList.remove('hidden');
-            else adminBtn?.classList.add('hidden');
-
-            window.loadArchives();
-            window.loadProducts();
+            document.getElementById('auth-out-panel')?.classList.add('hidden');
+            document.getElementById('auth-main-panel')?.classList.remove('hidden');
         } else {
             window.isLoggedIn = false;
-            if(navPic) navPic.style.display = 'none';
             adminBtn?.classList.add('hidden');
-            document.getElementById('auth-out-panel')?.classList.remove('hidden');
-            document.getElementById('auth-main-panel')?.classList.add('hidden');
         }
     });
 
-    // --- Marketplace Logic (PUSH TO MARKET FIX) ---
+    // --- 1. PUSH TO MARKET (FIXED) ---
     window.saveProductToDB = async () => {
         const name = document.getElementById('p-name').value;
         const price = document.getElementById('p-price').value;
@@ -478,11 +453,10 @@
         const img = document.getElementById('p-image').value;
         const qty = parseInt(document.getElementById('p-qty').value) || 0;
 
-        if(!name || !price) return alert("Please fill Product Name and Price!");
+        if(!name || !price) return alert("Fill Name and Price!");
 
         try {
-            const marketplaceRef = ref(db, 'marketplace');
-            await push(marketplaceRef, {
+            await push(ref(db, 'marketplace'), {
                 name, price, desc, img, qty,
                 status: "active",
                 seller: auth.currentUser.email,
@@ -499,118 +473,105 @@
             
             document.getElementById('admin-post-section').classList.add('hidden');
             window.loadProducts();
-        } catch (e) { 
-            console.error("Marketplace Error:", e);
-            alert("Upload Failed: " + e.message);
-        }
-    };
-
-    window.deleteProduct = async (productId) => {
-        if(confirm("Permanently remove this product?")) {
-            try {
-                await remove(ref(db, `marketplace/${productId}`));
-                alert("Product Terminated.");
-                window.loadProducts();
-            } catch (e) { console.error("Delete Error:", e); }
-        }
-    };
-
-    window.loadProducts = async () => {
-        const grid = document.getElementById('store-grid');
-        if (!grid) return;
-        try {
-            const snapshot = await get(ref(db, 'marketplace'));
-            let html = '';
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const products = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                products.reverse().forEach(p => {
-                    if(p.qty > 0) {
-                        html += `
-                        <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group relative">
-                            ${auth.currentUser && auth.currentUser.email === ADMIN_EMAIL ? 
-                            `<button onclick="window.deleteProduct('${p.id}')" class="absolute top-3 right-3 bg-red-600/20 text-red-500 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 hover:text-white z-20"><i class="fa-solid fa-trash-can text-[10px]"></i></button>` : ''}
-                            <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black">
-                                <img src="${p.img || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                            </div>
-                            <h3 class="text-white font-bold text-sm uppercase">${p.name}</h3>
-                            <div class="flex justify-between items-center mt-1">
-                                <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
-                                <span class="text-[8px] text-zinc-500 uppercase font-mono bg-white/5 px-2 py-1 rounded">Stock: ${p.qty}</span>
-                            </div>
-                            <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase">${p.desc || 'NO SPECS'}</p>
-                            <button onclick="window.initiateBuy('${p.id}', '${p.name}')" class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">Initiate Purchase</button>
-                        </div>`;
-                    }
-                });
-            }
-            grid.innerHTML = html || '<p class="text-zinc-700 text-center col-span-full py-10 uppercase text-[10px] font-bold">No active products.</p>';
-        } catch (e) { console.error("Load Error:", e); }
-    };
-
-    // --- Order & History (HISTORY FIX) ---
-    window.submitOrder = async () => {
-        if (!window.isLoggedIn || !auth.currentUser) return;
-        const btn = document.querySelector("#builder-container button");
-        btn.innerText = "TRANSMITTING...";
-        btn.disabled = true;
-        try {
-            const orderData = {
-                userEmail: auth.currentUser.email,
-                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
-                bodyMaterial: document.getElementById('body-mat').value,
-                backPanel: document.getElementById('back-panel').value, 
-                energyUnit: document.getElementById('energy-unit').value,
-                finishNotes: document.getElementById('finish-notes').value,
-                specialRequirements: document.getElementById('special-req').value,
-                timestamp: serverTimestamp()
-            };
-            await push(ref(db, 'orders'), orderData);
-            alert("SUCCESS: Archived.");
-            window.loadArchives();
-            window.closeModal('consult-modal');
         } catch (e) { alert("Error: " + e.message); }
-        finally { btn.innerText = "Secure Transmission"; btn.disabled = false; }
     };
 
+    // --- 2. HISTORY DETAILS (FIXED with Full Specs) ---
     window.loadArchives = async () => {
         const miniList = document.getElementById('mini-history');
         const fullList = document.getElementById('full-history-list');
         if (!auth.currentUser) return;
+
         try {
             const q = query(ref(db, 'orders'), orderByChild('userEmail'), equalTo(auth.currentUser.email));
             const snap = await get(q);
-            let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
+            let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 font-bold italic tracking-widest">Active Archives</p>';
             
             if (snap.exists()) {
                 const data = [];
                 snap.forEach(child => { data.push(child.val()); });
                 data.reverse().forEach(d => {
                     html += `
-                    <div class="mb-3 p-4 bg-zinc-900 border border-white/5 rounded-xl hover:border-blue-500/20 transition">
-                        <div class="flex justify-between items-center mb-1">
-                            <p class="text-white text-[10px] font-black uppercase italic">${d.model}</p>
-                            <span class="text-[7px] text-blue-500 font-bold uppercase">Archived</span>
+                    <div class="mb-4 p-4 bg-zinc-900 border border-white/5 rounded-xl border-l-2 border-l-blue-600">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-white text-[11px] font-black uppercase tracking-tighter">${d.model}</p>
+                            <span class="text-[7px] bg-blue-500/10 text-blue-500 px-2 py-0.5 rounded font-bold uppercase">Stored</span>
                         </div>
-                        <p class="text-zinc-500 text-[8px] uppercase tracking-tighter">${d.bodyMaterial} | ${d.energyUnit}</p>
+                        <div class="grid grid-cols-2 gap-2 text-[8px] uppercase font-bold text-zinc-500">
+                            <div>MATERIAL: <span class="text-zinc-200">${d.bodyMaterial}</span></div>
+                            <div>BACK: <span class="text-zinc-200">${d.backPanel}</span></div>
+                            <div>UNIT: <span class="text-zinc-200">${d.energyUnit}</span></div>
+                        </div>
+                        ${d.finishNotes ? `<p class="mt-2 text-blue-400/80 text-[8px] italic font-medium uppercase tracking-tight">"Notes: ${d.finishNotes}"</p>` : ''}
                     </div>`;
                 });
-            } else { 
-                html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found.</p>'; 
+            } else {
+                html += '<p class="text-zinc-700 text-[10px] uppercase font-bold italic">No archives found.</p>';
             }
-            
             if (miniList) miniList.innerHTML = html;
             if (fullList) fullList.innerHTML = html;
-        } catch (e) { console.error("History Error:", e); }
+        } catch (e) { console.error(e); }
     };
 
-    window.openBuilder = (name) => {
-        document.getElementById('builder-placeholder').classList.add('hidden');
-        document.getElementById('builder-container').classList.remove('hidden');
-        document.getElementById('builder-title').innerText = "CONFIG: " + name;
+    // --- Marketplace Load ---
+    window.loadProducts = async () => {
+        const grid = document.getElementById('store-grid');
+        if (!grid) return;
+        try {
+            const snap = await get(ref(db, 'marketplace'));
+            let html = '';
+            if (snap.exists()) {
+                const products = Object.entries(snap.val()).reverse();
+                products.forEach(([id, p]) => {
+                    if (p.qty > 0) {
+                        html += `
+                        <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group relative">
+                            ${auth.currentUser && auth.currentUser.email === ADMIN_EMAIL ? 
+                            `<button onclick="window.deleteProduct('${id}')" class="absolute top-3 right-3 bg-red-600/20 text-red-500 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600 hover:text-white z-20"><i class="fa-solid fa-trash-can text-[10px]"></i></button>` : ''}
+                            <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black">
+                                <img src="${p.img || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover">
+                            </div>
+                            <h3 class="text-white font-bold text-sm uppercase">${p.name}</h3>
+                            <div class="flex justify-between items-center mt-1">
+                                <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
+                                <span class="text-[8px] text-zinc-500 bg-white/5 px-2 py-1 rounded">STOCK: ${p.qty}</span>
+                            </div>
+                            <button onclick="window.initiateBuy('${id}', '${p.name}')" class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase">Initiate Purchase</button>
+                        </div>`;
+                    }
+                });
+            }
+            grid.innerHTML = html || '<p class="text-zinc-700 text-center col-span-full">MARKET OFFLINE</p>';
+        } catch (e) { console.error(e); }
     };
 
-    window.initiateBuy = (id, name) => alert("ACCESSING PAYMENT GATEWAY...\nProduct: " + name);
+    window.deleteProduct = async (id) => {
+        if(confirm("Delete Product?")) {
+            await remove(ref(db, `marketplace/${id}`));
+            window.loadProducts();
+        }
+    };
+
+    window.submitOrder = async () => {
+        if (!window.isLoggedIn) return;
+        try {
+            await push(ref(db, 'orders'), {
+                userEmail: auth.currentUser.email,
+                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
+                bodyMaterial: document.getElementById('body-mat').value,
+                backPanel: document.getElementById('back-panel').value, 
+                energyUnit: document.getElementById('energy-unit').value,
+                finishNotes: document.getElementById('finish-notes').value,
+                timestamp: serverTimestamp()
+            });
+            alert("SUCCESS: Archived.");
+            window.loadArchives();
+            window.closeModal('consult-modal');
+        } catch (e) { console.error(e); }
+    };
+
+    window.initiateBuy = (id, name) => alert("ORDERING: " + name);
+    window.handleConsultation = () => window.isLoggedIn ? window.toggleModal('consult-modal') : window.toggleModal('login-modal');
 </script>
 </body>
 </html>
