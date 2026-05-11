@@ -260,7 +260,7 @@
 </div>
     
 <div id="consult-modal" class="modal">
-    <div class="max-w-6xl w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl h-[85vh]">
+    <div class="max-w-6xl w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl h-[85vh] m-4">
         <div class="w-full md:w-1/3 bg-zinc-900/50 p-8 border-r border-white/5 flex flex-col h-full">
             <h2 class="text-blue-500 font-black text-xs uppercase tracking-widest mb-8">Select Model</h2>
             <div class="space-y-4">
@@ -273,9 +273,8 @@
                     <span class="text-[9px] text-zinc-500 uppercase">Neural Gateway</span>
                 </button>
             </div>
-            
             <div id="mini-history" class="mt-10 border-t border-white/5 pt-6 flex-grow overflow-y-auto custom-scrollbar">
-                <p class="text-[9px] text-zinc-600 uppercase tracking-widest font-bold italic">System Ready</p>
+                <p class="text-[9px] text-zinc-600 uppercase tracking-widest font-bold italic">Active Archives</p>
             </div>
         </div>
         
@@ -287,54 +286,50 @@
                     <i class="fa-solid fa-microchip text-blue-500 animate-pulse text-xl"></i>
                 </div>
                 <h3 class="font-bold uppercase italic text-sm text-white">System Standby</h3>
-                <p class="text-[9px] text-zinc-500 mt-2 tracking-widest uppercase">Initialize a model from the left to start configuration</p>
+                <p class="text-[9px] text-zinc-500 mt-2 tracking-widest uppercase">Select a model to initialize</p>
             </div>
 
             <div id="builder-container" class="hidden">
                 <h2 id="builder-title" class="text-3xl font-black mb-8 text-white uppercase italic tracking-tighter border-b border-blue-500/30 pb-4">CONFIG</h2>
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Body Material</label>
-                        <select id="body-mat">
+                        <select id="body-mat" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs">
                             <option>Grade 5 Titanium</option>
                             <option>Aerospace Aluminium</option>
-                            <option>Carbon Fiber</option>
                         </select>
                     </div>
                     <div>
                         <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Back Panel</label>
-                        <select id="back-panel">
+                        <select id="back-panel" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs">
                             <option>Opaque Polymer</option>
                             <option>Transparent Glass</option>
-                            <option>Frosted Metal</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="md:col-span-2">
                         <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Energy Unit</label>
-                        <select id="energy-unit">
+                        <select id="energy-unit" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs">
                             <option>5,000 mAh (Standard)</option>
-                            <option>7,500 mAh (Solid State)</option>
                             <option>10,000 mAh (Fusion Core)</option>
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish / Color</label>
-                        <input type="text" id="finish-notes" placeholder="e.g. Matte Cobalt Blue">
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish Notes</label>
+                        <input type="text" id="finish-notes" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="e.g. Matte Black">
                     </div>
                     <div class="md:col-span-2">
                         <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Special Requirements</label>
-                        <textarea id="special-req" rows="3" placeholder="Describe any custom hardware modifications..."></textarea>
+                        <textarea id="special-req" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-xs" rows="3"></textarea>
                     </div>
                 </div>
-                <button onclick="submitOrder()" class="w-full bg-blue-600 py-5 mt-10 font-black uppercase tracking-widest text-sm hover:bg-blue-500 transition shadow-lg shadow-blue-600/20 text-white">Secure Transmission</button>
+                <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest text-xs text-white hover:bg-blue-500 transition">Secure Transmission</button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="product-upload-modal" class="modal">
-    <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh]">
+<div id="product-store-modal" class="modal">
+    <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh] m-4">
         <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
             <div>
                 <h2 class="text-white font-black tracking-tighter text-xl uppercase">Turt Marketplace</h2>
@@ -344,25 +339,22 @@
                 <button id="admin-add-btn" onclick="document.getElementById('admin-post-section').classList.toggle('hidden')" class="hidden bg-white text-black px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-tight hover:bg-blue-500 hover:text-white transition">
                     + Post New Product
                 </button>
-                <button onclick="window.closeModal('product-upload-modal')" class="text-zinc-500 hover:text-white text-2xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <button onclick="window.closeModal('product-store-modal')" class="text-zinc-500 hover:text-white text-2xl">✕</button>
             </div>
         </div>
 
         <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="text" id="p-name" placeholder="PRODUCT NAME">
-                <input type="text" id="p-price" placeholder="PRICE (LKR)">
-                <input type="text" id="p-image" placeholder="IMAGE URL">
+                <input type="text" id="p-name" class="bg-black border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="PRODUCT NAME">
+                <input type="text" id="p-price" class="bg-black border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="PRICE (LKR)">
+                <input type="text" id="p-image" class="bg-black border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="IMAGE URL">
             </div>
-            <textarea id="p-desc" placeholder="TECH SPECS..." rows="3"></textarea>
-            <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all hover:bg-blue-700">Push to Market</button>
+            <textarea id="p-desc" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white text-xs" placeholder="TECH SPECS..." rows="3"></textarea>
+            <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
         </div>
 
-        <div id="store-grid" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto flex-grow custom-scrollbar bg-black/20 text-center">
-            <p class="text-zinc-700 uppercase text-[10px] tracking-widest italic">Syncing with Market Nodes...</p>
-        </div>
+        <div id="store-grid" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto flex-grow custom-scrollbar bg-black/20">
+            </div>
     </div>
 </div>
     
