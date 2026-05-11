@@ -343,7 +343,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -360,9 +360,8 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
 
-// --- State Initialization ---
+    // --- State Initialization ---
     window.secondaryUser = null; 
     window.isLoggedIn = false;
 
@@ -385,20 +384,7 @@
         }
     };
 
-    // --- Account Switch Logic ---
-    window.switchAccount = async () => {
-        if (!window.secondaryUser) return;
-        try {
-            // Force account selection to swap sessions
-            provider.setCustomParameters({ prompt: 'select_account' });
-            await signInWithPopup(auth, provider);
-            // Auth observer automatic-ah UI-ai refresh pannidum
-        } catch (e) {
-            console.error("Switch Error: " + e.message);
-        }
-    };
-
-    // --- Single Login & Link Logic ---
+    // --- SMART LOGIN LOGIC ---
     window.loginWithGoogle = async () => {
         try {
             const primaryBefore = auth.currentUser;
@@ -407,13 +393,14 @@
             const result = await signInWithPopup(auth, provider);
             const newUser = result.user;
 
-            // Secondary node link panna:
+            // Check if adding a secondary account
             if (window.isLoggedIn && primaryBefore && primaryBefore.email !== newUser.email) {
                 window.secondaryUser = {
                     name: newUser.displayName,
                     email: newUser.email,
                     pic: newUser.photoURL
                 };
+                // UI update panna current primary-ai focus-la vaikkurom
                 window.updateAccountUI(primaryBefore, window.secondaryUser);
                 alert("Secondary Node Linked: " + newUser.email);
             }
@@ -422,122 +409,127 @@
         }
     };
 
-    // --- Global Sign Out (All Accounts) ---
-    window.logout = async () => {
-        try { 
-            await auth.signOut(); 
-            // Wipe all states
-            window.secondaryUser = null; 
-            window.isLoggedIn = false;
-            
-            // UI Reset
-            const accountItem = document.getElementById('active-account-item');
-            if(accountItem) accountItem.innerHTML = ''; 
-            
-            closeModal('login-modal');
-            console.log("System Lockdown: All accounts signed out.");
-        } catch (e) { 
-            alert("Logout Error: " + e.message); 
+    // --- SWITCH ACCOUNT LOGIC ---
+    window.switchAccount = async () => {
+        if (!window.secondaryUser) return;
+        try {
+            provider.setCustomParameters({ prompt: 'select_account' });
+            // Direct-ah switch pannum pothu Firebase automatic-ah currentUser-ai update pannidum
+            await signInWithPopup(auth, provider);
+        } catch (e) {
+            console.error("Switch Error: " + e.message);
         }
     };
 
-    window.openBuilder = (name) => {
-        document.getElementById('builder-placeholder').classList.add('hidden');
-        document.getElementById('builder-container').classList.remove('hidden');
-        document.getElementById('builder-title').innerText = "CONFIG: " + name;
+    // --- GLOBAL SIGN OUT ---
+    window.logout = async () => {
+        try { 
+            await auth.signOut(); 
+            window.secondaryUser = null; 
+            window.isLoggedIn = false;
+            const accountItem = document.getElementById('active-account-item');
+            if(accountItem) accountItem.innerHTML = ''; 
+            closeModal('login-modal');
+        } catch (e) { alert("Logout Error: " + e.message); }
     };
 
-    // --- UI Update with Interactive Switch ---
-    window.updateAccountUI = (primaryUser, secondary) => {
+    // --- RECTIFIED UI RENDERER (Active vs Switch logic) ---
+    window.updateAccountUI = (currentUser, secondary) => {
         const accountItem = document.getElementById('active-account-item');
-        if (!accountItem || !primaryUser) return;
+        if (!accountItem || !currentUser) return;
 
-        accountItem.innerHTML = `
-            <div class="flex items-center gap-4 border border-blue-500/50 p-3 rounded-lg bg-blue-500/5 transition group">
-                <img src="${primaryUser.photoURL}" class="w-10 h-10 rounded-full border border-blue-500">
-                <div class="flex-grow">
-                    <p class="text-white text-sm font-bold">${primaryUser.displayName}</p>
-                    <p class="text-zinc-600 text-[9px] lowercase font-mono">${primaryUser.email}</p>
-                </div>
-                <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Active</span>
-            </div>
+        let html = '';
+        const allUsers = [];
 
-            <div onclick="window.switchAccount()" class="flex items-center gap-4 border border-zinc-800/50 p-3 rounded-lg bg-black/40 ${secondary ? 'cursor-pointer hover:border-green-500/50' : 'opacity-50'} mt-4 transition group">
-                <div class="w-10 h-10 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center overflow-hidden">
-                    ${secondary ? `<img src="${secondary.pic}" class="w-full h-full object-cover">` : '<i class="fa-solid fa-link-slash text-zinc-700 text-xs"></i>'}
+        // 1. Always check who is actually the central active user
+        allUsers.push({ ...currentUser, isActive: true });
+
+        // 2. Add secondary if it exists
+        if (secondary) {
+            // Swap logic: secondary account logic active email-oda match aagutha nu check
+            const isSecondaryActive = (secondary.email === currentUser.email);
+            if (!isSecondaryActive) {
+                allUsers.push({ 
+                    displayName: secondary.name, 
+                    email: secondary.email, 
+                    photoURL: secondary.pic, 
+                    isActive: false 
+                });
+            }
+        }
+
+        allUsers.forEach(u => {
+            html += `
+                <div 
+                    ${!u.isActive ? 'onclick="window.switchAccount()"' : ''} 
+                    class="flex items-center gap-4 border ${u.isActive ? 'border-blue-500 bg-blue-500/5' : 'border-zinc-800 bg-black/40 cursor-pointer hover:border-green-500/50'} p-3 rounded-lg transition group mt-3 first:mt-0"
+                >
+                    <img src="${u.photoURL}" class="w-10 h-10 rounded-full border ${u.isActive ? 'border-blue-500' : 'border-zinc-700'}">
+                    <div class="flex-grow">
+                        <p class="text-white text-sm font-bold ${!u.isActive ? 'group-hover:text-green-400' : ''}">${u.displayName}</p>
+                        <p class="text-zinc-600 text-[9px] lowercase font-mono">${u.email}</p>
+                    </div>
+                    <span class="text-[8px] font-bold uppercase ${u.isActive ? 'text-blue-500 bg-blue-500/10' : 'text-green-500 border border-green-500/30'} px-2 py-1 rounded">
+                        ${u.isActive ? 'Active' : 'Switch'}
+                    </span>
                 </div>
-                <div class="flex-grow">
-                    <p class="${secondary ? 'text-white group-hover:text-green-400' : 'text-zinc-500'} text-sm font-bold italic">${secondary ? secondary.name : 'Secondary Node'}</p>
-                    <p class="text-zinc-800 text-[9px] lowercase font-mono italic">${secondary ? secondary.email : 'waiting for auth...'}</p>
-                </div>
-                <span class="text-[8px] ${secondary ? 'text-green-500 border-green-500/30' : 'text-zinc-700 border-zinc-800'} font-bold uppercase border px-2 py-1 rounded tracking-tighter">
-                    ${secondary ? 'Switch' : 'Standby'}
-                </span>
-            </div>
-        `;
+            `;
+        });
+        accountItem.innerHTML = html;
     };
 
     // --- Auth Observer ---
     onAuthStateChanged(auth, (user) => {
-        const navPic = document.getElementById('nav-profile-pic');
-        const portalBtn = document.getElementById('portal-btn');
-        const modalMainInfo = document.getElementById('auth-main-panel');
-        const modalSignedOut = document.getElementById('auth-out-panel');
-        const modalControls = document.getElementById('auth-controls-panel');
-        const modalMoreAccounts = document.getElementById('auth-more-panel');
-
-        const modalPic = document.getElementById('auth-profile-pic');
-        const modalName = document.getElementById('auth-name');
-        const modalEmailTop = document.getElementById('auth-email-top');
-
         if (user) {
-            // SAFETY CHECK: Secondary user login aagumpothu primary UI-ai disturb panna koodathu
-            if (window.secondaryUser && user.email === window.secondaryUser.email) {
-                console.log("Secondary Node detected, maintaining primary session UI.");
-                return; 
+            // Safety: Don't break if it's just a background secondary link
+            if (window.secondaryUser && user.email === window.secondaryUser.email && !window.isLoggedIn) {
+                 return;
             }
 
             window.isLoggedIn = true;
-            if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
+            document.getElementById('nav-profile-pic')?.style.setProperty('display', 'block');
+            const navPic = document.getElementById('nav-profile-pic');
+            if(navPic) navPic.src = user.photoURL;
+
+            const portalBtn = document.getElementById('portal-btn');
             if(portalBtn) {
                 portalBtn.innerText = "ACCESS GRANTED";
                 portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
             }
 
-            if(modalSignedOut) modalSignedOut.classList.add('hidden');
-            if(modalMainInfo) modalMainInfo.classList.remove('hidden');
-            if(modalControls) modalControls.classList.remove('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.remove('hidden');
+            document.getElementById('auth-out-panel')?.classList.add('hidden');
+            document.getElementById('auth-main-panel')?.classList.remove('hidden');
+            document.getElementById('auth-controls-panel')?.classList.remove('hidden');
+            document.getElementById('auth-more-panel')?.classList.remove('hidden');
 
-            if(modalPic) modalPic.src = user.photoURL;
-            if(modalName) modalName.innerText = user.displayName;
-            if(modalEmailTop) modalEmailTop.innerText = user.email;
+            document.getElementById('auth-profile-pic').src = user.photoURL;
+            document.getElementById('auth-name').innerText = user.displayName;
+            document.getElementById('auth-email-top').innerText = user.email;
 
-            // Intha function rendu accounts-aiyum monitor panni UI-la kaattum
             window.updateAccountUI(user, window.secondaryUser);
             window.loadArchives();
         } else {
             window.isLoggedIn = false;
-            window.secondaryUser = null; // Logout aagumbothu ellathaiyum clear panniduvom
-            if(navPic) navPic.style.display = 'none';
+            window.secondaryUser = null;
+            document.getElementById('nav-profile-pic')?.style.setProperty('display', 'none');
+            const portalBtn = document.getElementById('portal-btn');
             if(portalBtn) {
                 portalBtn.innerText = "Portal Access";
                 portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
             }
-            if(modalMainInfo) modalMainInfo.classList.add('hidden');
-            if(modalSignedOut) modalSignedOut.classList.remove('hidden');
-            if(modalControls) modalControls.classList.add('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+            document.getElementById('auth-main-panel')?.classList.add('hidden');
+            document.getElementById('auth-out-panel')?.classList.remove('hidden');
+            document.getElementById('auth-controls-panel')?.classList.add('hidden');
+            document.getElementById('auth-more-panel')?.classList.add('hidden');
         }
     });
 
-    // --- Database Functions ---
+    // --- DB Functions (Submit & Load) ---
     window.submitOrder = async () => {
         if (!window.isLoggedIn || !auth.currentUser) return;
         const btn = document.querySelector("#builder-container button");
         btn.innerText = "TRANSMITTING...";
         btn.disabled = true;
-
         try {
             const orderData = {
                 userEmail: auth.currentUser.email,
@@ -553,7 +545,7 @@
             alert("SUCCESS: Hardware specifications archived.");
             window.loadArchives();
             closeModal('consult-modal');
-        } catch (e) { alert("Transmission Error: " + e.message); }
+        } catch (e) { alert("Error: " + e.message); }
         finally { btn.innerText = "Secure Transmission"; btn.disabled = false; }
     };
 
@@ -567,28 +559,17 @@
             const snap = await get(q);
             let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
             if (snap.exists()) {
-                const data = [];
-                snap.forEach(child => { data.push(child.val()); });
-                data.reverse().forEach(d => {
-                    html += `
-                        <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
-                            <div class="flex justify-between items-start mb-3">
-                                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.model || 'Unknown Model'}</p>
-                                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">Archived</span>
-                            </div>
-                            <div class="space-y-1">
-                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Material: <span class="text-zinc-200">${d.bodyMaterial || 'N/A'}</span></p>
-                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Back Panel: <span class="text-zinc-200">${d.backPanel || 'N/A'}</span></p>
-                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Energy: <span class="text-zinc-200">${d.energyUnit || 'N/A'}</span></p>
-                                ${d.finishNotes ? `<p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Finish: <span class="text-blue-400/80 italic">${d.finishNotes}</span></p>` : ''}
-                            </div>
-                            ${d.specialRequirements ? `<div class="mt-3 pt-3 border-t border-white/5"><p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p></div>` : ''}
-                        </div>`;
+                snap.forEach(child => {
+                    const d = child.val();
+                    html += `<div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl">
+                        <p class="text-white text-xs font-black uppercase italic">${d.model}</p>
+                        <p class="text-zinc-400 text-[10px]">Material: ${d.bodyMaterial}</p>
+                    </div>`;
                 });
-            } else { html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>'; }
+            } else { html += '<p class="text-zinc-600 text-[10px]">No archives found.</p>'; }
             if (miniList) miniList.innerHTML = html;
             if (fullList) fullList.innerHTML = html;
-        } catch (e) { console.error("Archive Load Error: ", e); }
+        } catch (e) { console.log(e); }
     };
 </script>
 </body>
