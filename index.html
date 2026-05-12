@@ -373,29 +373,29 @@
     </div>
 </div>
 
-<div id="payment-modal" class="modal" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); align-items: center; justify-content: center;">
-    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 text-center">
+<div id="payment-modal" class="modal fixed inset-0 z-[200] bg-black/90 hidden items-center justify-center p-4">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 text-center shadow-2xl">
         <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6">Select Payment Method</h2>
         <div class="space-y-4">
-            <button onclick="handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-blue-500 transition shadow-lg shadow-blue-900/20 text-white">
+            <button onclick="handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-blue-500 transition-all text-white shadow-lg shadow-blue-900/20">
                 <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
             </button>
-            <button class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-xs text-zinc-600 cursor-not-allowed">
+            <button class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-zinc-600 cursor-not-allowed">
                 Koko (Coming Soon)
             </button>
         </div>
-        <button onclick="closeModal('payment-modal')" class="mt-6 text-[10px] text-zinc-500 hover:text-white uppercase tracking-widest">Cancel</button>
+        <button onclick="closeModal('payment-modal')" class="mt-6 text-[9px] text-zinc-500 hover:text-white uppercase tracking-widest">Cancel</button>
     </div>
 </div>
 
-<div id="success-modal" class="modal" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); align-items: center; justify-content: center;">
-    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-10 text-center">
+<div id="success-modal" class="modal fixed inset-0 z-[200] bg-black/95 hidden items-center justify-center p-4">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-10 text-center shadow-2xl">
         <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <i class="fa-solid fa-check text-green-500 text-4xl animate-bounce"></i>
         </div>
         <h2 class="text-white font-black uppercase italic tracking-tighter text-2xl mb-2">Payment Success!</h2>
-        <p class="text-zinc-500 text-[10px] uppercase tracking-widest mb-8">Transaction logged. Please submit your receipt for verification.</p>
-        <button id="whatsapp-btn" class="w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition">
+        <p class="text-zinc-500 text-[10px] uppercase tracking-widest mb-8 leading-relaxed">Transaction logged. Please submit your receipt for verification.</p>
+        <button id="whatsapp-btn" class="w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition-all">
             SUBMIT RECEIPT (OFFICIAL)
         </button>
     </div>
@@ -733,33 +733,33 @@ window.initiateBuy = async (id, name) => {
         }
     };
 
-   // Global variable to store transaction data
+   // Global variable
     let currentTransaction = null;
 
     // Marketplace Purchase Initiation
     window.initiateBuy = (id, name) => {
-        // User login panni irukara-nu check panrom
         if (!window.isLoggedIn) {
             window.toggleModal('login-modal');
             return;
         }
         currentTransaction = { id, name };
-        window.toggleModal('payment-modal'); // Payment modal-ai open pannum
+        // Manual flex display for safety
+        const pModal = document.getElementById('payment-modal');
+        if(pModal) pModal.style.display = 'flex';
     };
 
-    // Bank Transfer Click Pannathum Nadakkuvathu
+    // Official Bank Transfer Logic
     window.handleBankTransfer = async () => {
         if(!currentTransaction) return;
 
         const bankDetails = "COMMERCIAL BANK\nTurt Industry (PVT) LTD\nAcc: 8010XXXXXX\nBranch: Colombo";
         
         try {
-            // Unga code-la munnadiye 'db' define panni irukinga, athaiye inga use panrom
-            // 'ref' and 'push' unga firebase-database import-la irunthu varum
-            const transactionRef = window.dbRef(window.db, 'official_payments');
-            await window.dbPush(transactionRef, {
-                userEmail: window.auth.currentUser ? window.auth.currentUser.email : 'Guest',
-                userName: window.auth.currentUser ? window.auth.currentUser.displayName : 'Official User',
+            // Using ref and push directly from your imports
+            const transactionRef = ref(db, 'official_payments');
+            await push(transactionRef, {
+                userEmail: auth.currentUser ? auth.currentUser.email : 'Guest',
+                userName: auth.currentUser ? auth.currentUser.displayName : 'Official User',
                 productName: currentTransaction.name,
                 productId: currentTransaction.id,
                 status: "PENDING_RECEIPT",
@@ -768,26 +768,36 @@ window.initiateBuy = async (id, name) => {
 
             alert(`OFFICIAL INVOICE GENERATED\n\nPlease transfer to:\n\n${bankDetails}`);
 
-            window.closeModal('payment-modal');
+            // Close Payment Modal
+            document.getElementById('payment-modal').style.display = 'none';
 
-            // Success Modal kaatuvom
+            // Show Success Modal
             setTimeout(() => {
-                window.toggleModal('success-modal');
-                
-                const successBtn = document.querySelector('#success-modal button');
-                const message = encodeURIComponent(`OFFICIAL PAYMENT SUBMISSION\nProduct: ${currentTransaction.name}\nStatus: Payment Completed.`);
-                const whatsappLink = `https://wa.me/94740523507?text=${message}`;
+                const sModal = document.getElementById('success-modal');
+                if(sModal) {
+                    sModal.style.display = 'flex';
+                    
+                    const successBtn = document.getElementById('whatsapp-btn');
+                    const message = encodeURIComponent(`OFFICIAL PAYMENT SUBMISSION\nProduct: ${currentTransaction.name}\nUser: ${auth.currentUser ? auth.currentUser.displayName : 'Official'}\nStatus: Payment Completed.`);
+                    const whatsappLink = `https://wa.me/94740523507?text=${message}`;
 
-                successBtn.onclick = () => {
-                    window.open(whatsappLink, '_blank');
-                    window.closeModal('success-modal');
-                };
-            }, 1000);
+                    successBtn.onclick = () => {
+                        window.open(whatsappLink, '_blank');
+                        sModal.style.display = 'none';
+                    };
+                }
+            }, 800);
 
         } catch (e) {
             console.error("Payment Error:", e);
-            alert("System Error: Failed to log transaction.Transaction Error:");
+            alert("System Error: Failed to log transaction.");
         }
+    };
+
+    // Universal Close Helper
+    window.closeModal = (id) => {
+        const modal = document.getElementById(id);
+        if(modal) modal.style.display = 'none';
     };
     
 </script>
