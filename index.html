@@ -406,7 +406,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
     const ADMIN_EMAIL = "searingprince@gmail.com";
     
     const firebaseConfig = {
@@ -736,12 +735,13 @@ window.initiateBuy = async (id, name) => {
 
 let currentTransaction = null;
 
-    // --- Modal Management (Unified Logic) ---
+// --- Modal Management ---
 window.openAnyModal = (id) => {
     const m = document.getElementById(id);
     if(m) {
         m.classList.add('flex');
         m.classList.remove('hidden');
+        m.style.display = 'flex'; // Force display
     }
 };
 
@@ -750,10 +750,13 @@ window.closeAnyModal = (id) => {
     if(m) {
         m.classList.remove('flex');
         m.classList.add('hidden');
+        m.style.display = 'none'; // Force hide
     }
 };
 
-// --- Purchase Logic ---
+// --- Transaction logic ---
+let currentTransaction = null; 
+
 window.initiateBuy = (id, name) => {
     if (!window.isLoggedIn) {
         window.toggleModal('login-modal');
@@ -764,7 +767,10 @@ window.initiateBuy = (id, name) => {
 };
 
 window.handleBankTransfer = async () => {
-    if(!currentTransaction) return;
+    if(!currentTransaction) {
+        alert("Transaction Error: No product selected.");
+        return;
+    }
     
     try {
         const transactionRef = ref(db, 'official_payments');
@@ -772,12 +778,11 @@ window.handleBankTransfer = async () => {
             user: auth.currentUser ? auth.currentUser.displayName : 'Official User',
             product: currentTransaction.name,
             status: "PENDING",
-            timestamp: serverTimestamp() // Better than local time
+            timestamp: serverTimestamp() 
         });
 
         window.closeAnyModal('payment-modal');
 
-        // Small delay for smooth transition
         setTimeout(() => {
             window.openAnyModal('success-modal');
             const btn = document.getElementById('whatsapp-btn-final');
@@ -791,7 +796,7 @@ window.handleBankTransfer = async () => {
 
     } catch (e) {
         console.error("Payment Error:", e);
-        alert("System error. Please try again.");
+        alert("Firebase Connection Error. Check console.");
     }
 };
     
