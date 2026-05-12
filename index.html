@@ -373,6 +373,35 @@
     </div>
 </div>
 
+<div id="payment-modal" class="modal fixed inset-0 z-[999] bg-black/90 hidden items-center justify-center p-4">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 text-center relative">
+        <button onclick="window.closeAnyModal('payment-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6">Select Payment Method</h2>
+        <div class="space-y-4">
+            <button onclick="handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-blue-500 transition-all text-white">
+                <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
+            </button>
+            <button class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-zinc-600 cursor-not-allowed">
+                Koko (Coming Soon)
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="success-modal" class="modal fixed inset-0 z-[999] bg-black/95 hidden items-center justify-center p-4">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-10 text-center relative">
+        <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fa-solid fa-check text-green-500 text-4xl animate-bounce"></i>
+        </div>
+        <h2 class="text-white font-black uppercase italic tracking-tighter text-2xl mb-2">Order Logged!</h2>
+        <button id="whatsapp-btn-final" class="w-full mt-6 bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition-all">
+            SUBMIT RECEIPT (WHATSAPP)
+        </button>
+    </div>
+</div>
+    
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -705,8 +734,65 @@ window.initiateBuy = async (id, name) => {
         }
     };
 
+let currentTransaction = null;
+
+    // Force Open Modal
+    window.openAnyModal = (id) => {
+        const m = document.getElementById(id);
+        if(m) {
+            m.classList.remove('hidden');
+            m.style.display = 'flex';
+        }
+    };
+
+    // Force Close Modal
+    window.closeAnyModal = (id) => {
+        const m = document.getElementById(id);
+        if(m) {
+            m.classList.add('hidden');
+            m.style.display = 'none';
+        }
+    };
+
     window.initiateBuy = (id, name) => {
-        alert("ACCESSING PAYMENT GATEWAY...\nProduct: " + name + "\n\nFridyi Note: COD and Bank Transfer protocols are being initialized.");
+        if (!window.isLoggedIn) {
+            window.toggleModal('login-modal'); // Unga existing login modal function
+            return;
+        }
+        currentTransaction = { id, name };
+        window.openAnyModal('payment-modal');
+    };
+
+    window.handleBankTransfer = async () => {
+        if(!currentTransaction) return;
+        
+        try {
+            // FIREBASE PUSH
+            const transactionRef = ref(db, 'official_payments');
+            await push(transactionRef, {
+                user: auth.currentUser ? auth.currentUser.displayName : 'Official User',
+                product: currentTransaction.name,
+                status: "PENDING",
+                time: new Date().toISOString()
+            });
+
+            alert("OFFICIAL INVOICE GENERATED");
+            window.closeAnyModal('payment-modal');
+
+            setTimeout(() => {
+                window.openAnyModal('success-modal');
+                const btn = document.getElementById('whatsapp-btn-final');
+                const msg = encodeURIComponent(`Payment for ${currentTransaction.name}`);
+                btn.onclick = () => {
+                    window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
+                    window.closeAnyModal('success-modal');
+                };
+            }, 500);
+
+        } catch (e) {
+            console.error(e);
+            alert("DB Error");
+        }
     };
     
 </script>
