@@ -376,8 +376,8 @@
 <div id="payment-modal" class="modal fixed inset-0 z-[999] bg-black/90 hidden items-center justify-center p-4">
     <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 relative">
         <button onclick="window.toggleModal('payment-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white">
-            <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
+    <i class="fa-solid fa-xmark text-xl"></i>
+</button>
         
         <div id="payment-modal-inner">
             <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6 text-center">Select Method</h2>
@@ -742,9 +742,10 @@ window.initiateBuy = async (id, name) => {
         }
     };
 
-// --- NEW PROCUREMENT LOGIC ---
+// 1. Procurement Variables
 let currentTransaction = null;
 
+// 2. Modal Logic (Fixed for X button and overlays)
 window.toggleModal = (id) => {
     const m = document.getElementById(id);
     if(m) {
@@ -758,6 +759,7 @@ window.toggleModal = (id) => {
     }
 };
 
+// 3. Initiate Purchase
 window.initiateBuy = (id, name) => {
     if (!auth.currentUser) {
         alert("Please login to continue");
@@ -765,11 +767,11 @@ window.initiateBuy = (id, name) => {
         return;
     }
     currentTransaction = { id, name };
-    // Munaadi modal content-ai reset pannittu open panrom
-    window.resetPaymentModal();
+    window.resetPaymentModal(); // Modal-ai refresh panni 3 options kaattum
     window.toggleModal('payment-modal');
 };
 
+// 4. Reset Modal to show 3 Options
 window.resetPaymentModal = () => {
     const inner = document.getElementById('payment-modal-inner');
     if(!inner) return;
@@ -788,6 +790,7 @@ window.resetPaymentModal = () => {
         </div>`;
 };
 
+// 5. Show Sub-options (Bank/COD/Visit)
 window.showPaymentSub = (type) => {
     const inner = document.getElementById('payment-modal-inner');
     const pName = currentTransaction ? currentTransaction.name : "Product";
@@ -801,38 +804,37 @@ window.showPaymentSub = (type) => {
             <button onclick="window.sendToWhatsApp('Bank Transfer', '${pName}')" class="w-full bg-green-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white">
                 <i class="fa-brands fa-whatsapp mr-2"></i> Send Receipt
             </button>
-            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-500 text-[8px] uppercase font-bold tracking-widest">Back to Options</button>`;
+            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest">Back</button>`;
     } 
     else if(type === 'cod') {
         inner.innerHTML = `
-            <h2 class="text-white font-black uppercase italic text-lg mb-4 text-center">Delivery Details</h2>
+            <h2 class="text-white font-black uppercase italic text-lg mb-4 text-center">Delivery Info</h2>
             <div class="space-y-3">
-                <input id="cod-addr" placeholder="FULL ADDRESS" class="w-full bg-zinc-900 border border-white/5 p-4 rounded-xl text-white text-[10px] uppercase outline-none focus:border-blue-500">
-                <input id="cod-phone" placeholder="PHONE NUMBER" class="w-full bg-zinc-900 border border-white/5 p-4 rounded-xl text-white text-[10px] uppercase outline-none focus:border-blue-500">
+                <input id="cod-addr" placeholder="ADDRESS" class="w-full bg-zinc-900 border border-white/5 p-4 rounded-xl text-white text-[10px] uppercase outline-none">
+                <input id="cod-phone" placeholder="PHONE" class="w-full bg-zinc-900 border border-white/5 p-4 rounded-xl text-white text-[10px] uppercase outline-none">
             </div>
-            <button onclick="window.handleCOD('${pName}')" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white mt-4">Confirm & WhatsApp</button>
-            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-500 text-[8px] uppercase font-bold tracking-widest">Back</button>`;
+            <button onclick="window.handleCOD('${pName}')" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white mt-4">Confirm Order</button>
+            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest">Back</button>`;
     }
     else if(type === 'visit') {
         inner.innerHTML = `
             <h2 class="text-white font-black uppercase italic text-lg mb-4 text-center">Visit Schedule</h2>
-            <p class="text-zinc-500 text-[9px] uppercase mb-4 text-center italic">Location: No. 123, Turt Street, Colombo</p>
             <input id="visit-time" type="datetime-local" class="w-full bg-zinc-900 border border-white/5 p-4 rounded-xl text-white text-[10px] mb-4 outline-none">
-            <button onclick="window.sendToWhatsApp('Visit Place', '${pName}')" class="w-full bg-green-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white">Confirm Visit via Chat</button>
-            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-500 text-[8px] uppercase font-bold tracking-widest">Back</button>`;
+            <button onclick="window.sendToWhatsApp('Visit Place', '${pName}')" class="w-full bg-green-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white">Confirm via Chat</button>
+            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest">Back</button>`;
     }
 };
 
 window.sendToWhatsApp = (method, product) => {
-    const extra = document.getElementById('visit-time')?.value || "Not specified";
-    const msg = encodeURIComponent(`Hello Turt Industry,\n\nI want to buy: ${product}\nMethod: ${method}\nAdditional Info: ${extra}`);
+    const extra = document.getElementById('visit-time')?.value || "";
+    const msg = encodeURIComponent(`Hello Turt Industry,\n\nI want to buy: ${product}\nMethod: ${method}\nInfo: ${extra}`);
     window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
 };
 
 window.handleCOD = async (product) => {
     const addr = document.getElementById('cod-addr').value;
     const phone = document.getElementById('cod-phone').value;
-    if(!addr || !phone) return alert("Fill all details!");
+    if(!addr || !phone) return alert("Fill details!");
 
     try {
         await push(ref(db, 'official_payments'), {
