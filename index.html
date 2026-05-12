@@ -740,20 +740,7 @@ window.initiateBuy = async (id, name) => {
 
    let currentTransaction = null;
 
-    // Fixed Toggle Function for all Modals
-    window.toggleModal = (id) => {
-        const modal = document.getElementById(id);
-        if (!modal) return;
-        
-        if (modal.classList.contains('hidden')) {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex'); // hidden remove panna flex katti screen-la kaatum
-        } else {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-    };
-
+    // Marketplace Purchase Initiation
     window.initiateBuy = (id, name) => {
         if (!window.isLoggedIn) {
             window.toggleModal('login-modal');
@@ -763,36 +750,49 @@ window.initiateBuy = async (id, name) => {
         window.toggleModal('payment-modal');
     };
 
+    // Official Bank Transfer Logic (FIXED)
     window.handleBankTransfer = async () => {
-        if(!currentTransaction) return;
+        if(!currentTransaction) {
+            console.error("No product selected.");
+            return;
+        }
+
         const bankDetails = "COMMERCIAL BANK\nTurt Industry (PVT) LTD\nAcc: 8010XXXXXX\nBranch: Colombo";
         
         try {
-            // Using standard firebase ref and push
-            const transactionRef = ref(db, 'official_payments');
+            // FIX: Directly using ref and push from your Firebase imports
+            const transactionRef = ref(db, 'official_payments'); 
             await push(transactionRef, {
-                user: auth.currentUser ? auth.currentUser.displayName : 'Guest',
-                email: auth.currentUser ? auth.currentUser.email : 'N/A',
-                product: currentTransaction.name,
+                userEmail: auth.currentUser ? auth.currentUser.email : 'Guest',
+                userName: auth.currentUser ? auth.currentUser.displayName : 'Official User',
+                productName: currentTransaction.name,
+                productId: currentTransaction.id,
                 status: "PENDING_RECEIPT",
-                time: new Date().toISOString()
+                timestamp: new Date().toISOString()
             });
 
-            alert(`OFFICIAL INVOICE GENERATED\n\n${bankDetails}`);
-            window.toggleModal('payment-modal'); // Close current
+            alert(`OFFICIAL INVOICE GENERATED\n\nPlease transfer to:\n\n${bankDetails}`);
 
+            // Modal-ai close panna unga existing toggleModal-aiye use pannuvom
+            window.toggleModal('payment-modal');
+
+            // Success Modal kaatuvom
             setTimeout(() => {
-                window.toggleModal('success-modal'); // Open success
-                const sBtn = document.getElementById('whatsapp-btn');
-                const link = `https://wa.me/94740523507?text=${encodeURIComponent('Payment for: ' + currentTransaction.name)}`;
-                sBtn.onclick = () => {
-                    window.open(link, '_blank');
+                window.toggleModal('success-modal');
+                
+                const successBtn = document.querySelector('#success-modal button');
+                const message = encodeURIComponent(`OFFICIAL PAYMENT SUBMISSION\nProduct: ${currentTransaction.name}\nStatus: Payment Completed.`);
+                const whatsappLink = `https://wa.me/94740523507?text=${message}`;
+
+                successBtn.onclick = () => {
+                    window.open(whatsappLink, '_blank');
                     window.toggleModal('success-modal');
                 };
-            }, 600);
+            }, 800);
+
         } catch (e) {
-            console.error(e);
-            alert("Database Error.");
+            console.error("Database Error:", e);
+            alert("Firebase Error: Database-la record panna mudiyala. Console-ai check pannunga.");
         }
     };
     
