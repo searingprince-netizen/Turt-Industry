@@ -347,15 +347,16 @@
             </div>
         </div>
 
-        <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="text" id="p-name" placeholder="PRODUCT NAME">
-                <input type="text" id="p-price" placeholder="PRICE (LKR)">
-                <input type="text" id="p-image" placeholder="IMAGE URL">
-            </div>
-            <textarea id="p-desc" placeholder="TECH SPECS..." rows="3"></textarea>
-            <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
-        </div>
+     <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
+         <div class="grid grid-cols-1 md:grid-cols-4 gap-4"> <input type="text" id="p-name" placeholder="PRODUCT NAME">
+             <input type="text" id="p-price" placeholder="PRICE (LKR)">
+             <input type="text" id="p-image" placeholder="IMAGE URL">
+        
+             <input type="number" id="p-qty" placeholder="QUANTITY" min="1" value="1">
+         </div>
+         <textarea id="p-desc" placeholder="TECH SPECS..." rows="3"></textarea>
+         <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
+     </div>
 
         <div id="store-grid" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto flex-grow custom-scrollbar bg-black/20">
             </div>
@@ -375,7 +376,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const ADMIN_EMAIL = "searingprince@gmail.com";
     
@@ -489,6 +490,43 @@
             } else {
                 if(adminBtn) adminBtn.classList.add('hidden');
             }
+
+            // Idhu thaan unga script-oda end-la irukura function
+window.initiateBuy = async (id, name) => {
+        // Database-la antha specific product node-ah point panrom
+        const productRef = ref(db, `marketplace/${id}`);
+        
+        try {
+            const snap = await get(productRef);
+            
+            if (snap.exists()) {
+                const productData = snap.val();
+                // Quantity-ah integer-ah mathurom, illana default-ah 1-nu eduthukkom
+                let currentQty = parseInt(productData.quantity) || 1;
+                
+                if (currentQty > 1) {
+                    // Stock 1-vida athigama irundha, onnu koraikkanum
+                    await update(productRef, { 
+                        quantity: currentQty - 1 
+                    });
+                    alert(`ORDER CONFIRMED: ${name} \nRemaining Stock: ${currentQty - 1}`);
+                } else {
+                    // Stock 1-thaan irundhuchuna, purchase-ku appram post-ah delete panrom
+                    await remove(productRef);
+                    alert(`LAST UNIT SOLD: ${name} has been removed from marketplace.`);
+                }
+                
+                // UI-ah update panna marubadiyum products-ah load panrom
+                window.loadProducts(); 
+            } else {
+                alert("ERROR: This product is no longer available in the system.");
+            }
+        } catch (e) {
+            console.error("Marketplace Transaction Error:", e);
+            alert("SYSTEM ERROR: Failed to process the transmission.");
+        }
+    };
+            
             // --- ADMIN LOCK LOGIC END ---
 
             window.updateAccountUI(user);
