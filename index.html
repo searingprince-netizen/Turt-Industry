@@ -765,16 +765,16 @@ let currentTransaction = null;
 };
 
     window.handleBankTransfer = async () => {
-    if(!currentTransaction) {
-        alert("Transaction Error: No product selected.");
+    if(!currentTransaction || !currentTransaction.name) {
+        alert("Transaction Error: Please select a product again.");
         return;
     }
     
     try {
         const transactionRef = ref(db, 'official_payments');
         await push(transactionRef, {
-            userName: auth.currentUser.displayName,
-            userEmail: auth.currentUser.email,
+            userName: auth.currentUser ? auth.currentUser.displayName : "User",
+            userEmail: auth.currentUser ? auth.currentUser.email : "No Email",
             productName: currentTransaction.name,
             paymentMethod: "BANK_TRANSFER",
             status: "PENDING",
@@ -783,7 +783,7 @@ let currentTransaction = null;
 
         alert("OFFICIAL INVOICE GENERATED");
         
-        // Modal-ai close panna unga function-ai use pannunga
+        // Modal-ai close panna
         if(window.toggleModal) window.toggleModal('payment-modal');
         else if(window.closeAnyModal) window.closeAnyModal('payment-modal');
 
