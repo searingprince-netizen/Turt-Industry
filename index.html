@@ -374,18 +374,26 @@
 </div>
 
 <div id="payment-modal" class="modal fixed inset-0 z-[999] bg-black/90 hidden items-center justify-center p-4">
-    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 text-center relative">
-        <button onclick="window.closeAnyModal('payment-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 relative">
+        <button onclick="window.toggleModal('payment-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white">
             <i class="fa-solid fa-xmark text-xl"></i>
         </button>
-        <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6">Select Payment Method</h2>
-        <div class="space-y-4">
-            <button onclick="window.handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-blue-500 transition-all text-white">
-    <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
-</button>
-            <button class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-zinc-600 cursor-not-allowed">
-                Koko (Coming Soon)
-            </button>
+        
+        <div id="payment-modal-inner">
+            <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6 text-center">Select Method</h2>
+            <div class="space-y-4">
+                <button onclick="window.showPaymentSub('bank-transfer')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:border-blue-600 transition-all text-white flex items-center justify-center">
+                    <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
+                </button>
+                
+                <button onclick="window.showPaymentSub('cod')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:border-blue-600 transition-all text-white flex items-center justify-center">
+                    <i class="fa-solid fa-truck-fast mr-2"></i> Cash On Delivery
+                </button>
+
+                <button onclick="window.showPaymentSub('visit')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:border-blue-600 transition-all text-white flex items-center justify-center">
+                    <i class="fa-solid fa-location-dot mr-2"></i> Visit Place
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -734,72 +742,105 @@ window.initiateBuy = async (id, name) => {
         }
     };
 
+// --- NEW PROCUREMENT LOGIC ---
 let currentTransaction = null;
 
-    // Force Open Modal
-    window.openAnyModal = (id) => {
-        const m = document.getElementById(id);
-        if(m) {
+window.toggleModal = (id) => {
+    const m = document.getElementById(id);
+    if(m) {
+        if(m.classList.contains('hidden')) {
             m.classList.remove('hidden');
             m.style.display = 'flex';
-        }
-    };
-
-    // Force Close Modal
-    window.closeAnyModal = (id) => {
-        const m = document.getElementById(id);
-        if(m) {
+        } else {
             m.classList.add('hidden');
             m.style.display = 'none';
         }
-    };
+    }
+};
 
-    window.initiateBuy = (id, name) => {
-    if (!window.isLoggedIn) {
-        window.toggleModal('login-modal'); 
+window.initiateBuy = (id, name) => {
+    if (!auth.currentUser) {
+        alert("Please login to continue");
+        window.toggleModal('login-modal');
         return;
     }
     currentTransaction = { id, name };
-    // 'payment-modal' open aaga toggleModal use pannunga
+    // Munaadi modal content-ai reset pannittu open panrom
+    window.resetPaymentModal();
     window.toggleModal('payment-modal');
 };
 
-    window.handleBankTransfer = async () => {
-    if(!currentTransaction || !currentTransaction.name) {
-        alert("Transaction Error: Please select a product again.");
-        return;
-    }
+window.resetPaymentModal = () => {
+    const inner = document.getElementById('payment-modal-inner');
+    if(!inner) return;
+    inner.innerHTML = `
+        <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6 text-center">Select Method</h2>
+        <div class="space-y-4">
+            <button onclick="window.showPaymentSub('bank-transfer')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:border-blue-600 transition-all text-white flex items-center justify-center">
+                <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
+            </button>
+            <button onclick="window.showPaymentSub('cod')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:border-blue-600 transition-all text-white flex items-center justify-center">
+                <i class="fa-solid fa-truck-fast mr-2"></i> Cash On Delivery
+            </button>
+            <button onclick="window.showPaymentSub('visit')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:border-blue-600 transition-all text-white flex items-center justify-center">
+                <i class="fa-solid fa-location-dot mr-2"></i> Visit Place
+            </button>
+        </div>`;
+};
+
+window.showPaymentSub = (type) => {
+    const inner = document.getElementById('payment-modal-inner');
+    const pName = currentTransaction ? currentTransaction.name : "Product";
     
-    try {
-        const transactionRef = ref(db, 'official_payments');
-        await push(transactionRef, {
-            userName: auth.currentUser ? auth.currentUser.displayName : "User",
-            userEmail: auth.currentUser ? auth.currentUser.email : "No Email",
-            productName: currentTransaction.name,
-            paymentMethod: "BANK_TRANSFER",
-            status: "PENDING",
-            timestamp: serverTimestamp()
-        });
-
-        alert("OFFICIAL INVOICE GENERATED");
-        
-        // Modal-ai close panna
-        if(window.toggleModal) window.toggleModal('payment-modal');
-        else if(window.closeAnyModal) window.closeAnyModal('payment-modal');
-
-        // Success Modal trigger
-        setTimeout(() => {
-            if(window.toggleModal) window.toggleModal('success-modal');
-            const waBtn = document.getElementById('whatsapp-btn-final');
-            if (waBtn) {
-                const msg = encodeURIComponent(`Hello, I've paid for ${currentTransaction.name}. Email: ${auth.currentUser.email}`);
-                waBtn.onclick = () => window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
-            }
-        }, 500);
-
-    } catch (e) {
-        alert("Database Error: " + e.message);
+    if(type === 'bank-transfer') {
+        inner.innerHTML = `
+            <h2 class="text-white font-black uppercase italic text-lg mb-4 text-center">Bank Details</h2>
+            <div class="bg-blue-600/10 border border-blue-600/20 p-4 rounded-xl mb-4 text-[10px] font-mono text-blue-400">
+                BANK: YOUR BANK NAME<br>ACC: 1234567890<br>NAME: SHAN / TURT IND<br>BRANCH: COLOMBO
+            </div>
+            <button onclick="window.sendToWhatsApp('Bank Transfer', '${pName}')" class="w-full bg-green-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white">
+                <i class="fa-brands fa-whatsapp mr-2"></i> Send Receipt
+            </button>
+            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-500 text-[8px] uppercase font-bold tracking-widest">Back to Options</button>`;
+    } 
+    else if(type === 'cod') {
+        inner.innerHTML = `
+            <h2 class="text-white font-black uppercase italic text-lg mb-4 text-center">Delivery Details</h2>
+            <div class="space-y-3">
+                <input id="cod-addr" placeholder="FULL ADDRESS" class="w-full bg-zinc-900 border border-white/5 p-4 rounded-xl text-white text-[10px] uppercase outline-none focus:border-blue-500">
+                <input id="cod-phone" placeholder="PHONE NUMBER" class="w-full bg-zinc-900 border border-white/5 p-4 rounded-xl text-white text-[10px] uppercase outline-none focus:border-blue-500">
+            </div>
+            <button onclick="window.handleCOD('${pName}')" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white mt-4">Confirm & WhatsApp</button>
+            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-500 text-[8px] uppercase font-bold tracking-widest">Back</button>`;
     }
+    else if(type === 'visit') {
+        inner.innerHTML = `
+            <h2 class="text-white font-black uppercase italic text-lg mb-4 text-center">Visit Schedule</h2>
+            <p class="text-zinc-500 text-[9px] uppercase mb-4 text-center italic">Location: No. 123, Turt Street, Colombo</p>
+            <input id="visit-time" type="datetime-local" class="w-full bg-zinc-900 border border-white/5 p-4 rounded-xl text-white text-[10px] mb-4 outline-none">
+            <button onclick="window.sendToWhatsApp('Visit Place', '${pName}')" class="w-full bg-green-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-white">Confirm Visit via Chat</button>
+            <button onclick="window.resetPaymentModal()" class="w-full mt-4 text-zinc-500 text-[8px] uppercase font-bold tracking-widest">Back</button>`;
+    }
+};
+
+window.sendToWhatsApp = (method, product) => {
+    const extra = document.getElementById('visit-time')?.value || "Not specified";
+    const msg = encodeURIComponent(`Hello Turt Industry,\n\nI want to buy: ${product}\nMethod: ${method}\nAdditional Info: ${extra}`);
+    window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
+};
+
+window.handleCOD = async (product) => {
+    const addr = document.getElementById('cod-addr').value;
+    const phone = document.getElementById('cod-phone').value;
+    if(!addr || !phone) return alert("Fill all details!");
+
+    try {
+        await push(ref(db, 'official_payments'), {
+            product, address: addr, phone, method: "COD", 
+            email: auth.currentUser.email, timestamp: serverTimestamp()
+        });
+        window.sendToWhatsApp('Cash On Delivery', product);
+    } catch(e) { alert("Error: " + e.message); }
 };
     
 </script>
