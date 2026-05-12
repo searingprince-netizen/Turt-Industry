@@ -373,11 +373,11 @@
     </div>
 </div>
 
-<div id="payment-modal" class="modal">
-    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 shadow-2xl text-center">
+<div id="payment-modal" class="modal" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); align-items: center; justify-content: center;">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 text-center">
         <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6">Select Payment Method</h2>
         <div class="space-y-4">
-            <button onclick="handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-blue-500 transition shadow-lg shadow-blue-900/20">
+            <button onclick="handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-blue-500 transition shadow-lg shadow-blue-900/20 text-white">
                 <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
             </button>
             <button class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-xs text-zinc-600 cursor-not-allowed">
@@ -388,14 +388,14 @@
     </div>
 </div>
 
-<div id="success-modal" class="modal">
-    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-10 shadow-2xl text-center">
+<div id="success-modal" class="modal" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.9); align-items: center; justify-content: center;">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-10 text-center">
         <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <i class="fa-solid fa-check text-green-500 text-4xl animate-bounce"></i>
         </div>
         <h2 class="text-white font-black uppercase italic tracking-tighter text-2xl mb-2">Payment Success!</h2>
         <p class="text-zinc-500 text-[10px] uppercase tracking-widest mb-8">Transaction logged. Please submit your receipt for verification.</p>
-        <button class="w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition">
+        <button id="whatsapp-btn" class="w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition">
             SUBMIT RECEIPT (OFFICIAL)
         </button>
     </div>
@@ -738,44 +738,44 @@ window.initiateBuy = async (id, name) => {
 
     // Marketplace Purchase Initiation
     window.initiateBuy = (id, name) => {
+        // User login panni irukara-nu check panrom
         if (!window.isLoggedIn) {
             window.toggleModal('login-modal');
             return;
         }
         currentTransaction = { id, name };
-        window.toggleModal('payment-modal');
+        window.toggleModal('payment-modal'); // Payment modal-ai open pannum
     };
 
-    // Official Bank Transfer Logic
+    // Bank Transfer Click Pannathum Nadakkuvathu
     window.handleBankTransfer = async () => {
-        if(!currentTransaction || !auth.currentUser) return;
+        if(!currentTransaction) return;
 
-        const bankDetails = "COMMERCIAL BANK\nTurt Industry (PVT) LTD\nAcc: 8019770570\nBranch: Grandpass";
+        const bankDetails = "COMMERCIAL BANK\nTurt Industry (PVT) LTD\nAcc: 8010XXXXXX\nBranch: Colombo";
         
         try {
-            // 1. Log transaction to Firebase for official tracking
-            const transactionRef = ref(db, 'official_payments');
-            await push(transactionRef, {
-                userEmail: auth.currentUser.email,
-                userName: auth.currentUser.displayName || 'Official User',
+            // Unga code-la munnadiye 'db' define panni irukinga, athaiye inga use panrom
+            // 'ref' and 'push' unga firebase-database import-la irunthu varum
+            const transactionRef = window.dbRef(window.db, 'official_payments');
+            await window.dbPush(transactionRef, {
+                userEmail: window.auth.currentUser ? window.auth.currentUser.email : 'Guest',
+                userName: window.auth.currentUser ? window.auth.currentUser.displayName : 'Official User',
                 productName: currentTransaction.name,
                 productId: currentTransaction.id,
-                paymentMethod: "Bank Transfer",
                 status: "PENDING_RECEIPT",
-                timestamp: serverTimestamp()
+                timestamp: new Date().toISOString()
             });
 
-            // 2. Alert Bank Details
-            alert(`OFFICIAL INVOICE GENERATED\n\nPlease transfer to:\n\n${bankDetails}\n\nReference: ${auth.currentUser.displayName || 'Your Name'}`);
+            alert(`OFFICIAL INVOICE GENERATED\n\nPlease transfer to:\n\n${bankDetails}`);
 
             window.closeModal('payment-modal');
 
-            // 3. Show Success Modal with WhatsApp redirect
+            // Success Modal kaatuvom
             setTimeout(() => {
                 window.toggleModal('success-modal');
                 
                 const successBtn = document.querySelector('#success-modal button');
-                const message = encodeURIComponent(`OFFICIAL PAYMENT SUBMISSION\nUser: ${auth.currentUser.displayName}\nProduct: ${currentTransaction.name}\nStatus: Payment Completed.`);
+                const message = encodeURIComponent(`OFFICIAL PAYMENT SUBMISSION\nProduct: ${currentTransaction.name}\nStatus: Payment Completed.`);
                 const whatsappLink = `https://wa.me/94740523507?text=${message}`;
 
                 successBtn.onclick = () => {
@@ -785,8 +785,8 @@ window.initiateBuy = async (id, name) => {
             }, 1000);
 
         } catch (e) {
-            console.error("Official Transaction Error:", e);
-            alert("System Error: Failed to log transaction.");
+            console.error("Payment Error:", e);
+            alert("System Error: Failed to log transaction.Transaction Error:");
         }
     };
     
