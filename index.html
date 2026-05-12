@@ -381,8 +381,8 @@
         <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6">Select Payment Method</h2>
         <div class="space-y-4">
             <button onclick="window.handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-blue-500 transition-all text-white">
-                <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
-            </button>
+    <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
+</button>
             <button class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-zinc-600 cursor-not-allowed">
                 Koko (Coming Soon)
             </button>
@@ -765,36 +765,40 @@ let currentTransaction = null;
 };
 
     window.handleBankTransfer = async () => {
-    if(!currentTransaction) return;
+    if(!currentTransaction) {
+        alert("Transaction Error: No product selected.");
+        return;
+    }
     
     try {
         const transactionRef = ref(db, 'official_payments');
         await push(transactionRef, {
-            userId: auth.currentUser.uid,
             userName: auth.currentUser.displayName,
             userEmail: auth.currentUser.email,
             productName: currentTransaction.name,
-            productId: currentTransaction.id,
             paymentMethod: "BANK_TRANSFER",
             status: "PENDING",
-            timestamp: serverTimestamp() // intha line important
+            timestamp: serverTimestamp()
         });
 
         alert("OFFICIAL INVOICE GENERATED");
-        window.toggleModal('payment-modal'); // Close modal
+        
+        // Modal-ai close panna unga function-ai use pannunga
+        if(window.toggleModal) window.toggleModal('payment-modal');
+        else if(window.closeAnyModal) window.closeAnyModal('payment-modal');
 
+        // Success Modal trigger
         setTimeout(() => {
-            window.toggleModal('success-modal');
+            if(window.toggleModal) window.toggleModal('success-modal');
             const waBtn = document.getElementById('whatsapp-btn-final');
-            const msg = encodeURIComponent(`Hello, I've paid for ${currentTransaction.name}. Email: ${auth.currentUser.email}`);
-            waBtn.onclick = () => {
-                window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
-            };
+            if (waBtn) {
+                const msg = encodeURIComponent(`Hello, I've paid for ${currentTransaction.name}. Email: ${auth.currentUser.email}`);
+                waBtn.onclick = () => window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
+            }
         }, 500);
 
     } catch (e) {
-        console.error("Payment Error:", e);
-        alert("DB Error: " + e.message);
+        alert("Database Error: " + e.message);
     }
 };
     
