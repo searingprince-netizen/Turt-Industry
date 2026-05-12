@@ -373,14 +373,14 @@
     </div>
 </div>
 
-<div id="payment-modal" class="modal fixed inset-0 z-[500] bg-black/90 hidden items-center justify-center p-4">
-    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 text-center relative">
-        <button onclick="window.toggleModal('payment-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white">
+<div id="payment-modal" class="modal fixed inset-0 z-[500] bg-black/95 hidden items-center justify-center p-4">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-8 text-center relative shadow-2xl">
+        <button onclick="window.toggleModal('payment-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors">
             <i class="fa-solid fa-xmark text-xl"></i>
         </button>
         <h2 class="text-white font-black uppercase italic tracking-tighter text-xl mb-6">Select Payment Method</h2>
         <div class="space-y-4">
-            <button onclick="handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-blue-500 transition-all text-white">
+            <button onclick="handleBankTransfer()" class="w-full bg-blue-600 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-blue-500 transition-all text-white shadow-lg shadow-blue-900/20">
                 <i class="fa-solid fa-building-columns mr-2"></i> Bank Transfer
             </button>
             <button class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] text-zinc-600 cursor-not-allowed">
@@ -391,7 +391,7 @@
 </div>
 
 <div id="success-modal" class="modal fixed inset-0 z-[500] bg-black/95 hidden items-center justify-center p-4">
-    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-10 text-center relative">
+    <div class="max-w-sm w-full bg-[#0a0a0a] border border-white/10 rounded-3xl p-10 text-center relative shadow-2xl">
         <button onclick="window.toggleModal('success-modal')" class="absolute top-4 right-4 text-zinc-500 hover:text-white">
             <i class="fa-solid fa-xmark text-xl"></i>
         </button>
@@ -399,13 +399,13 @@
             <i class="fa-solid fa-check text-green-500 text-4xl animate-bounce"></i>
         </div>
         <h2 class="text-white font-black uppercase italic tracking-tighter text-2xl mb-2">Payment Success!</h2>
-        <p class="text-zinc-500 text-[10px] uppercase tracking-widest mb-8">Order logged successfully.</p>
+        <p class="text-zinc-500 text-[10px] uppercase tracking-widest mb-8 leading-relaxed">Order logged. Please submit the receipt via WhatsApp.</p>
         <button id="whatsapp-btn" class="w-full bg-white text-black py-4 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-green-500 hover:text-white transition-all">
             SUBMIT RECEIPT (WHATSAPP)
         </button>
     </div>
 </div>
-
+    
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -738,71 +738,61 @@ window.initiateBuy = async (id, name) => {
         }
     };
 
-   // 1. Intha variable script-oda top-la irukanum
-    let currentTransaction = null;
+   let currentTransaction = null;
 
-    // 2. TOGGLE MODAL FIX (Ithai unga script-la irukira toggleModal-ku bathila replace pannunga)
+    // Fixed Toggle Function for all Modals
     window.toggleModal = (id) => {
         const modal = document.getElementById(id);
         if (!modal) return;
         
-        // Check if currently hidden
-        if (modal.classList.contains('hidden') || modal.style.display === 'none' || !modal.style.display) {
+        if (modal.classList.contains('hidden')) {
             modal.classList.remove('hidden');
-            modal.style.display = 'flex'; // Force display flex to show it
+            modal.classList.add('flex'); // hidden remove panna flex katti screen-la kaatum
         } else {
-            modal.style.display = 'none';
             modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }
     };
 
-    // 3. PURCHASE INITIATE
     window.initiateBuy = (id, name) => {
         if (!window.isLoggedIn) {
             window.toggleModal('login-modal');
             return;
         }
         currentTransaction = { id, name };
-        window.toggleModal('payment-modal'); // Ippo ithu modal-ai open pannum
+        window.toggleModal('payment-modal');
     };
 
-    // 4. BANK TRANSFER LOGIC
     window.handleBankTransfer = async () => {
         if(!currentTransaction) return;
-
         const bankDetails = "COMMERCIAL BANK\nTurt Industry (PVT) LTD\nAcc: 8010XXXXXX\nBranch: Colombo";
         
         try {
+            // Using standard firebase ref and push
             const transactionRef = ref(db, 'official_payments');
             await push(transactionRef, {
-                userEmail: auth.currentUser ? auth.currentUser.email : 'Guest',
-                userName: auth.currentUser ? auth.currentUser.displayName : 'Official User',
-                productName: currentTransaction.name,
-                productId: currentTransaction.id,
+                user: auth.currentUser ? auth.currentUser.displayName : 'Guest',
+                email: auth.currentUser ? auth.currentUser.email : 'N/A',
+                product: currentTransaction.name,
                 status: "PENDING_RECEIPT",
-                timestamp: new Date().toISOString()
+                time: new Date().toISOString()
             });
 
-            alert(`OFFICIAL INVOICE GENERATED\n\nPlease transfer to:\n\n${bankDetails}`);
-
-            window.toggleModal('payment-modal'); // Close selection
+            alert(`OFFICIAL INVOICE GENERATED\n\n${bankDetails}`);
+            window.toggleModal('payment-modal'); // Close current
 
             setTimeout(() => {
-                window.toggleModal('success-modal'); // Show success
-                
-                const successBtn = document.getElementById('whatsapp-btn');
-                const message = encodeURIComponent(`OFFICIAL PAYMENT SUBMISSION\nProduct: ${currentTransaction.name}\nUser: ${auth.currentUser ? auth.currentUser.displayName : 'Official'}\nStatus: Payment Completed.`);
-                const whatsappLink = `https://wa.me/94740523507?text=${message}`;
-
-                successBtn.onclick = () => {
-                    window.open(whatsappLink, '_blank');
+                window.toggleModal('success-modal'); // Open success
+                const sBtn = document.getElementById('whatsapp-btn');
+                const link = `https://wa.me/94740523507?text=${encodeURIComponent('Payment for: ' + currentTransaction.name)}`;
+                sBtn.onclick = () => {
+                    window.open(link, '_blank');
                     window.toggleModal('success-modal');
                 };
-            }, 800);
-
+            }, 600);
         } catch (e) {
-            console.error("Payment Error:", e);
-            alert("System Error: Failed to log transaction.");
+            console.error(e);
+            alert("Database Error.");
         }
     };
     
