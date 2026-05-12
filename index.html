@@ -736,64 +736,64 @@ window.initiateBuy = async (id, name) => {
 
 let currentTransaction = null;
 
-    // Force Open Modal
-    window.openAnyModal = (id) => {
-        const m = document.getElementById(id);
-        if(m) {
-            m.classList.remove('hidden');
-            m.style.display = 'flex';
-        }
-    };
+    // --- Modal Management (Unified Logic) ---
+window.openAnyModal = (id) => {
+    const m = document.getElementById(id);
+    if(m) {
+        m.classList.add('flex');
+        m.classList.remove('hidden');
+    }
+};
 
-    // Force Close Modal
-    window.closeAnyModal = (id) => {
-        const m = document.getElementById(id);
-        if(m) {
-            m.classList.add('hidden');
-            m.style.display = 'none';
-        }
-    };
+window.closeAnyModal = (id) => {
+    const m = document.getElementById(id);
+    if(m) {
+        m.classList.remove('flex');
+        m.classList.add('hidden');
+    }
+};
 
-    window.initiateBuy = (id, name) => {
-        if (!window.isLoggedIn) {
-            window.toggleModal('login-modal'); // Unga existing login modal function
-            return;
-        }
-        currentTransaction = { id, name };
-        window.openAnyModal('payment-modal');
-    };
+// --- Purchase Logic ---
+window.initiateBuy = (id, name) => {
+    if (!window.isLoggedIn) {
+        window.toggleModal('login-modal');
+        return;
+    }
+    currentTransaction = { id, name };
+    window.openAnyModal('payment-modal');
+};
 
-    window.handleBankTransfer = async () => {
-        if(!currentTransaction) return;
-        
-        try {
-            // FIREBASE PUSH
-            const transactionRef = ref(db, 'official_payments');
-            await push(transactionRef, {
-                user: auth.currentUser ? auth.currentUser.displayName : 'Official User',
-                product: currentTransaction.name,
-                status: "PENDING",
-                time: new Date().toISOString()
-            });
+window.handleBankTransfer = async () => {
+    if(!currentTransaction) return;
+    
+    try {
+        const transactionRef = ref(db, 'official_payments');
+        await push(transactionRef, {
+            user: auth.currentUser ? auth.currentUser.displayName : 'Official User',
+            product: currentTransaction.name,
+            status: "PENDING",
+            timestamp: serverTimestamp() // Better than local time
+        });
 
-            alert("OFFICIAL INVOICE GENERATED");
-            window.closeAnyModal('payment-modal');
+        window.closeAnyModal('payment-modal');
 
-            setTimeout(() => {
-                window.openAnyModal('success-modal');
-                const btn = document.getElementById('whatsapp-btn-final');
-                const msg = encodeURIComponent(`Payment for ${currentTransaction.name}`);
-                btn.onclick = () => {
-                    window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
-                    window.closeAnyModal('success-modal');
-                };
-            }, 500);
+        // Small delay for smooth transition
+        setTimeout(() => {
+            window.openAnyModal('success-modal');
+            const btn = document.getElementById('whatsapp-btn-final');
+            const msg = encodeURIComponent(`Hello, I want to submit the bank receipt for: ${currentTransaction.name}`);
+            
+            btn.onclick = () => {
+                window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
+                window.closeAnyModal('success-modal');
+            };
+        }, 300);
 
-        } catch (e) {
-            console.error(e);
-            alert("DB Error");
-        }
-    };
+    } catch (e) {
+        console.error("Payment Error:", e);
+        alert("System error. Please try again.");
+    }
+};
     
 </script>
 </body>
