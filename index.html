@@ -623,8 +623,9 @@ window.initiateBuy = async (id, name) => {
         const price = document.getElementById('p-price').value;
         const desc = document.getElementById('p-desc').value;
         const img = document.getElementById('p-image').value;
+        const qtyInput = document.getElementById('p-qty').value; // Input value-ah edukkarom
 
-        if(!name || !price) return alert("Please fill Product Name and Price!");
+        if(!name || !price || !qtyInput) return alert("Please fill Name, Price and Quantity!");
 
         try {
             const marketplaceRef = ref(db, 'marketplace');
@@ -633,6 +634,7 @@ window.initiateBuy = async (id, name) => {
                 price: price,
                 desc: desc,
                 img: img,
+                quantity: Number(qtyInput), // KANDIPPA Number() use panni save pannanum
                 seller: auth.currentUser.email,
                 timestamp: serverTimestamp()
             });
@@ -644,10 +646,11 @@ window.initiateBuy = async (id, name) => {
             document.getElementById('p-price').value = '';
             document.getElementById('p-desc').value = '';
             document.getElementById('p-image').value = '';
+            document.getElementById('p-qty').value = '1';
             
             document.getElementById('admin-post-section').classList.add('hidden');
             window.closeModal('product-store-modal');
-            window.loadProducts(); // Refresh the list
+            window.loadProducts(); 
         } catch (e) { 
             console.error("Marketplace Error:", e);
             alert("Error: System failed to push product node.");
