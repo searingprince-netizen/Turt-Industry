@@ -799,7 +799,7 @@ let currentTransaction = null;
         } else if(type === 'cod') {
             content.innerHTML = `
                 <h3 class="text-blue-500 font-bold mb-2 uppercase text-xs italic tracking-widest text-center">Cash On Delivery</h3>
-                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | 3-4 Days</p>
+                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | With in 3-4 Days</p>
                 <div class="space-y-2">
                     <input id="p-name" placeholder="FULL NAME" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
                     <input id="p-phone" placeholder="PHONE NUMBER" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
@@ -813,7 +813,7 @@ let currentTransaction = null;
                 <div class="bg-zinc-900/50 border border-white/5 p-4 rounded-xl space-y-3 text-center">
                     <p class="text-[10px] text-white font-bold uppercase tracking-widest">Our Location</p>
                     <p class="text-[10px] text-zinc-400 leading-relaxed italic">
-                        No: 123, Turt Industry Hub,<br>Main Street, Your City.
+                        No: 123, Turt Industry Hub,<br>Main Street, Colombo-14.
                     </p>
                     <div class="h-[1px] bg-white/5 w-full"></div>
                     <p class="text-[10px] text-white font-bold uppercase tracking-widest">Contact</p>
@@ -823,18 +823,39 @@ let currentTransaction = null;
         }
     };
 
-    window.openPopupWhatsApp = (method, name) => {
+    window.openPopupWhatsApp = async (method, name) => {
         const uName = document.getElementById('p-name')?.value || "Not provided";
         const uPhone = document.getElementById('p-phone')?.value || "Not provided";
         const addr = document.getElementById('p-addr')?.value || "Not provided";
         
+        // 1. Firebase-la Order Details-ai Store panrom
+        try {
+            const ordersRef = ref(db, 'official_payments'); // Unga order table peyar
+            await push(ordersRef, {
+                customerName: uName,
+                phone: uPhone,
+                address: addr,
+                product: name,
+                method: method,
+                status: "PENDING",
+                timestamp: new Date().toISOString()
+            });
+            console.log("Order stored in Firebase");
+        } catch (e) {
+            console.error("Firebase Error:", e);
+        }
+
+        // 2. WhatsApp Message Ready panrom
         let msgText = `Hi Turt Industry, I want to procure ${name} via ${method}.`;
-        
         if(method === 'COD') {
             msgText += `\n\nOrder Details:\n- Name: ${uName}\n- Phone: ${uPhone}\n- Address: ${addr}\n- Delivery: LKR 400 (Island Wide)`;
+        } else {
+            msgText += `\n\nMethod: ${method}\nProduct: ${name}`;
         }
 
         const msg = encodeURIComponent(msgText);
+        
+        // 3. WhatsApp thirakkum
         window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
         window.closePopup();
     };
