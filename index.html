@@ -777,9 +777,10 @@ let currentTransaction = null;
 
         content.innerHTML = `
             <h2 class="text-white font-black uppercase italic text-xl mb-6 text-center">Procure: ${productName}</h2>
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <button onclick="window.loadSub('bank', '${productName}')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase text-[10px] text-white hover:border-blue-600 transition-all">Bank Transfer</button>
                 <button onclick="window.loadSub('cod', '${productName}')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase text-[10px] text-white hover:border-blue-600 transition-all">Cash On Delivery</button>
+                <button onclick="window.loadSub('pickup', '${productName}')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase text-[10px] text-white hover:border-blue-600 transition-all">Direct Pickup</button>
             </div>
         `;
         popup.classList.add('show');
@@ -790,25 +791,50 @@ let currentTransaction = null;
         if(type === 'bank') {
             content.innerHTML = `
                 <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Bank Details</h3>
-                <p class="text-blue-400 text-[10px] font-mono bg-blue-500/10 p-4 rounded-lg mb-4 leading-relaxed">
+                <p class="text-blue-400 text-[10px] font-mono bg-blue-500/10 p-4 rounded-lg mb-4 leading-relaxed text-center">
                     BANK: COMMERCIAL BANK<br>ACC: 1234567890<br>NAME: SHAN / TURT IND
                 </p>
                 <button onclick="window.openPopupWhatsApp('Bank', '${name}')" class="w-full bg-green-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase">Send Receipt (WA)</button>
                 <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
-        } else {
+        } else if(type === 'cod') {
             content.innerHTML = `
-                <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Cash On Delivery</h3>
-                <input id="p-addr" placeholder="ENTER DELIVERY ADDRESS" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white mb-2 text-[10px] focus:border-blue-500 outline-none">
-                <button onclick="window.openPopupWhatsApp('COD', '${name}')" class="w-full bg-blue-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase">Confirm Order</button>
+                <h3 class="text-blue-500 font-bold mb-2 uppercase text-xs italic tracking-widest text-center">Cash On Delivery</h3>
+                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | 3-4 Days</p>
+                <div class="space-y-2">
+                    <input id="p-name" placeholder="FULL NAME" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
+                    <input id="p-phone" placeholder="PHONE NUMBER" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
+                    <textarea id="p-addr" placeholder="DELIVERY ADDRESS" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500 h-20"></textarea>
+                </div>
+                <button onclick="window.openPopupWhatsApp('COD', '${name}')" class="w-full bg-blue-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase mt-4">Confirm Order</button>
                 <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
+        } else if(type === 'pickup') {
+            content.innerHTML = `
+                <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Direct Pickup</h3>
+                <div class="bg-zinc-900/50 border border-white/5 p-4 rounded-xl space-y-3 text-center">
+                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Our Location</p>
+                    <p class="text-[10px] text-zinc-400 leading-relaxed italic">
+                        No: 123, Turt Industry Hub,<br>Main Street, Your City.
+                    </p>
+                    <div class="h-[1px] bg-white/5 w-full"></div>
+                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Contact</p>
+                    <p class="text-[10px] text-blue-400 font-mono">+94 74 052 3507</p>
+                </div>
+                <button onclick="window.openProcure('${name}')" class="w-full mt-6 bg-zinc-900 py-3 rounded-lg font-bold text-[8px] text-zinc-500 uppercase tracking-widest border border-white/5 hover:text-white transition-all">Back to Methods</button>`;
         }
     };
 
-    window.closePopup = () => document.getElementById('procure-popup').classList.remove('show');
-
     window.openPopupWhatsApp = (method, name) => {
-        const addr = document.getElementById('p-addr')?.value || "No address provided";
-        const msg = encodeURIComponent(`Hi Turt Industry, I want to procure ${name} via ${method}.\nAddress: ${addr}`);
+        const uName = document.getElementById('p-name')?.value || "Not provided";
+        const uPhone = document.getElementById('p-phone')?.value || "Not provided";
+        const addr = document.getElementById('p-addr')?.value || "Not provided";
+        
+        let msgText = `Hi Turt Industry, I want to procure ${name} via ${method}.`;
+        
+        if(method === 'COD') {
+            msgText += `\n\nOrder Details:\n- Name: ${uName}\n- Phone: ${uPhone}\n- Address: ${addr}\n- Delivery: LKR 400 (Island Wide)`;
+        }
+
+        const msg = encodeURIComponent(msgText);
         window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
         window.closePopup();
     };
