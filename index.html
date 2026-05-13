@@ -820,45 +820,57 @@ let currentTransaction = null;
         }
     };
 
+   // Puthu Logic: Ithu thaan unga puthu popup-ai thirakkum
     window.initiateBuy = (id, name) => {
         if (!window.isLoggedIn) {
-            window.toggleModal('login-modal'); // Unga existing login modal function
+            if(window.toggleModal) window.toggleModal('login-modal');
+            else alert("Please login first");
             return;
         }
-        currentTransaction = { id, name };
-        window.openAnyModal('payment-modal');
+        // Direct-ah namma puthu popup-ai call panrom
+        window.openProcure(name);
     };
 
-    window.handleBankTransfer = async () => {
-        if(!currentTransaction) return;
-        
-        try {
-            // FIREBASE PUSH
-            const transactionRef = ref(db, 'official_payments');
-            await push(transactionRef, {
-                user: auth.currentUser ? auth.currentUser.displayName : 'Official User',
-                product: currentTransaction.name,
-                status: "PENDING",
-                time: new Date().toISOString()
-            });
+    window.openProcure = (productName) => {
+        const popup = document.getElementById('procure-popup');
+        const content = document.getElementById('popup-content');
+        if(!popup || !content) return;
 
-            alert("OFFICIAL INVOICE GENERATED");
-            window.closeAnyModal('payment-modal');
+        content.innerHTML = `
+            <h2 class="text-white font-black uppercase italic text-xl mb-6 text-center tracking-tighter">Procure: ${productName}</h2>
+            <div class="space-y-4">
+                <button onclick="window.loadSub('bank', '${productName}')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase text-[10px] text-white hover:border-blue-600 transition-all">Bank Transfer</button>
+                <button onclick="window.loadSub('cod', '${productName}')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase text-[10px] text-white hover:border-blue-600 transition-all">Cash On Delivery</button>
+            </div>
+        `;
+        popup.classList.add('show');
+    };
 
-            setTimeout(() => {
-                window.openAnyModal('success-modal');
-                const btn = document.getElementById('whatsapp-btn-final');
-                const msg = encodeURIComponent(`Payment for ${currentTransaction.name}`);
-                btn.onclick = () => {
-                    window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
-                    window.closeAnyModal('success-modal');
-                };
-            }, 500);
-
-        } catch (e) {
-            console.error(e);
-            alert("DB Error");
+    window.loadSub = (type, name) => {
+        const content = document.getElementById('popup-content');
+        if(type === 'bank') {
+            content.innerHTML = `
+                <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Bank Details</h3>
+                <p class="text-blue-400 text-[10px] font-mono bg-blue-500/5 p-4 rounded-lg mb-4 leading-relaxed">
+                    BANK: YOUR BANK NAME<br>ACC: 1234567890<br>NAME: SHAN / TURT IND
+                </p>
+                <button onclick="window.openPopupWhatsApp('Bank', '${name}')" class="w-full bg-green-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase">Send Receipt (WA)</button>
+                <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
+        } else {
+            content.innerHTML = `
+                <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Cash On Delivery</h3>
+                <input id="p-addr" placeholder="ENTER DELIVERY ADDRESS" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white mb-2 text-[10px] outline-none focus:border-blue-500">
+                <button onclick="window.openPopupWhatsApp('COD', '${name}')" class="w-full bg-blue-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase">Confirm Order</button>
+                <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
         }
+    };
+
+    window.closePopup = () => document.getElementById('procure-popup').classList.remove('show');
+
+    window.openPopupWhatsApp = (method, name) => {
+        const addr = document.getElementById('p-addr')?.value || "No address provided";
+        const msg = encodeURIComponent(`Hi Turt Industry, I want to procure ${name} via ${method}.\nAddress: ${addr}`);
+        window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
     };
     
 </script>
