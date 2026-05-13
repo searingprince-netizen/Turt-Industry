@@ -362,18 +362,20 @@
             </div>
         </div>
 
-    <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4"> 
-        <input type="text" id="p-name" placeholder="PRODUCT NAME" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px]">
-        <input type="text" id="p-price" placeholder="PRICE (LKR)" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px]">
-        <input type="text" id="p-image" placeholder="IMAGE URL" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px]">
-        <input type="number" id="p-qty" placeholder="QUANTITY" min="1" value="1" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px]">
+     <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
+         <div class="grid grid-cols-1 md:grid-cols-4 gap-4"> <input type="text" id="p-name" placeholder="PRODUCT NAME">
+             <input type="text" id="p-price" placeholder="PRICE (LKR)">
+             <input type="text" id="p-image" placeholder="IMAGE URL">
         
-        <input type="text" id="p-ikman" placeholder="IKMAN LINK (OPTIONAL)" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] focus:border-yellow-500">
+             <input type="number" id="p-qty" placeholder="QUANTITY" min="1" value="1">
+         </div>
+         <textarea id="p-desc" placeholder="TECH SPECS..." rows="3"></textarea>
+         <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
+     </div>
+
+        <div id="store-grid" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto flex-grow custom-scrollbar bg-black/20">
+            </div>
     </div>
-    
-    <textarea id="p-desc" placeholder="TECH SPECS..." rows="3" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none"></textarea>
-    <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
 </div>
 
 <div id="history-modal" class="modal">
@@ -520,69 +522,62 @@ window.openPopupWhatsApp = (method, name) => {
     };
 
     // --- Auth Observer ---
-   onAuthStateChanged(auth, (user) => {
-    const navPic = document.getElementById('nav-profile-pic');
-    const portalBtn = document.getElementById('portal-btn');
-    const modalMainInfo = document.getElementById('auth-main-panel');
-    const modalSignedOut = document.getElementById('auth-out-panel');
-    const modalControls = document.getElementById('auth-controls-panel');
-    const modalMoreAccounts = document.getElementById('auth-more-panel');
-    
-    // Admin Sections
-    const adminBtn = document.getElementById('admin-add-btn');
-    const adminPostSection = document.getElementById('admin-post-section'); // Intha ID thaan neenga publish panra window
-
-    const ADMIN_EMAIL = "searingprince@gmail.com"; // Admin Email Fix
-
-    if (user) {
-        window.isLoggedIn = true;
-        if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
-        if(portalBtn) {
-            portalBtn.innerText = "ACCESS GRANTED";
-            portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
-        }
-
-        if(modalSignedOut) modalSignedOut.classList.add('hidden');
-        if(modalMainInfo) modalMainInfo.classList.remove('hidden');
-        if(modalControls) modalControls.classList.remove('hidden');
-        if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
-
-        document.getElementById('auth-profile-pic').src = user.photoURL;
-        document.getElementById('auth-name').innerText = user.displayName;
-        document.getElementById('auth-email-top').innerText = user.email;
-
-        // --- ADMIN LOCK LOGIC START ---
-        // Searingprince login panna mattum thaan publish window theryum
-        if (user.email === ADMIN_EMAIL) {
-            if(adminBtn) adminBtn.classList.remove('hidden');
-            if(adminPostSection) adminPostSection.classList.remove('hidden');
-        } else {
-            // Vera endha gmail-naalum publish window-ai maraichidum
-            if(adminBtn) adminBtn.classList.add('hidden');
-            if(adminPostSection) adminPostSection.classList.add('hidden');
-        }
-        // --- ADMIN LOCK LOGIC END ---
-
-        window.updateAccountUI(user);
-        window.loadArchives();
-        window.loadProducts(); 
-    } else {
-        window.isLoggedIn = false;
-        if(navPic) navPic.style.display = 'none';
-        if(portalBtn) {
-            portalBtn.innerText = "Portal Access";
-            portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
-        }
-        if(modalMainInfo) modalMainInfo.classList.add('hidden');
-        if(modalSignedOut) modalSignedOut.classList.remove('hidden');
-        if(modalControls) modalControls.classList.add('hidden');
-        if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+    onAuthStateChanged(auth, (user) => {
+        const navPic = document.getElementById('nav-profile-pic');
+        const portalBtn = document.getElementById('portal-btn');
+        const modalMainInfo = document.getElementById('auth-main-panel');
+        const modalSignedOut = document.getElementById('auth-out-panel');
+        const modalControls = document.getElementById('auth-controls-panel');
+        const modalMoreAccounts = document.getElementById('auth-more-panel');
         
-        // Logout panna publish window matrum button-ai maraikkanum
-        if(adminBtn) adminBtn.classList.add('hidden');
-        if(adminPostSection) adminPostSection.classList.add('hidden');
-    }
-});
+        // Admin Button reference
+        const adminBtn = document.getElementById('admin-add-btn');
+
+        if (user) {
+            window.isLoggedIn = true;
+            if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
+            if(portalBtn) {
+                portalBtn.innerText = "ACCESS GRANTED";
+                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+            }
+
+            if(modalSignedOut) modalSignedOut.classList.add('hidden');
+            if(modalMainInfo) modalMainInfo.classList.remove('hidden');
+            if(modalControls) modalControls.classList.remove('hidden');
+            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+
+            document.getElementById('auth-profile-pic').src = user.photoURL;
+            document.getElementById('auth-name').innerText = user.displayName;
+            document.getElementById('auth-email-top').innerText = user.email;
+
+            // --- ADMIN LOCK LOGIC START ---
+            if (user.email === ADMIN_EMAIL) {
+                if(adminBtn) adminBtn.classList.remove('hidden');
+            } else {
+                if(adminBtn) adminBtn.classList.add('hidden');
+            }
+      
+            // --- ADMIN LOCK LOGIC END ---
+
+            window.updateAccountUI(user);
+            window.loadArchives();
+            window.loadProducts(); // Store items-ai load pannum
+        } else {
+            window.isLoggedIn = false;
+            if(navPic) navPic.style.display = 'none';
+            if(portalBtn) {
+                portalBtn.innerText = "Portal Access";
+                portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
+            }
+            if(modalMainInfo) modalMainInfo.classList.add('hidden');
+            if(modalSignedOut) modalSignedOut.classList.remove('hidden');
+            if(modalControls) modalControls.classList.add('hidden');
+            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+            
+            // Log out panna admin button-ai maraikkanum
+            if(adminBtn) adminBtn.classList.add('hidden');
+        }
+    });
 
     // --- DB Functions ---
     window.submitOrder = async () => {
@@ -615,178 +610,136 @@ window.openPopupWhatsApp = (method, name) => {
         document.getElementById('builder-title').innerText = "CONFIG: " + name;
     };
 
-window.loadArchives = async () => {
-    const miniList = document.getElementById('mini-history');
-    const fullList = document.getElementById('full-history-list');
-    
-    if (!auth.currentUser) return;
-    
-    try {
-        const ordersRef = ref(db, 'official_payments'); // Sariyaana path
-        const snap = await get(ordersRef);
-        
-        let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Transaction History</p>';
-        
-        if (snap.exists()) {
-            const data = [];
-            snap.forEach(child => { 
-                const val = child.val();
-                // Admin-ku ellam theryanum, user-ku avangaloda order mattum theryanum
-                if (auth.currentUser.email === "searingprince@gmail.com" || val.customerEmail === auth.currentUser.email || val.phone === auth.currentUser.phoneNumber) {
-                    data.push(val); 
-                }
-            });
-
-            if(data.length > 0) {
+    window.loadArchives = async () => {
+        const miniList = document.getElementById('mini-history');
+        const fullList = document.getElementById('full-history-list');
+        if (!auth.currentUser) return;
+        try {
+            const ordersRef = ref(db, 'orders');
+            const q = query(ordersRef, orderByChild('userEmail'), equalTo(auth.currentUser.email));
+            const snap = await get(q);
+            let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
+            if (snap.exists()) {
+                const data = [];
+                snap.forEach(child => { data.push(child.val()); });
                 data.reverse().forEach(d => {
                     html += `
                         <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
                             <div class="flex justify-between items-start mb-3">
-                                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.product || 'Unknown Product'}</p>
-                                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">${d.status || 'PENDING'}</span>
+                                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.model || 'Unknown Model'}</p>
+                                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">Archived</span>
                             </div>
                             <div class="space-y-1">
-                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Method: <span class="text-zinc-200">${d.method || 'N/A'}</span></p>
-                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Customer: <span class="text-zinc-200">${d.customerName || 'N/A'}</span></p>
-                                <p class="text-zinc-500 text-[8px] font-mono mt-2">${d.timestamp ? new Date(d.timestamp).toLocaleString() : ''}</p>
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Material: <span class="text-zinc-200">${d.bodyMaterial || 'N/A'}</span></p>
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Back Panel: <span class="text-zinc-200">${d.backPanel || 'N/A'}</span></p>
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Energy: <span class="text-zinc-200">${d.energyUnit || 'N/A'}</span></p>
+                                ${d.finishNotes ? `<p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Finish: <span class="text-blue-400/80 italic">${d.finishNotes}</span></p>` : ''}
                             </div>
+                            ${d.specialRequirements ? `<div class="mt-3 pt-3 border-t border-white/5"><p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p></div>` : ''}
                         </div>`;
                 });
-            } else {
-                html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found for this account.</p>';
-            }
-        } else { 
-            html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No system archives found.</p>'; 
-        }
-
-        if (miniList) miniList.innerHTML = html;
-        if (fullList) fullList.innerHTML = html;
-        
-    } catch (e) { 
-        console.error("Archive Load Error: ", e); 
-    }
-};
+            } else { html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>'; }
+            if (miniList) miniList.innerHTML = html;
+            if (fullList) fullList.innerHTML = html;
+        } catch (e) { console.error("Archive Load Error: ", e); }
+    };
 
     // ==========================================
     // --- MARKETPLACE CORE FUNCTIONS (Shan) ---
     // ==========================================
 
-window.saveProductToDB = async () => {
-    const adminEmail = "searingprince@gmail.com";
-    if (!auth.currentUser || auth.currentUser.email !== adminEmail) {
-        console.error("Unauthorized attempt!");
-        return; 
-    }
+    window.saveProductToDB = async () => {
+        const name = document.getElementById('p-name').value;
+        const price = document.getElementById('p-price').value;
+        const desc = document.getElementById('p-desc').value;
+        const img = document.getElementById('p-image').value;
+        const qtyInput = document.getElementById('p-qty').value; // Input value-ah edukkarom
 
-    const name = document.getElementById('p-name').value;
-    const price = document.getElementById('p-price').value;
-    const desc = document.getElementById('p-desc').value;
-    const img = document.getElementById('p-image').value;
-    const qtyInput = document.getElementById('p-qty').value;
-    const ikmanLink = document.getElementById('p-ikman')?.value || ""; 
+        if(!name || !price || !qtyInput) return alert("Please fill Name, Price and Quantity!");
 
-    if(!name || !price || !qtyInput) return alert("Please fill Name, Price and Quantity!");
-
-    try {
-        const marketplaceRef = ref(db, 'marketplace');
-        await push(marketplaceRef, {
-            name: name,
-            price: price,
-            desc: desc,
-            img: img,      // 'img' nu save pannuvom
-            image: img,    // Backup-kaga 'image' num save pannuvom (Show aagatha issue fix aagum)
-            quantity: Number(qtyInput),
-            ikman: ikmanLink,
-            seller: auth.currentUser.email,
-            timestamp: serverTimestamp()
-        });
-
-        alert("Product Pushed to Market!");
-        
-        // Fields-ai clear panrom
-        document.getElementById('p-name').value = '';
-        document.getElementById('p-price').value = '';
-        document.getElementById('p-desc').value = '';
-        document.getElementById('p-image').value = '';
-        document.getElementById('p-qty').value = '1';
-        if(document.getElementById('p-ikman')) document.getElementById('p-ikman').value = '';
-        
-        // Product upload aanathum auto-va list-ai refresh panna
-        if(window.loadProducts) window.loadProducts();
-
-    } catch (e) {
-        console.error("Upload Error:", e);
-        alert("Error pushing product");
-    }
-};
-
-   window.loadProducts = async () => {
-    const grid = document.getElementById('store-grid');
-    if(!grid) {
-        console.error("Store grid element not found!");
-        return;
-    }
-
-    try {
-        // Path sariya irukkannu Firebase console-la check pannunga
-        const marketplaceRef = ref(db, 'marketplace'); 
-        const snap = await get(marketplaceRef);
-        let html = '';
-        
-        if (snap.exists()) {
-            const products = [];
-            snap.forEach(child => {
-                products.push({ id: child.key, ...child.val() });
+        try {
+            const marketplaceRef = ref(db, 'marketplace');
+            await push(marketplaceRef, {
+                name: name,
+                price: price,
+                desc: desc,
+                img: img,
+                quantity: Number(qtyInput), // KANDIPPA Number() use panni save pannanum
+                seller: auth.currentUser.email,
+                timestamp: serverTimestamp()
             });
             
-            products.reverse().forEach(p => {
-                const currentQty = Number(p.quantity) || 0;
-                // Double check for all possible image keys
-                const displayImg = p.img || p.image || p.imageUrl || 'https://via.placeholder.com/300?text=NO+IMAGE';
-
-                const ikmanBtn = p.ikman ? `
-                    <a href="${p.ikman}" target="_blank" class="w-full mt-2 bg-[#ffc800] text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center justify-center gap-2 hover:bg-[#e6b400] transition-all no-underline">
-                       <i class="fa-solid fa-up-right-from-square text-[8px]"></i> View on Ikman
-                    </a>` : "";
-
-                html += `
-                <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
-                    <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
-                        <img src="${p.image || p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}"
-                             onerror="this.src='https://via.placeholder.com/300?text=IMAGE+ERROR'" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                    </div>
-                    <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name || 'UNNAMED PRODUCT'}</h3>
-                    
-                    <div class="flex justify-between items-center mt-1">
-                        <p class="text-blue-500 font-mono text-xs">LKR ${p.price || '0.00'}</p>
-                        <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id ? p.id.substring(0, 6) : 'N/A'}</span>
-                    </div>
-
-                    <p class="text-zinc-400 text-[9px] mt-2 font-mono uppercase tracking-widest">
-                        Available Stock: <span class="text-blue-400 font-bold">${currentQty} Units</span>
-                    </p>
-
-                    <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || p.description || 'NO SPECIFICATIONS'}</p>
-                    
-                    <button onclick="window.initiateBuy('${p.id}', '${p.name}')" 
-                            class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
-                        Initiate Purchase
-                    </button>
-                    ${ikmanBtn}
-                </div>`;
-            });
-        } else { 
-            console.warn("No data found in 'marketplace' path");
-            html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">Scanning... No active products found.</p></div>'; 
+            alert("SUCCESS: Product is now LIVE on the market.");
+            
+            // UI Cleanup
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-desc').value = '';
+            document.getElementById('p-image').value = '';
+            document.getElementById('p-qty').value = '1';
+            
+            document.getElementById('admin-post-section').classList.add('hidden');
+            window.closeModal('product-store-modal');
+            window.loadProducts(); 
+        } catch (e) { 
+            console.error("Marketplace Error:", e);
+            alert("Error: System failed to push product node.");
         }
-        grid.innerHTML = html;
-    } catch (e) { 
-        console.error("Marketplace Load Error:", e); 
-        grid.innerHTML = `<p class="text-red-500 text-center">Error loading market: ${e.message}</p>`;
-    }
-};
-    
+    };
+
+    window.loadProducts = async () => {
+        const grid = document.getElementById('store-grid');
+        if(!grid) return;
+
+        try {
+            const marketplaceRef = ref(db, 'marketplace');
+            const snap = await get(marketplaceRef);
+            let html = '';
+            
+            if (snap.exists()) {
+                const products = [];
+                snap.forEach(child => {
+                    products.push({ id: child.key, ...child.val() });
+                });
+                
+                products.reverse().forEach(p => {
+                    // Quantity-ah number-ah mathi check panrom
+                    const currentQty = Number(p.quantity) || 1;
+
+                    html += `
+                    <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
+                        <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
+                            <img src="${p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+                        <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
+                        
+                        <div class="flex justify-between items-center mt-1">
+                            <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
+                            <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id ? p.id.substring(0, 6) : 'N/A'}</span>
+                        </div>
+
+                        <p class="text-zinc-400 text-[9px] mt-2 font-mono uppercase tracking-widest">
+                            Available Stock: <span class="text-blue-400 font-bold">${currentQty} Units</span>
+                        </p>
+
+                        <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || 'NO SPECIFICATIONS PROVIDED'}</p>
+                        
+                        <button onclick="window.initiateBuy('${p.id}', '${p.name}')" 
+                                class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
+                            Initiate Purchase
+                        </button>
+                    </div>`;
+                });
+            } else { 
+                html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">Scanning... No active products found in market nodes.</p></div>'; 
+            }
+            grid.innerHTML = html;
+        } catch (e) { 
+            console.error("Marketplace Load Error:", e); 
+        }
+    };
+
 let currentTransaction = null;
 
     // Force Open Modal
