@@ -520,62 +520,69 @@ window.openPopupWhatsApp = (method, name) => {
     };
 
     // --- Auth Observer ---
-    onAuthStateChanged(auth, (user) => {
-        const navPic = document.getElementById('nav-profile-pic');
-        const portalBtn = document.getElementById('portal-btn');
-        const modalMainInfo = document.getElementById('auth-main-panel');
-        const modalSignedOut = document.getElementById('auth-out-panel');
-        const modalControls = document.getElementById('auth-controls-panel');
-        const modalMoreAccounts = document.getElementById('auth-more-panel');
-        
-        // Admin Button reference
-        const adminBtn = document.getElementById('admin-add-btn');
+   onAuthStateChanged(auth, (user) => {
+    const navPic = document.getElementById('nav-profile-pic');
+    const portalBtn = document.getElementById('portal-btn');
+    const modalMainInfo = document.getElementById('auth-main-panel');
+    const modalSignedOut = document.getElementById('auth-out-panel');
+    const modalControls = document.getElementById('auth-controls-panel');
+    const modalMoreAccounts = document.getElementById('auth-more-panel');
+    
+    // Admin Sections
+    const adminBtn = document.getElementById('admin-add-btn');
+    const adminPostSection = document.getElementById('admin-post-section'); // Intha ID thaan neenga publish panra window
 
-        if (user) {
-            window.isLoggedIn = true;
-            if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
-            if(portalBtn) {
-                portalBtn.innerText = "ACCESS GRANTED";
-                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
-            }
+    const ADMIN_EMAIL = "searingprince@gmail.com"; // Admin Email Fix
 
-            if(modalSignedOut) modalSignedOut.classList.add('hidden');
-            if(modalMainInfo) modalMainInfo.classList.remove('hidden');
-            if(modalControls) modalControls.classList.remove('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
-
-            document.getElementById('auth-profile-pic').src = user.photoURL;
-            document.getElementById('auth-name').innerText = user.displayName;
-            document.getElementById('auth-email-top').innerText = user.email;
-
-            // --- ADMIN LOCK LOGIC START ---
-            if (user.email === ADMIN_EMAIL) {
-                if(adminBtn) adminBtn.classList.remove('hidden');
-            } else {
-                if(adminBtn) adminBtn.classList.add('hidden');
-            }
-      
-            // --- ADMIN LOCK LOGIC END ---
-
-            window.updateAccountUI(user);
-            window.loadArchives();
-            window.loadProducts(); // Store items-ai load pannum
-        } else {
-            window.isLoggedIn = false;
-            if(navPic) navPic.style.display = 'none';
-            if(portalBtn) {
-                portalBtn.innerText = "Portal Access";
-                portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
-            }
-            if(modalMainInfo) modalMainInfo.classList.add('hidden');
-            if(modalSignedOut) modalSignedOut.classList.remove('hidden');
-            if(modalControls) modalControls.classList.add('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
-            
-            // Log out panna admin button-ai maraikkanum
-            if(adminBtn) adminBtn.classList.add('hidden');
+    if (user) {
+        window.isLoggedIn = true;
+        if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
+        if(portalBtn) {
+            portalBtn.innerText = "ACCESS GRANTED";
+            portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
         }
-    });
+
+        if(modalSignedOut) modalSignedOut.classList.add('hidden');
+        if(modalMainInfo) modalMainInfo.classList.remove('hidden');
+        if(modalControls) modalControls.classList.remove('hidden');
+        if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+
+        document.getElementById('auth-profile-pic').src = user.photoURL;
+        document.getElementById('auth-name').innerText = user.displayName;
+        document.getElementById('auth-email-top').innerText = user.email;
+
+        // --- ADMIN LOCK LOGIC START ---
+        // Searingprince login panna mattum thaan publish window theryum
+        if (user.email === ADMIN_EMAIL) {
+            if(adminBtn) adminBtn.classList.remove('hidden');
+            if(adminPostSection) adminPostSection.classList.remove('hidden');
+        } else {
+            // Vera endha gmail-naalum publish window-ai maraichidum
+            if(adminBtn) adminBtn.classList.add('hidden');
+            if(adminPostSection) adminPostSection.classList.add('hidden');
+        }
+        // --- ADMIN LOCK LOGIC END ---
+
+        window.updateAccountUI(user);
+        window.loadArchives();
+        window.loadProducts(); 
+    } else {
+        window.isLoggedIn = false;
+        if(navPic) navPic.style.display = 'none';
+        if(portalBtn) {
+            portalBtn.innerText = "Portal Access";
+            portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
+        }
+        if(modalMainInfo) modalMainInfo.classList.add('hidden');
+        if(modalSignedOut) modalSignedOut.classList.remove('hidden');
+        if(modalControls) modalControls.classList.add('hidden');
+        if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+        
+        // Logout panna publish window matrum button-ai maraikkanum
+        if(adminBtn) adminBtn.classList.add('hidden');
+        if(adminPostSection) adminPostSection.classList.add('hidden');
+    }
+});
 
     // --- DB Functions ---
     window.submitOrder = async () => {
@@ -647,11 +654,10 @@ window.openPopupWhatsApp = (method, name) => {
     // ==========================================
 
 window.saveProductToDB = async () => {
-    // --- 1. ADMIN CHECK (Ithu ungalai thavira yarum post podama thadukkum) ---
-    const adminEmail = "shanturtind@gmail.com"; // Unga login email-ai inga sariyaa kodunga
+    const adminEmail = "searingprince@gmail.com";
     if (!auth.currentUser || auth.currentUser.email !== adminEmail) {
-        alert("ACCESS DENIED: Only Shan can push products to market!");
-        return;
+        console.error("Unauthorized attempt!");
+        return; 
     }
 
     const name = document.getElementById('p-name').value;
