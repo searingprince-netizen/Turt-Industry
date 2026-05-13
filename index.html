@@ -703,13 +703,18 @@ window.saveProductToDB = async () => {
                 });
                 
                 products.reverse().forEach(p => {
-                    // Quantity-ah number-ah mathi check panrom
                     const currentQty = Number(p.quantity) || 1;
+
+                    // --- Puthu Ikman Button Logic ---
+                    const ikmanBtn = p.ikman ? `
+                        <a href="${p.ikman}" target="_blank" class="w-full mt-2 bg-[#ffc800] text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center justify-center gap-2 hover:bg-[#e6b400] transition-all no-underline">
+                           <i class="fa-solid fa-up-right-from-square text-[8px]"></i> View on Ikman
+                        </a>` : "";
 
                     html += `
                     <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
                         <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
-                            <img src="${p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}" 
+                            <img src="${p.img || p.image || 'https://via.placeholder.com/300?text=NO+MEDIA'}" 
                                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         </div>
                         <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
@@ -729,6 +734,8 @@ window.saveProductToDB = async () => {
                                 class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
                             Initiate Purchase
                         </button>
+
+                        ${ikmanBtn}
                     </div>`;
                 });
             } else { 
