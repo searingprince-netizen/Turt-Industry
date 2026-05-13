@@ -615,39 +615,57 @@ window.openPopupWhatsApp = (method, name) => {
         document.getElementById('builder-title').innerText = "CONFIG: " + name;
     };
 
-    window.loadArchives = async () => {
-        const miniList = document.getElementById('mini-history');
-        const fullList = document.getElementById('full-history-list');
-        if (!auth.currentUser) return;
-        try {
-            const ordersRef = ref(db, 'orders');
-            const q = query(ordersRef, orderByChild('userEmail'), equalTo(auth.currentUser.email));
-            const snap = await get(q);
-            let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Active Archives</p>';
-            if (snap.exists()) {
-                const data = [];
-                snap.forEach(child => { data.push(child.val()); });
+window.loadArchives = async () => {
+    const miniList = document.getElementById('mini-history');
+    const fullList = document.getElementById('full-history-list');
+    
+    if (!auth.currentUser) return;
+    
+    try {
+        const ordersRef = ref(db, 'official_payments'); // Sariyaana path
+        const snap = await get(ordersRef);
+        
+        let html = '<p class="text-[9px] text-blue-500 uppercase mb-4 tracking-widest font-bold italic">Transaction History</p>';
+        
+        if (snap.exists()) {
+            const data = [];
+            snap.forEach(child => { 
+                const val = child.val();
+                // Admin-ku ellam theryanum, user-ku avangaloda order mattum theryanum
+                if (auth.currentUser.email === "searingprince@gmail.com" || val.customerEmail === auth.currentUser.email || val.phone === auth.currentUser.phoneNumber) {
+                    data.push(val); 
+                }
+            });
+
+            if(data.length > 0) {
                 data.reverse().forEach(d => {
                     html += `
                         <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
                             <div class="flex justify-between items-start mb-3">
-                                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.model || 'Unknown Model'}</p>
-                                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">Archived</span>
+                                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.product || 'Unknown Product'}</p>
+                                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">${d.status || 'PENDING'}</span>
                             </div>
                             <div class="space-y-1">
-                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Material: <span class="text-zinc-200">${d.bodyMaterial || 'N/A'}</span></p>
-                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Back Panel: <span class="text-zinc-200">${d.backPanel || 'N/A'}</span></p>
-                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Energy: <span class="text-zinc-200">${d.energyUnit || 'N/A'}</span></p>
-                                ${d.finishNotes ? `<p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Finish: <span class="text-blue-400/80 italic">${d.finishNotes}</span></p>` : ''}
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Method: <span class="text-zinc-200">${d.method || 'N/A'}</span></p>
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Customer: <span class="text-zinc-200">${d.customerName || 'N/A'}</span></p>
+                                <p class="text-zinc-500 text-[8px] font-mono mt-2">${d.timestamp ? new Date(d.timestamp).toLocaleString() : ''}</p>
                             </div>
-                            ${d.specialRequirements ? `<div class="mt-3 pt-3 border-t border-white/5"><p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p></div>` : ''}
                         </div>`;
                 });
-            } else { html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>'; }
-            if (miniList) miniList.innerHTML = html;
-            if (fullList) fullList.innerHTML = html;
-        } catch (e) { console.error("Archive Load Error: ", e); }
-    };
+            } else {
+                html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found for this account.</p>';
+            }
+        } else { 
+            html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No system archives found.</p>'; 
+        }
+
+        if (miniList) miniList.innerHTML = html;
+        if (fullList) fullList.innerHTML = html;
+        
+    } catch (e) { 
+        console.error("Archive Load Error: ", e); 
+    }
+};
 
     // ==========================================
     // --- MARKETPLACE CORE FUNCTIONS (Shan) ---
@@ -702,30 +720,30 @@ window.saveProductToDB = async () => {
     }
 };
 
-    window.loadProducts = async () => {
+   window.loadProducts = async () => {
     const grid = document.getElementById('store-grid');
-    if(!grid) return;
+    if(!grid) {
+        console.error("Store grid element not found!");
+        return;
+    }
 
     try {
-        const marketplaceRef = ref(db, 'marketplace');
+        // Path sariya irukkannu Firebase console-la check pannunga
+        const marketplaceRef = ref(db, 'marketplace'); 
         const snap = await get(marketplaceRef);
         let html = '';
         
         if (snap.exists()) {
             const products = [];
             snap.forEach(child => {
-                // child.val() kulla thaan neenga save panna 'ikman', 'img', 'name' ellam irukkum
                 products.push({ id: child.key, ...child.val() });
             });
             
-            // Puthu post mela vara reverse() panrom
             products.reverse().forEach(p => {
                 const currentQty = Number(p.quantity) || 0;
-                
-                // Image field check: Firebase-la 'img' nu irunthaalum 'image' nu irunthaalum load aagum
-                const displayImg = p.img || p.image || 'https://via.placeholder.com/300?text=NO+IMAGE';
+                // Double check for all possible image keys
+                const displayImg = p.img || p.image || p.imageUrl || 'https://via.placeholder.com/300?text=NO+IMAGE';
 
-                // Ikman Button logic
                 const ikmanBtn = p.ikman ? `
                     <a href="${p.ikman}" target="_blank" class="w-full mt-2 bg-[#ffc800] text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center justify-center gap-2 hover:bg-[#e6b400] transition-all no-underline">
                        <i class="fa-solid fa-up-right-from-square text-[8px]"></i> View on Ikman
@@ -735,12 +753,13 @@ window.saveProductToDB = async () => {
                 <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
                     <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
                         <img src="${displayImg}" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                             class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                             onerror="this.src='https://via.placeholder.com/300?text=IMAGE+ERROR'">
                     </div>
-                    <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
+                    <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name || 'UNNAMED PRODUCT'}</h3>
                     
                     <div class="flex justify-between items-center mt-1">
-                        <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
+                        <p class="text-blue-500 font-mono text-xs">LKR ${p.price || '0.00'}</p>
                         <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id ? p.id.substring(0, 6) : 'N/A'}</span>
                     </div>
 
@@ -758,11 +777,13 @@ window.saveProductToDB = async () => {
                 </div>`;
             });
         } else { 
-            html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">No active products found.</p></div>'; 
+            console.warn("No data found in 'marketplace' path");
+            html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">Scanning... No active products found.</p></div>'; 
         }
         grid.innerHTML = html;
     } catch (e) { 
         console.error("Marketplace Load Error:", e); 
+        grid.innerHTML = `<p class="text-red-500 text-center">Error loading market: ${e.message}</p>`;
     }
 };
     
