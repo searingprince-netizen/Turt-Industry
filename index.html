@@ -647,13 +647,18 @@ window.openPopupWhatsApp = (method, name) => {
     // ==========================================
 
 window.saveProductToDB = async () => {
+    // --- 1. ADMIN CHECK (Ithu ungalai thavira yarum post podama thadukkum) ---
+    const adminEmail = "shanturtind@gmail.com"; // Unga login email-ai inga sariyaa kodunga
+    if (!auth.currentUser || auth.currentUser.email !== adminEmail) {
+        alert("ACCESS DENIED: Only Shan can push products to market!");
+        return;
+    }
+
     const name = document.getElementById('p-name').value;
     const price = document.getElementById('p-price').value;
     const desc = document.getElementById('p-desc').value;
     const img = document.getElementById('p-image').value;
     const qtyInput = document.getElementById('p-qty').value;
-    
-    // --- Puthu Ikman Link-ai fetch pannuvom ---
     const ikmanLink = document.getElementById('p-ikman')?.value || ""; 
 
     if(!name || !price || !qtyInput) return alert("Please fill Name, Price and Quantity!");
@@ -664,9 +669,10 @@ window.saveProductToDB = async () => {
             name: name,
             price: price,
             desc: desc,
-            image: img, // Neenga 'img' nu use panringala illa 'image' nu check pannikonga
+            img: img,      // 'img' nu save pannuvom
+            image: img,    // Backup-kaga 'image' num save pannuvom (Show aagatha issue fix aagum)
             quantity: Number(qtyInput),
-            ikman: ikmanLink, // Firebase-la save aagum
+            ikman: ikmanLink,
             seller: auth.currentUser.email,
             timestamp: serverTimestamp()
         });
@@ -681,6 +687,9 @@ window.saveProductToDB = async () => {
         document.getElementById('p-qty').value = '1';
         if(document.getElementById('p-ikman')) document.getElementById('p-ikman').value = '';
         
+        // Product upload aanathum auto-va list-ai refresh panna
+        if(window.loadProducts) window.loadProducts();
+
     } catch (e) {
         console.error("Upload Error:", e);
         alert("Error pushing product");
@@ -703,9 +712,11 @@ window.saveProductToDB = async () => {
                 });
                 
                 products.reverse().forEach(p => {
-                    const currentQty = Number(p.quantity) || 1;
+                    const currentQty = Number(p.quantity) || 0;
+                    // Product image check (img illana image)
+                    const displayImg = p.img || p.image || 'https://via.placeholder.com/300?text=NO+MEDIA';
 
-                    // --- Puthu Ikman Button Logic ---
+                    // Ikman Button Logic
                     const ikmanBtn = p.ikman ? `
                         <a href="${p.ikman}" target="_blank" class="w-full mt-2 bg-[#ffc800] text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center justify-center gap-2 hover:bg-[#e6b400] transition-all no-underline">
                            <i class="fa-solid fa-up-right-from-square text-[8px]"></i> View on Ikman
@@ -714,7 +725,7 @@ window.saveProductToDB = async () => {
                     html += `
                     <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
                         <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
-                            <img src="${p.img || p.image || 'https://via.placeholder.com/300?text=NO+MEDIA'}" 
+                            <img src="${displayImg}" 
                                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         </div>
                         <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
@@ -728,25 +739,24 @@ window.saveProductToDB = async () => {
                             Available Stock: <span class="text-blue-400 font-bold">${currentQty} Units</span>
                         </p>
 
-                        <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || 'NO SPECIFICATIONS PROVIDED'}</p>
+                        <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || p.description || 'NO SPECIFICATIONS'}</p>
                         
                         <button onclick="window.initiateBuy('${p.id}', '${p.name}')" 
                                 class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
                             Initiate Purchase
                         </button>
-
                         ${ikmanBtn}
                     </div>`;
                 });
             } else { 
-                html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">Scanning... No active products found in market nodes.</p></div>'; 
+                html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">No active products found.</p></div>'; 
             }
             grid.innerHTML = html;
         } catch (e) { 
             console.error("Marketplace Load Error:", e); 
         }
     };
-
+    
 let currentTransaction = null;
 
     // Force Open Modal
