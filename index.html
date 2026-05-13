@@ -820,16 +820,15 @@ let currentTransaction = null;
         }
     };
 
-   // Puthu Logic: Ithu thaan unga puthu popup-ai thirakkum
-    window.initiateBuy = (id, name) => {
-        if (!window.isLoggedIn) {
-            if(window.toggleModal) window.toggleModal('login-modal');
-            else alert("Please login first");
-            return;
-        }
-        // Direct-ah namma puthu popup-ai call panrom
-        window.openProcure(name);
-    };
+  // ITHAI ANTHA IDATHULA PASTE PANNUNGA
+window.initiateBuy = (id, name) => {
+    if (!window.isLoggedIn) {
+        window.toggleModal('login-modal');
+        return;
+    }
+    // Ithu thaan namma puthu popup-ai open pannum
+    window.openProcure(name); 
+};
 
     window.openProcure = (productName) => {
         const popup = document.getElementById('procure-popup');
