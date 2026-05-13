@@ -362,20 +362,18 @@
             </div>
         </div>
 
-     <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
-         <div class="grid grid-cols-1 md:grid-cols-4 gap-4"> <input type="text" id="p-name" placeholder="PRODUCT NAME">
-             <input type="text" id="p-price" placeholder="PRICE (LKR)">
-             <input type="text" id="p-image" placeholder="IMAGE URL">
+    <div id="admin-post-section" class="hidden p-6 border-b border-white/5 bg-blue-500/5 space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4"> 
+        <input type="text" id="p-name" placeholder="PRODUCT NAME" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px]">
+        <input type="text" id="p-price" placeholder="PRICE (LKR)" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px]">
+        <input type="text" id="p-image" placeholder="IMAGE URL" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px]">
+        <input type="number" id="p-qty" placeholder="QUANTITY" min="1" value="1" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px]">
         
-             <input type="number" id="p-qty" placeholder="QUANTITY" min="1" value="1">
-         </div>
-         <textarea id="p-desc" placeholder="TECH SPECS..." rows="3"></textarea>
-         <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
-     </div>
-
-        <div id="store-grid" class="p-8 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-y-auto flex-grow custom-scrollbar bg-black/20">
-            </div>
+        <input type="text" id="p-ikman" placeholder="IKMAN LINK (OPTIONAL)" class="bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] focus:border-yellow-500">
     </div>
+    
+    <textarea id="p-desc" placeholder="TECH SPECS..." rows="3" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none"></textarea>
+    <button onclick="window.saveProductToDB()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-blue-700">Push to Market</button>
 </div>
 
 <div id="history-modal" class="modal">
@@ -648,44 +646,46 @@ window.openPopupWhatsApp = (method, name) => {
     // --- MARKETPLACE CORE FUNCTIONS (Shan) ---
     // ==========================================
 
-    window.saveProductToDB = async () => {
-        const name = document.getElementById('p-name').value;
-        const price = document.getElementById('p-price').value;
-        const desc = document.getElementById('p-desc').value;
-        const img = document.getElementById('p-image').value;
-        const qtyInput = document.getElementById('p-qty').value; // Input value-ah edukkarom
+window.saveProductToDB = async () => {
+    const name = document.getElementById('p-name').value;
+    const price = document.getElementById('p-price').value;
+    const desc = document.getElementById('p-desc').value;
+    const img = document.getElementById('p-image').value;
+    const qtyInput = document.getElementById('p-qty').value;
+    
+    // --- Puthu Ikman Link-ai fetch pannuvom ---
+    const ikmanLink = document.getElementById('p-ikman')?.value || ""; 
 
-        if(!name || !price || !qtyInput) return alert("Please fill Name, Price and Quantity!");
+    if(!name || !price || !qtyInput) return alert("Please fill Name, Price and Quantity!");
 
-        try {
-            const marketplaceRef = ref(db, 'marketplace');
-            await push(marketplaceRef, {
-                name: name,
-                price: price,
-                desc: desc,
-                img: img,
-                quantity: Number(qtyInput), // KANDIPPA Number() use panni save pannanum
-                seller: auth.currentUser.email,
-                timestamp: serverTimestamp()
-            });
-            
-            alert("SUCCESS: Product is now LIVE on the market.");
-            
-            // UI Cleanup
-            document.getElementById('p-name').value = '';
-            document.getElementById('p-price').value = '';
-            document.getElementById('p-desc').value = '';
-            document.getElementById('p-image').value = '';
-            document.getElementById('p-qty').value = '1';
-            
-            document.getElementById('admin-post-section').classList.add('hidden');
-            window.closeModal('product-store-modal');
-            window.loadProducts(); 
-        } catch (e) { 
-            console.error("Marketplace Error:", e);
-            alert("Error: System failed to push product node.");
-        }
-    };
+    try {
+        const marketplaceRef = ref(db, 'marketplace');
+        await push(marketplaceRef, {
+            name: name,
+            price: price,
+            desc: desc,
+            image: img, // Neenga 'img' nu use panringala illa 'image' nu check pannikonga
+            quantity: Number(qtyInput),
+            ikman: ikmanLink, // Firebase-la save aagum
+            seller: auth.currentUser.email,
+            timestamp: serverTimestamp()
+        });
+
+        alert("Product Pushed to Market!");
+        
+        // Fields-ai clear panrom
+        document.getElementById('p-name').value = '';
+        document.getElementById('p-price').value = '';
+        document.getElementById('p-desc').value = '';
+        document.getElementById('p-image').value = '';
+        document.getElementById('p-qty').value = '1';
+        if(document.getElementById('p-ikman')) document.getElementById('p-ikman').value = '';
+        
+    } catch (e) {
+        console.error("Upload Error:", e);
+        alert("Error pushing product");
+    }
+};
 
     window.loadProducts = async () => {
         const grid = document.getElementById('store-grid');
