@@ -752,9 +752,9 @@ window.saveProductToDB = async () => {
                 html += `
                 <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
                     <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
-                        <img src="${displayImg}" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                             onerror="this.src='https://via.placeholder.com/300?text=IMAGE+ERROR'">
+                        <img src="${p.image || p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}"
+                             onerror="this.src='https://via.placeholder.com/300?text=IMAGE+ERROR'" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                     </div>
                     <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name || 'UNNAMED PRODUCT'}</h3>
                     
