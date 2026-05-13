@@ -703,65 +703,68 @@ window.saveProductToDB = async () => {
 };
 
     window.loadProducts = async () => {
-        const grid = document.getElementById('store-grid');
-        if(!grid) return;
+    const grid = document.getElementById('store-grid');
+    if(!grid) return;
 
-        try {
-            const marketplaceRef = ref(db, 'marketplace');
-            const snap = await get(marketplaceRef);
-            let html = '';
+    try {
+        const marketplaceRef = ref(db, 'marketplace');
+        const snap = await get(marketplaceRef);
+        let html = '';
+        
+        if (snap.exists()) {
+            const products = [];
+            snap.forEach(child => {
+                // child.val() kulla thaan neenga save panna 'ikman', 'img', 'name' ellam irukkum
+                products.push({ id: child.key, ...child.val() });
+            });
             
-            if (snap.exists()) {
-                const products = [];
-                snap.forEach(child => {
-                    products.push({ id: child.key, ...child.val() });
-                });
+            // Puthu post mela vara reverse() panrom
+            products.reverse().forEach(p => {
+                const currentQty = Number(p.quantity) || 0;
                 
-                products.reverse().forEach(p => {
-                    const currentQty = Number(p.quantity) || 0;
-                    // Product image check (img illana image)
-                    const displayImg = p.img || p.image || 'https://via.placeholder.com/300?text=NO+MEDIA';
+                // Image field check: Firebase-la 'img' nu irunthaalum 'image' nu irunthaalum load aagum
+                const displayImg = p.img || p.image || 'https://via.placeholder.com/300?text=NO+IMAGE';
 
-                    // Ikman Button Logic
-                    const ikmanBtn = p.ikman ? `
-                        <a href="${p.ikman}" target="_blank" class="w-full mt-2 bg-[#ffc800] text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center justify-center gap-2 hover:bg-[#e6b400] transition-all no-underline">
-                           <i class="fa-solid fa-up-right-from-square text-[8px]"></i> View on Ikman
-                        </a>` : "";
+                // Ikman Button logic
+                const ikmanBtn = p.ikman ? `
+                    <a href="${p.ikman}" target="_blank" class="w-full mt-2 bg-[#ffc800] text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter flex items-center justify-center gap-2 hover:bg-[#e6b400] transition-all no-underline">
+                       <i class="fa-solid fa-up-right-from-square text-[8px]"></i> View on Ikman
+                    </a>` : "";
 
-                    html += `
-                    <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
-                        <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
-                            <img src="${displayImg}" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
-                        
-                        <div class="flex justify-between items-center mt-1">
-                            <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
-                            <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id ? p.id.substring(0, 6) : 'N/A'}</span>
-                        </div>
+                html += `
+                <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
+                    <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
+                        <img src="${displayImg}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </div>
+                    <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
+                    
+                    <div class="flex justify-between items-center mt-1">
+                        <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
+                        <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id ? p.id.substring(0, 6) : 'N/A'}</span>
+                    </div>
 
-                        <p class="text-zinc-400 text-[9px] mt-2 font-mono uppercase tracking-widest">
-                            Available Stock: <span class="text-blue-400 font-bold">${currentQty} Units</span>
-                        </p>
+                    <p class="text-zinc-400 text-[9px] mt-2 font-mono uppercase tracking-widest">
+                        Available Stock: <span class="text-blue-400 font-bold">${currentQty} Units</span>
+                    </p>
 
-                        <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || p.description || 'NO SPECIFICATIONS'}</p>
-                        
-                        <button onclick="window.initiateBuy('${p.id}', '${p.name}')" 
-                                class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
-                            Initiate Purchase
-                        </button>
-                        ${ikmanBtn}
-                    </div>`;
-                });
-            } else { 
-                html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">No active products found.</p></div>'; 
-            }
-            grid.innerHTML = html;
-        } catch (e) { 
-            console.error("Marketplace Load Error:", e); 
+                    <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || p.description || 'NO SPECIFICATIONS'}</p>
+                    
+                    <button onclick="window.initiateBuy('${p.id}', '${p.name}')" 
+                            class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
+                        Initiate Purchase
+                    </button>
+                    ${ikmanBtn}
+                </div>`;
+            });
+        } else { 
+            html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">No active products found.</p></div>'; 
         }
-    };
+        grid.innerHTML = html;
+    } catch (e) { 
+        console.error("Marketplace Load Error:", e); 
+    }
+};
     
 let currentTransaction = null;
 
