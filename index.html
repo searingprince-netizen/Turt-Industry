@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/Turt-Industry/manifest.json">
     <meta name="theme-color" content="#3b82f6">
     
     <style>
@@ -158,7 +158,7 @@
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js')
+      navigator.serviceWorker.register('/Turt-Industry/sw.js')
         .then(reg => console.log('FRIDYI PWA: Service Worker Registered', reg))
         .catch(err => console.log('FRIDYI PWA: Registration Failed', err));
     });
