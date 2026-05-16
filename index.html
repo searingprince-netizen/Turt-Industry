@@ -8,10 +8,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3b82f6">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <style>
         body { background-color: #050505; color: #ffffff; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
         .hero-gradient { background: radial-gradient(circle at center, #111827 0%, #050505 100%); }
@@ -136,7 +135,6 @@
 </head>
 <body>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>    
 <nav class="flex justify-between items-center p-6 nav-blur sticky top-0 border-b border-white/5 z-50">
     <div class="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer" onclick="window.scrollTo(0,0)">TURT INDUSTRY</div>
     
@@ -156,17 +154,6 @@
         </div>
     </div>
 </nav>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      // Direct path use pannunga, slash illaama
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('FRIDYI PWA: Registered', reg))
-        .catch(err => console.log('FRIDYI PWA: Error', err));
-    });
-  }
-</script>
     
 <section class="hero-gradient min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
@@ -347,25 +334,21 @@
                             <option>10,000 mAh (Fusion Core)</option>
                         </select>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <div class="md:col-span-2">
-        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish Notes</label>
-        <input type="text" id="finish-notes" placeholder="e.g. Matte Cobalt Blue">
-    </div>
-
-    <div class="md:col-span-2">
-        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Special Requirements</label>
-        <textarea id="special-req" rows="3" placeholder="Describe any custom hardware modifications..."></textarea>
-    </div>
-
-    <div class="md:col-span-2">
-        <div id="captcha-container-consult" style="display: none; margin-top: 15px; margin-bottom: 10px;">
-            <div class="g-recaptcha" data-sitekey="6LdO7-wsAAAAAEgjnnCjLuBlwZm8VZYX50go--Aq"></div>
+                    <div class="md:col-span-2">
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish Notes</label>
+                        <input type="text" id="finish-notes" placeholder="e.g. Matte Cobalt Blue">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Special Requirements</label>
+                        <textarea id="special-req" rows="3" placeholder="Describe any custom hardware modifications..."></textarea>
+                    </div>
+                </div>
+                <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest text-xs text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Secure Transmission</button>
+            </div>
         </div>
     </div>
-</div> <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest text-xs text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">
-    Secure Transmission
-</button>
+</div>
+
 <div id="product-store-modal" class="modal">
     <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh] m-4">
         <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
@@ -598,59 +581,30 @@ window.openPopupWhatsApp = (method, name) => {
         }
     });
 
-// --- Integrated Submit Order with CAPTCHA & Firebase ---
-window.submitOrder = async () => {
-    if (!window.isLoggedIn || !auth.currentUser) return;
-
-    // 1. CAPTCHA Check Logic
-    let orderCount = parseInt(localStorage.getItem('orderCount')) || 0;
-    
-    if (orderCount >= 2) {
-        document.getElementById('captcha-container-consult').style.display = 'block';
-        
-        var response = grecaptcha.getResponse();
-        if (response.length == 0) {
-            alert("Security Alert: Please verify you are not a robot to proceed with third order.");
-            return;
-        }
-    }
-
-    // 2. Firebase Transmission Logic
-    const btn = document.querySelector("#builder-container button");
-    btn.innerText = "TRANSMITTING...";
-    btn.disabled = true;
-
-    try {
-        const orderData = {
-            userEmail: auth.currentUser.email,
-            model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
-            bodyMaterial: document.getElementById('body-mat').value,
-            backPanel: document.getElementById('back-panel').value, 
-            energyUnit: document.getElementById('energy-unit').value,
-            finishNotes: document.getElementById('finish-notes').value,
-            specialRequirements: document.getElementById('special-req').value,
-            timestamp: serverTimestamp()
-        };
-
-        await push(ref(db, 'orders'), orderData);
-        
-        // Success Actions
-        localStorage.setItem('orderCount', orderCount + 1);
-        alert("SUCCESS: Hardware specifications archived.");
-        
-        // Reset UI
-        window.loadArchives();
-        window.closeModal('consult-modal');
-        grecaptcha.reset(); 
-        document.getElementById('captcha-container-consult').style.display = 'none';
-
-    } catch (e) { 
-        alert("Transmission Error: " + e.message); 
-    } finally { 
-        btn.innerText = "Secure Transmission"; 
-        btn.disabled = false; 
-    }
-};
+    // --- DB Functions ---
+    window.submitOrder = async () => {
+        if (!window.isLoggedIn || !auth.currentUser) return;
+        const btn = document.querySelector("#builder-container button");
+        btn.innerText = "TRANSMITTING...";
+        btn.disabled = true;
+        try {
+            const orderData = {
+                userEmail: auth.currentUser.email,
+                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
+                bodyMaterial: document.getElementById('body-mat').value,
+                backPanel: document.getElementById('back-panel').value, 
+                energyUnit: document.getElementById('energy-unit').value,
+                finishNotes: document.getElementById('finish-notes').value,
+                specialRequirements: document.getElementById('special-req').value,
+                timestamp: serverTimestamp()
+            };
+            await push(ref(db, 'orders'), orderData);
+            alert("SUCCESS: Hardware specifications archived.");
+            window.loadArchives();
+            closeModal('consult-modal');
+        } catch (e) { alert("Error: " + e.message); }
+        finally { btn.innerText = "Secure Transmission"; btn.disabled = false; }
+    };
  
     window.openBuilder = (name) => {
         document.getElementById('builder-placeholder').classList.add('hidden');
@@ -855,8 +809,16 @@ let currentTransaction = null;
                     <input id="p-phone" placeholder="PHONE NUMBER" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
                     <textarea id="p-addr" placeholder="DELIVERY ADDRESS" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500 h-20"></textarea>
                 </div>
+                
+                <div id="captcha-container" class="mt-4 flex justify-center hidden">
+                    <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY" data-theme="dark"></div>
+                </div>
+
                 <button onclick="window.openPopupWhatsApp('COD', '${name}')" class="w-full bg-blue-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase mt-4">Confirm Order</button>
                 <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
+            
+            // Check orders count to toggle Captcha visibility
+            window.checkOrderCountForCaptcha();
         } else if(type === 'pickup') {
             content.innerHTML = `
                 <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Direct Pickup</h3>
@@ -873,16 +835,53 @@ let currentTransaction = null;
         }
     };
 
+    // --- Check Order Count function ---
+    window.checkOrderCountForCaptcha = async () => {
+        if (!auth.currentUser) return;
+        try {
+            const paymentsRef = ref(db, 'official_payments');
+            const snap = await get(paymentsRef);
+            let orderCount = 0;
+
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    const order = child.val();
+                    if (order.userEmail === auth.currentUser.email) {
+                        orderCount++;
+                    }
+                });
+            }
+
+            const captchaBox = document.getElementById('captcha-container');
+            if (captchaBox && orderCount >= 2) {
+                captchaBox.classList.remove('hidden');
+            }
+        } catch (e) {
+            console.error("Error checking order count:", e);
+        }
+    };
+
     window.openPopupWhatsApp = async (method, name) => {
         const uName = document.getElementById('p-name')?.value || "Not provided";
         const uPhone = document.getElementById('p-phone')?.value || "Not provided";
         const addr = document.getElementById('p-addr')?.value || "Not provided";
         
+        // Validation for reCAPTCHA if it is visible
+        const captchaContainer = document.getElementById('captcha-container');
+        if (captchaContainer && !captchaContainer.classList.contains('hidden')) {
+            const response = grecaptcha.getResponse();
+            if (response.length === 0) {
+                alert("Please verify that you are not a robot (reCAPTCHA).");
+                return;
+            }
+        }
+
         // 1. Firebase-la Order Details-ai Store panrom
         try {
-            const ordersRef = ref(db, 'official_payments'); // Unga order table peyar
+            const ordersRef = ref(db, 'official_payments'); 
             await push(ordersRef, {
                 customerName: uName,
+                userEmail: auth.currentUser ? auth.currentUser.email : "Guest",
                 phone: uPhone,
                 address: addr,
                 product: name,
@@ -909,7 +908,7 @@ let currentTransaction = null;
         window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
         window.closePopup();
     };
-
+    
 </script>
 
 </body>
