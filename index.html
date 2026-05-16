@@ -112,12 +112,12 @@
 
         @keyframes scroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } 
+            100% { transform: translateX(-50%); } /* Total length-la 50% pōnadhum loop aagum */
         }
 
         .project-slider-track {
             display: flex;
-            width: max-content; 
+            width: max-content; /* Content-ku yetha maadhiri length edukkum */
             animation: scroll 40s linear infinite;
         }
 
@@ -153,12 +153,13 @@
 
 <nav class="flex justify-between items-center p-6 nav-blur sticky top-0 border-b border-white/5 z-50">
     <div class="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer" onclick="window.scrollTo(0,0)">TURT INDUSTRY</div>
-    
+
     <div class="flex items-center space-x-6 text-sm uppercase tracking-widest font-bold">
         <button id="train-ai-btn" onclick="window.toggleModal('train-ai-modal')" class="hidden px-4 py-1.5 border border-red-500/50 rounded-full text-[10px] text-red-500 hover:bg-red-500 hover:text-white transition">
             TRAIN AI
-        </button>
+        </button>    
 
+    <div class="flex items-center space-x-6 text-sm uppercase tracking-widest font-bold">
         <button onclick="window.toggleModal('product-store-modal')" class="hidden md:block px-4 py-1.5 border border-zinc-800 rounded-full text-[10px] font-bold hover:bg-white hover:text-black transition uppercase tracking-widest">
             PRODUCTS
         </button>
@@ -174,7 +175,7 @@
         </div>
     </div>
 </nav>
-
+    
 <div id="friday-trigger" onclick="window.toggleFriday()">
     <i class="fa-solid fa-robot text-white text-xl"></i>
 </div>
@@ -203,7 +204,7 @@
         <button onclick="window.closeModal('train-ai-modal')" class="w-full mt-4 text-zinc-600 text-[9px] uppercase font-bold">Cancel Operation</button>
     </div>
 </div>
-    
+
 <section class="hero-gradient min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
     <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter uppercase leading-tight">The Future of <br><span class="text-blue-500">Hardware.</span></h1>
@@ -246,8 +247,18 @@
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p><div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div></div></div></div>
+
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p><div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p><div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p><div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div></div></div></div>
+     
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p><div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p><div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
+            <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p><div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div></div></div></div>
         </div>
     </div>
 </section>
@@ -282,7 +293,20 @@
                 <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" class="w-5 h-5"> Sign in with Google
             </button>
         </div>
+        <div id="auth-more-panel" class="hidden px-8 py-5 border-b border-white/5 bg-zinc-950 relative z-10">
+            <div class="flex justify-between items-center cursor-pointer" onclick="document.getElementById('auth-account-list').classList.toggle('hidden')">
+                <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">More accounts</p>
+                <i class="fa-solid fa-chevron-down text-zinc-700 text-xs"></i>
+            </div>
+            <div id="auth-account-list" class="space-y-4 mt-5">
+                <div id="active-account-item"></div>
+            </div>
+        </div>
         <div id="auth-controls-panel" class="hidden p-8 space-y-4 bg-black relative z-10 border-b border-white/5">
+            <button onclick="loginWithGoogle()" class="w-full text-left flex items-center gap-3 p-4 rounded-xl border border-white/5 hover:border-blue-500 transition group bg-white/5">
+                <i class="fa-solid fa-user-plus text-zinc-600 group-hover:text-blue-500 text-sm"></i>
+                <span class="text-sm font-bold uppercase italic group-hover:text-blue-400">Add another account</span>
+            </button>
             <button onclick="logout()" class="w-full text-left flex items-center gap-3 p-4 rounded-xl border border-white/5 hover:border-red-500/50 transition group bg-white/5">
                 <i class="fa-solid fa-arrow-right-from-bracket text-zinc-600 group-hover:text-red-500 text-sm"></i>
                 <span class="text-sm font-bold uppercase italic group-hover:text-red-400">Sign out of all accounts</span>
@@ -308,7 +332,9 @@
                     <span class="text-[9px] text-zinc-500 uppercase">Neural Gateway</span>
                 </button>
             </div>
-            <div id="mini-history" class="mt-10 border-t border-white/5 pt-6 flex-grow overflow-y-auto custom-scrollbar"></div>
+            <div id="mini-history" class="mt-10 border-t border-white/5 pt-6 flex-grow overflow-y-auto custom-scrollbar">
+                <p class="text-[9px] text-zinc-600 uppercase tracking-widest font-bold italic">Active Archives</p>
+            </div>
         </div>
         
         <div class="w-full md:w-2/3 p-10 relative bg-black/40 overflow-y-auto custom-scrollbar h-full">
@@ -411,11 +437,11 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo, update, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const ADMIN_EMAIL = "searingprince@gmail.com";
     const GEMINI_API_KEY = "AIzaSyBK-u8-OkBkghCfOAyW0oP7VVWC6MTy2CA";
-    
+
     const firebaseConfig = {
         apiKey: "AIzaSyBS9hqZLTGnuoza1wFUE06iNE6nBtapRNs",
         authDomain: "turt-industry.firebaseapp.com",
@@ -433,6 +459,7 @@
     const provider = new GoogleAuthProvider();
 
     window.isLoggedIn = false;
+    let captchaWidgetId = null; // reCAPTCHA ID track panna
     let currentUser = null;
     let userBrainData = null; // Stores Nickname, Age etc.
 
@@ -447,7 +474,7 @@
         }
     };
 
-    async function checkUserOnboarding() {
+        async function checkUserOnboarding() {
         const snap = await get(ref(db, `users/${currentUser.uid}/brain`));
         if(snap.exists()) {
             userBrainData = snap.val();
@@ -458,7 +485,7 @@
         }
     }
 
-    window.sendToFriday = async () => {
+        window.sendToFriday = async () => {
         const input = document.getElementById('chat-input');
         const text = input.value.trim();
         if(!text || !currentUser) return;
@@ -475,7 +502,7 @@
         // Normal Chat with Gemini
         const response = await callGemini(text);
         addAiMessage(response);
-        
+
         // Save chat to Firebase (7-day memory logic)
         push(ref(db, `chats/${currentUser.uid}`), {
             text: text,
@@ -483,7 +510,7 @@
             timestamp: Date.now()
         });
     };
-
+    
     async function handleOnboarding(text) {
         if(!window.onboardingStep) window.onboardingStep = 1;
 
@@ -505,7 +532,7 @@
             addAiMessage(`Permanent data archived. Welcome to the network, ${userBrainData.nickname}. How can I assist with your projects today?`);
         }
     }
-
+    
     async function callGemini(userText) {
         // Fetch Admin Prompt
         const adminSnap = await get(ref(db, 'ai_settings/system_prompt'));
@@ -525,7 +552,7 @@
             return data.candidates[0].content.parts[0].text;
         } catch (e) { return "Link unstable. Unable to process neural request."; }
     }
-
+    
     function addAiMessage(text) {
         const container = document.getElementById('chat-messages');
         container.innerHTML += `<div class="msg msg-ai">${text}</div>`;
@@ -537,7 +564,7 @@
         container.innerHTML += `<div class="msg msg-user">${text}</div>`;
         container.scrollTop = container.scrollHeight;
     }
-
+    
     async function loadRecentChats() {
         const snap = await get(ref(db, `chats/${currentUser.uid}`));
         const oneWeek = 7 * 24 * 60 * 60 * 1000;
@@ -553,8 +580,8 @@
             });
         }
     }
-
-    // --- Admin Train AI Logic ---
+    
+        // --- Admin Train AI Logic ---
     window.saveAISettings = async () => {
         const prompt = document.getElementById('ai-system-prompt').value;
         await set(ref(db, 'ai_settings/system_prompt'), prompt);
@@ -562,53 +589,111 @@
         window.closeModal('train-ai-modal');
     };
 
+    window.updateAccountUI = (user) => {
+        const accountItem = document.getElementById('active-account-item');
+        if (!accountItem || !user) return;
+
+        accountItem.innerHTML = `
+            <div class="flex items-center gap-4 border border-blue-500/50 p-3 rounded-lg bg-blue-500/5 transition group">
+                <img src="${user.photoURL}" class="w-10 h-10 rounded-full border border-blue-500">
+                <div class="flex-grow">
+                    <p class="text-white text-sm font-bold">${user.displayName}</p>
+                    <p class="text-zinc-600 text-[9px] lowercase font-mono">${user.email}</p>
+                </div>
+                <span class="text-[8px] text-blue-500 font-bold uppercase bg-blue-500/10 px-2 py-1 rounded tracking-tighter">Active</span>
+            </div>
+        `;
+    };
+
     // --- Original Website Logic (Unchanged) ---
     onAuthStateChanged(auth, async (user) => {
         const navPic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
+        const modalMainInfo = document.getElementById('auth-main-panel');
+        const modalSignedOut = document.getElementById('auth-out-panel');
+        const modalControls = document.getElementById('auth-controls-panel');
+        const modalMoreAccounts = document.getElementById('auth-more-panel');
         const adminBtn = document.getElementById('admin-add-btn');
         const trainBtn = document.getElementById('train-ai-btn');
 
         if (user) {
-            currentUser = user;
             window.isLoggedIn = true;
             if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
-            if(portalBtn) { portalBtn.innerText = "ACCESS GRANTED"; portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800'); }
-            
-            document.getElementById('auth-out-panel').classList.add('hidden');
-            document.getElementById('auth-main-panel').classList.remove('hidden');
-            document.getElementById('auth-controls-panel').classList.remove('hidden');
+            if(portalBtn) {
+                portalBtn.innerText = "ACCESS GRANTED";
+                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+            }
+            if(modalSignedOut) modalSignedOut.classList.add('hidden');
+            if(modalMainInfo) modalMainInfo.classList.remove('hidden');
+            if(modalControls) modalControls.classList.remove('hidden');
+            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
 
             document.getElementById('auth-profile-pic').src = user.photoURL;
             document.getElementById('auth-name').innerText = user.displayName;
             document.getElementById('auth-email-top').innerText = user.email;
 
             if (user.email === ADMIN_EMAIL) {
-                adminBtn?.classList.remove('hidden');
-                trainBtn?.classList.remove('hidden');
+                if(adminBtn) adminBtn.classList.remove('hidden');
+            } else {
+                if(adminBtn) adminBtn.classList.add('hidden');
             }
-            
+      
+            window.updateAccountUI(user);
             window.loadArchives();
             window.loadProducts(); 
-            checkUserOnboarding(); // Start AI sync
         } else {
-            currentUser = null;
             window.isLoggedIn = false;
             if(navPic) navPic.style.display = 'none';
-            if(portalBtn) { portalBtn.innerText = "Portal Access"; portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600'); }
-            document.getElementById('auth-main-panel').classList.add('hidden');
-            document.getElementById('auth-out-panel').classList.remove('hidden');
-            adminBtn?.classList.add('hidden');
-            trainBtn?.classList.add('hidden');
+            if(portalBtn) {
+                portalBtn.innerText = "Portal Access";
+                portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
+                trainBtn?.classList.add('hidden');
+            }
+            if(modalMainInfo) modalMainInfo.classList.add('hidden');
+            if(modalSignedOut) modalSignedOut.classList.remove('hidden');
+            if(modalControls) modalControls.classList.add('hidden');
+            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+            if(adminBtn) adminBtn.classList.add('hidden');
         }
     });
 
-    window.toggleModal = (id) => document.getElementById(id)?.classList.toggle('flex');
-    window.closeModal = (id) => document.getElementById(id)?.classList.remove('flex');
-    window.loginWithGoogle = () => signInWithPopup(auth, provider);
-    window.logout = () => signOut(auth).then(() => closeModal('login-modal'));
+        window.toggleModal = (id) => {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.toggle('flex');
+    };
 
-    // --- Other Original Functions (submitOrder, loadArchives, Marketplace etc.) remain exactly the same as provided in your code ---
+    window.closeModal = (id) => {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('flex');
+    };
+    
+        window.handleConsultation = () => {
+        if (!window.isLoggedIn) {
+            window.toggleModal('login-modal');
+        } else {
+            window.toggleModal('consult-modal');
+        }
+    };
+
+    window.loginWithGoogle = async () => {
+        try {
+            provider.setCustomParameters({ prompt: 'select_account' });
+            await signInWithPopup(auth, provider);
+        } catch (e) { 
+            console.error("Auth Error: " + e.message); 
+        }
+    };
+
+        window.logout = async () => {
+        try { 
+            await auth.signOut(); 
+            window.isLoggedIn = false;
+            const accountItem = document.getElementById('active-account-item');
+            if(accountItem) accountItem.innerHTML = ''; 
+            closeModal('login-modal');
+        } catch (e) { alert("Logout Error: " + e.message); }
+    };
+
     window.submitOrder = async () => {
         if (!window.isLoggedIn || !auth.currentUser) return;
         const btn = document.querySelector("#builder-container button");
@@ -652,15 +737,25 @@
                 const data = [];
                 snap.forEach(child => { data.push(child.val()); });
                 data.reverse().forEach(d => {
-                    html += `<div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl">
-                                <p class="text-white text-xs font-black uppercase italic">${d.model}</p>
-                                <p class="text-zinc-500 text-[10px] uppercase">${d.bodyMaterial} | ${d.energyUnit}</p>
-                             </div>`;
+                    html += `
+                        <div class="mb-4 p-5 bg-zinc-900/80 border border-white/5 rounded-2xl hover:border-blue-500/30 transition">
+                            <div class="flex justify-between items-start mb-3">
+                                <p class="text-white text-xs font-black uppercase italic tracking-tighter">${d.model || 'Unknown Model'}</p>
+                                <span class="text-[8px] text-blue-500 font-bold uppercase tracking-widest bg-blue-500/10 px-2 py-1 rounded">Archived</span>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Material: <span class="text-zinc-200">${d.bodyMaterial || 'N/A'}</span></p>
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Back Panel: <span class="text-zinc-200">${d.backPanel || 'N/A'}</span></p>
+                                <p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Energy: <span class="text-zinc-200">${d.energyUnit || 'N/A'}</span></p>
+                                ${d.finishNotes ? `<p class="text-zinc-400 text-[10px] uppercase font-bold tracking-tight">Finish: <span class="text-blue-400/80 italic">${d.finishNotes}</span></p>` : ''}
+                            </div>
+                            ${d.specialRequirements ? `<div class="mt-3 pt-3 border-t border-white/5"><p class="text-zinc-500 text-[9px] leading-relaxed italic">"${d.specialRequirements}"</p></div>` : ''}
+                        </div>`;
                 });
-            }
+            } else { html += '<p class="text-zinc-600 text-[10px] uppercase font-bold italic">No archives found in system.</p>'; }
             if (miniList) miniList.innerHTML = html;
             if (fullList) fullList.innerHTML = html;
-        } catch (e) {}
+        } catch (e) { console.error("Archive Load Error: ", e); }
     };
 
     window.saveProductToDB = async () => {
@@ -668,36 +763,100 @@
         const price = document.getElementById('p-price').value;
         const desc = document.getElementById('p-desc').value;
         const img = document.getElementById('p-image').value;
-        const qty = document.getElementById('p-qty').value;
-        if(!name || !price) return;
-        await push(ref(db, 'marketplace'), { name, price, desc, img, quantity: Number(qty), timestamp: serverTimestamp() });
-        window.loadProducts();
+        const qtyInput = document.getElementById('p-qty').value;
+
+        if(!name || !price || !qtyInput) return alert("Please fill Name, Price and Quantity!");
+
+        try {
+            const marketplaceRef = ref(db, 'marketplace');
+            await push(marketplaceRef, {
+                name: name,
+                price: price,
+                desc: desc,
+                img: img,
+                quantity: Number(qtyInput),
+                seller: auth.currentUser.email,
+                timestamp: serverTimestamp()
+            });
+            
+            alert("SUCCESS: Product is now LIVE on the market.");
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-price').value = '';
+            document.getElementById('p-desc').value = '';
+            document.getElementById('p-image').value = '';
+            document.getElementById('p-qty').value = '1';
+            
+            document.getElementById('admin-post-section').classList.add('hidden');
+            window.closeModal('product-store-modal');
+            window.loadProducts(); 
+        } catch (e) { 
+            console.error("Marketplace Error:", e);
+        }
     };
 
     window.loadProducts = async () => {
         const grid = document.getElementById('store-grid');
-        const snap = await get(ref(db, 'marketplace'));
-        let html = '';
-        if(snap.exists()){
-            snap.forEach(child => {
-                const p = child.val();
-                html += `<div class="bg-zinc-900/40 border border-white/5 p-5 rounded-2xl">
-                            <img src="${p.img}" class="rounded-lg mb-4 h-32 w-full object-cover">
-                            <h3 class="text-white font-bold text-sm uppercase">${p.name}</h3>
-                            <p class="text-blue-500 text-xs font-mono">LKR ${p.price}</p>
-                            <button onclick="window.openProcure('${p.name}')" class="w-full mt-4 bg-white text-black py-2 rounded-lg text-[10px] font-black uppercase">Procure</button>
-                         </div>`;
-            });
+        if(!grid) return;
+
+        try {
+            const marketplaceRef = ref(db, 'marketplace');
+            const snap = await get(marketplaceRef);
+            let html = '';
+            
+            if (snap.exists()) {
+                const products = [];
+                snap.forEach(child => {
+                    products.push({ id: child.key, ...child.val() });
+                });
+                
+                products.reverse().forEach(p => {
+                    const currentQty = Number(p.quantity) || 1;
+                    html += `
+                    <div class="bg-zinc-900/40 border border-white/5 rounded-2xl p-5 hover:border-blue-500/50 transition group">
+                        <div class="aspect-video mb-4 overflow-hidden rounded-xl bg-black border border-white/5">
+                            <img src="${p.img || 'https://via.placeholder.com/300?text=NO+MEDIA'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+                        <h3 class="text-white font-bold text-sm uppercase tracking-tight">${p.name}</h3>
+                        <div class="flex justify-between items-center mt-1">
+                            <p class="text-blue-500 font-mono text-xs">LKR ${p.price}</p>
+                            <span class="text-[8px] text-zinc-600 uppercase font-mono">ID: ${p.id ? p.id.substring(0, 6) : 'N/A'}</span>
+                        </div>
+                        <p class="text-zinc-400 text-[9px] mt-2 font-mono uppercase tracking-widest">Available Stock: <span class="text-blue-400 font-bold">${currentQty} Units</span></p>
+                        <p class="text-zinc-500 text-[10px] mt-3 line-clamp-2 uppercase leading-relaxed font-medium">${p.desc || 'NO SPECIFICATIONS PROVIDED'}</p>
+                        <button onclick="window.initiateBuy('${p.id}', '${p.name}')" class="w-full mt-5 bg-white text-black py-2.5 rounded-lg text-[10px] font-black uppercase tracking-tighter hover:bg-blue-600 hover:text-white transition-all">
+                            Initiate Purchase
+                        </button>
+                    </div>`;
+                });
+            } else { 
+                html = '<div class="col-span-full py-20 text-center"><p class="text-zinc-700 text-[10px] uppercase font-bold italic tracking-widest">Scanning... No active products found in market nodes.</p></div>'; 
+            }
+            grid.innerHTML = html;
+        } catch (e) { 
+            console.error("Marketplace Load Error:", e); 
         }
-        grid.innerHTML = html;
+    };
+
+    window.initiateBuy = (id, name) => {
+        if (!window.isLoggedIn) {
+            window.toggleModal('login-modal');
+            return;
+        }
+        window.openProcure(name);
     };
 
     window.openProcure = (productName) => {
         const popup = document.getElementById('procure-popup');
-        document.getElementById('popup-content').innerHTML = `
-            <h2 class="text-white font-black uppercase italic mb-6 text-center">${productName}</h2>
-            <button onclick="window.loadSub('bank', '${productName}')" class="w-full bg-zinc-900 py-4 rounded-xl text-white text-[10px] mb-2 border border-white/5">BANK TRANSFER</button>
-            <button onclick="window.loadSub('cod', '${productName}')" class="w-full bg-zinc-900 py-4 rounded-xl text-white text-[10px] border border-white/5">CASH ON DELIVERY</button>
+        const content = document.getElementById('popup-content');
+        if(!popup || !content) return;
+
+        content.innerHTML = `
+            <h2 class="text-white font-black uppercase italic text-xl mb-6 text-center">Procure: ${productName}</h2>
+            <div class="space-y-3">
+                <button onclick="window.loadSub('bank', '${productName}')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase text-[10px] text-white hover:border-blue-600 transition-all">Bank Transfer</button>
+                <button onclick="window.loadSub('cod', '${productName}')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase text-[10px] text-white hover:border-blue-600 transition-all">Cash On Delivery</button>
+                <button onclick="window.loadSub('pickup', '${productName}')" class="w-full bg-zinc-900 border border-white/5 py-4 rounded-xl font-bold uppercase text-[10px] text-white hover:border-blue-600 transition-all">Direct Pickup</button>
+            </div>
         `;
         popup.classList.add('show');
     };
@@ -707,22 +866,133 @@
     window.loadSub = (type, name) => {
         const content = document.getElementById('popup-content');
         if(type === 'bank') {
-            content.innerHTML = `<p class="text-blue-400 text-center font-mono text-[10px] p-4">BANK: COMMERCIAL BANK<br>ACC: 1234567890<br>NAME: TURT IND</p>
-                                 <button onclick="window.openPopupWhatsApp('Bank', '${name}')" class="w-full bg-green-600 py-3 rounded-lg text-white text-[10px]">SEND RECEIPT</button>`;
-        } else {
-            content.innerHTML = `<input id="p-name" placeholder="FULL NAME" class="mb-2"><input id="p-phone" placeholder="PHONE"><textarea id="p-addr" placeholder="ADDRESS"></textarea>
-                                 <button onclick="window.openPopupWhatsApp('COD', '${name}')" class="w-full bg-blue-600 py-3 rounded-lg text-white text-[10px] mt-4">CONFIRM</button>`;
+            content.innerHTML = `
+                <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Bank Details</h3>
+                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | With in 3-4 Days</p>
+                <div class="space-y-2">
+                <p class="text-blue-400 text-[10px] font-mono bg-blue-500/10 p-4 rounded-lg mb-4 leading-relaxed text-center">
+                    BANK: COMMERCIAL BANK<br>ACC: 1234567890<br>NAME: SHAN / TURT IND
+                </p>
+                <button onclick="window.openPopupWhatsApp('Bank', '${name}')" class="w-full bg-green-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase">Send Receipt (WA)</button>
+                <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
+        } else if(type === 'cod') {
+            content.innerHTML = `
+                <h3 class="text-blue-500 font-bold mb-2 uppercase text-xs italic tracking-widest text-center">Cash On Delivery</h3>
+                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | With in 3-4 Days</p>
+                <div class="space-y-2">
+                    <input id="p-name" placeholder="FULL NAME" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
+                    <input id="p-phone" placeholder="PHONE NUMBER" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
+                    <textarea id="p-addr" placeholder="DELIVERY ADDRESS" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500 h-20"></textarea>
+                </div>
+                
+                <div id="captcha-container" class="mt-4 flex justify-center hidden">
+                    <div id="recaptcha-widget"></div>
+                </div>
+
+                <button onclick="window.openPopupWhatsApp('COD', '${name}')" class="w-full bg-blue-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase mt-4">Confirm Order</button>
+                <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
+            
+            // Check orders count to toggle Captcha visibility
+            window.checkOrderCountForCaptcha();
+        } else if(type === 'pickup') {
+            content.innerHTML = `
+                <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Direct Pickup</h3>
+                <div class="bg-zinc-900/50 border border-white/5 p-4 rounded-xl space-y-3 text-center">
+                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Our Location</p>
+                    <p class="text-[10px] text-zinc-400 leading-relaxed italic">
+                        No: 123, Turt Industry Hub,<br>Main Street, Colombo-14.
+                    </p>
+                    <div class="h-[1px] bg-white/5 w-full"></div>
+                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Contact</p>
+                    <p class="text-[10px] text-blue-400 font-mono">+94 74 052 3507</p>
+                </div>
+                <button onclick="window.openProcure('${name}')" class="w-full mt-6 bg-zinc-900 py-3 rounded-lg font-bold text-[8px] text-zinc-500 uppercase tracking-widest border border-white/5 hover:text-white transition-all">Back to Methods</button>`;
+        }
+    };
+
+    // --- Check Order Count function (சரிசெய்யப்பட்டது) ---
+    window.checkOrderCountForCaptcha = async () => {
+        if (!auth.currentUser) return;
+        try {
+            const paymentsRef = ref(db, 'official_payments');
+            const snap = await get(paymentsRef);
+            let orderCount = 0;
+
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    const order = child.val();
+                    if (order.userEmail === auth.currentUser.email) {
+                        orderCount++;
+                    }
+                });
+            }
+
+            const captchaBox = document.getElementById('captcha-container');
+            if (captchaBox && orderCount >= 2) {
+                captchaBox.classList.remove('hidden');
+                // Dynamic-ஆக உள்ளே புகுத்தப்பட்ட HTML-ல் reCAPTCHA-வை Explicitly render செய்கிறோம்
+                if (typeof grecaptcha !== 'undefined') {
+                    grecaptcha.render('recaptcha-widget', {
+                        'sitekey': '6LdO7-wsAAAAAEgjnnCjLuBlwZm8VZYX50go--Aq',
+                        'theme': 'dark'
+                    });
+                }
+            }
+        } catch (e) {
+            console.error("Error checking order count:", e);
         }
     };
 
     window.openPopupWhatsApp = async (method, name) => {
-        const msg = encodeURIComponent(`I want to procure ${name} via ${method}`);
+        const uName = document.getElementById('p-name')?.value || "Not provided";
+        const uPhone = document.getElementById('p-phone')?.value || "Not provided";
+        const addr = document.getElementById('p-addr')?.value || "Not provided";
+        
+        // Validation for reCAPTCHA if it is visible
+        const captchaContainer = document.getElementById('captcha-container');
+        if (captchaContainer && !captchaContainer.classList.contains('hidden')) {
+            if (typeof grecaptcha !== 'undefined') {
+                const response = grecaptcha.getResponse();
+                if (response.length === 0) {
+                    alert("Please verify that you are not a robot (reCAPTCHA).");
+                    return;
+                }
+            }
+        }
+
+        // 1. Firebase-la Order Details-ai Store panrom
+        try {
+            const ordersRef = ref(db, 'official_payments'); 
+            await push(ordersRef, {
+                customerName: uName,
+                userEmail: auth.currentUser ? auth.currentUser.email : "Guest",
+                phone: uPhone,
+                address: addr,
+                product: name,
+                method: method,
+                status: "PENDING",
+                timestamp: new Date().toISOString()
+            });
+            console.log("Order stored in Firebase");
+        } catch (e) {
+            console.error("Firebase Error:", e);
+        }
+
+        // 2. WhatsApp Message Ready panrom
+        let msgText = `Hi Turt Industry, I want to procure ${name} via ${method}.`;
+        if(method === 'COD') {
+            msgText += `\n\nOrder Details:\n- Name: ${uName}\n- Phone: ${uPhone}\n- Address: ${addr}\n- Delivery: LKR 400 (Island Wide)`;
+        } else {
+            msgText += `\n\nMethod: ${method}\nProduct: ${name}`;
+        }
+
+        const msg = encodeURIComponent(msgText);
+        
+        // 3. WhatsApp thirakkum
         window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
         window.closePopup();
     };
-
-    window.handleConsultation = () => window.isLoggedIn ? toggleModal('consult-modal') : toggleModal('login-modal');
-
+    
 </script>
 
 </body>
