@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b82f6">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     
     <style>
         body { background-color: #050505; color: #ffffff; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
@@ -135,6 +136,7 @@
 </head>
 <body>
 
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>    
 <nav class="flex justify-between items-center p-6 nav-blur sticky top-0 border-b border-white/5 z-50">
     <div class="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer" onclick="window.scrollTo(0,0)">TURT INDUSTRY</div>
     
@@ -345,21 +347,25 @@
                             <option>10,000 mAh (Fusion Core)</option>
                         </select>
                     </div>
-                    <div class="md:col-span-2">
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish Notes</label>
-                        <input type="text" id="finish-notes" placeholder="e.g. Matte Cobalt Blue">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Special Requirements</label>
-                        <textarea id="special-req" rows="3" placeholder="Describe any custom hardware modifications..."></textarea>
-                    </div>
-                </div>
-                <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest text-xs text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Secure Transmission</button>
-            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="md:col-span-2">
+        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Finish Notes</label>
+        <input type="text" id="finish-notes" placeholder="e.g. Matte Cobalt Blue">
+    </div>
+
+    <div class="md:col-span-2">
+        <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block">Special Requirements</label>
+        <textarea id="special-req" rows="3" placeholder="Describe any custom hardware modifications..."></textarea>
+    </div>
+
+    <div class="md:col-span-2">
+        <div id="captcha-container-consult" style="display: none; margin-top: 15px; margin-bottom: 10px;">
+            <div class="g-recaptcha" data-sitekey="6LdO7-wsAAAAAEgjnnCjLuBlwZm8VZYX50go--Aq"></div>
         </div>
     </div>
-</div>
-
+</div> <button onclick="submitOrder()" class="w-full bg-blue-600 py-4 mt-8 font-black uppercase tracking-widest text-xs text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">
+    Secure Transmission
+</button>
 <div id="product-store-modal" class="modal">
     <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-[85vh] m-4">
         <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50">
@@ -874,7 +880,33 @@ let currentTransaction = null;
         window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
         window.closePopup();
     };
-    
+
+        function submitOrder() {
+        let orderCount = parseInt(localStorage.getItem('orderCount')) || 0;
+        
+        if (orderCount >= 2) {
+            document.getElementById('captcha-container-consult').style.display = 'block';
+            
+            var response = grecaptcha.getResponse();
+            if (response.length == 0) {
+                alert("Security Alert: Please verify you are not a robot to proceed with third order.");
+                return;
+            }
+        }
+
+        // Actual order logic
+        console.log("Order Processed!");
+        
+        localStorage.setItem('orderCount', orderCount + 1);
+        alert("Transmission Successful!");
+        
+        // Modal-ai close panna intha line-ai add pannikkonga
+        closeModal('consult-modal'); 
+        
+        // Verification success aana captcha-vai thirumbavum hide panna
+        grecaptcha.reset(); 
+        document.getElementById('captcha-container-consult').style.display = 'none';
+    }
 </script>
 
 </body>
