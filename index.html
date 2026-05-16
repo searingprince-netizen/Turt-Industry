@@ -677,7 +677,7 @@
         if(type === 'bank') {
             content.innerHTML = `
                 <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Bank Details</h3>
-                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | Within 3-4 Days</p>
+                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | With in 3-4 Days</p>
                 <div class="space-y-2">
                 <p class="text-blue-400 text-[10px] font-mono bg-blue-500/10 p-4 rounded-lg mb-4 leading-relaxed text-center">
                     BANK: COMMERCIAL BANK<br>ACC: 1234567890<br>NAME: SHAN / TURT IND
@@ -687,27 +687,30 @@
         } else if(type === 'cod') {
             content.innerHTML = `
                 <h3 class="text-blue-500 font-bold mb-2 uppercase text-xs italic tracking-widest text-center">Cash On Delivery</h3>
-                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | Within 3-4 Days</p>
+                <p class="text-[9px] text-zinc-500 text-center mb-4 italic">LKR 400 Island Wide Delivery | With in 3-4 Days</p>
                 <div class="space-y-2">
-                    <input id="cod-name" placeholder="FULL NAME" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
-                    <input id="cod-phone" placeholder="PHONE NUMBER" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
-                    <textarea id="cod-addr" placeholder="DELIVERY ADDRESS" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500 h-20"></textarea>
+                    <input id="p-name" placeholder="FULL NAME" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
+                    <input id="p-phone" placeholder="PHONE NUMBER" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500">
+                    <textarea id="p-addr" placeholder="DELIVERY ADDRESS" class="w-full bg-zinc-900 border border-white/10 p-3 rounded-lg text-white text-[10px] outline-none focus:border-blue-500 h-20"></textarea>
                 </div>
                 
                 <div id="captcha-container" class="mt-4 flex justify-center hidden">
-                    <div id="recaptcha-widget-element"></div>
+                    <div id="recaptcha-widget"></div>
                 </div>
 
                 <button onclick="window.openPopupWhatsApp('COD', '${name}')" class="w-full bg-blue-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase mt-4">Confirm Order</button>
                 <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
             
+            // Check orders count to toggle Captcha visibility
             window.checkOrderCountForCaptcha();
         } else if(type === 'pickup') {
             content.innerHTML = `
                 <h3 class="text-blue-500 font-bold mb-4 uppercase text-xs italic tracking-widest text-center">Direct Pickup</h3>
                 <div class="bg-zinc-900/50 border border-white/5 p-4 rounded-xl space-y-3 text-center">
                     <p class="text-[10px] text-white font-bold uppercase tracking-widest">Our Location</p>
-                    <p class="text-[10px] text-zinc-400 leading-relaxed italic">No: 123, Turt Industry Hub,<br>Main Street, Colombo-14.</p>
+                    <p class="text-[10px] text-zinc-400 leading-relaxed italic">
+                        No: 123, Turt Industry Hub,<br>Main Street, Colombo-14.
+                    </p>
                     <div class="h-[1px] bg-white/5 w-full"></div>
                     <p class="text-[10px] text-white font-bold uppercase tracking-widest">Contact</p>
                     <p class="text-[10px] text-blue-400 font-mono">+94 74 052 3507</p>
@@ -716,6 +719,7 @@
         }
     };
 
+    // --- Check Order Count function (சரிசெய்யப்பட்டது) ---
     window.checkOrderCountForCaptcha = async () => {
         if (!auth.currentUser) return;
         try {
@@ -735,17 +739,13 @@
             const captchaBox = document.getElementById('captcha-container');
             if (captchaBox && orderCount >= 2) {
                 captchaBox.classList.remove('hidden');
-                
-                // Dynamic HTML-il reCAPTCHA-vai explicit render seiyum super fix!
-                setTimeout(() => {
-                    if (document.getElementById('recaptcha-widget-element')) {
-                        captchaWidgetId = grecaptcha.render('recaptcha-widget-element', {
-                            'sitekey': '643983461553-YOUR_KEY_REPLACED_BELOW_DIRECTLY',
-                            'sitekey': '6LdO7-wsAAAAAEgjnnCjLuBlwZm8VZYX50go--Aq', // Ungal Site Key
-                            'theme': 'dark'
-                        });
-                    }
-                }, 100);
+                // Dynamic-ஆக உள்ளே புகுத்தப்பட்ட HTML-ல் reCAPTCHA-வை Explicitly render செய்கிறோம்
+                if (typeof grecaptcha !== 'undefined') {
+                    grecaptcha.render('recaptcha-widget', {
+                        'sitekey': '6LdO7-wsAAAAAEgjnnCjLuBlwZm8VZYX50go--Aq',
+                        'theme': 'dark'
+                    });
+                }
             }
         } catch (e) {
             console.error("Error checking order count:", e);
@@ -753,24 +753,23 @@
     };
 
     window.openPopupWhatsApp = async (method, name) => {
-        const uName = document.getElementById('cod-name')?.value || "Not provided";
-        const uPhone = document.getElementById('cod-phone')?.value || "Not provided";
-        const addr = document.getElementById('cod-addr')?.value || "Not provided";
+        const uName = document.getElementById('p-name')?.value || "Not provided";
+        const uPhone = document.getElementById('p-phone')?.value || "Not provided";
+        const addr = document.getElementById('p-addr')?.value || "Not provided";
         
-        if (method === 'COD' && (uName === "Not provided" || uPhone === "Not provided")) {
-            alert("Please fill your details!");
-            return;
-        }
-
+        // Validation for reCAPTCHA if it is visible
         const captchaContainer = document.getElementById('captcha-container');
         if (captchaContainer && !captchaContainer.classList.contains('hidden')) {
-            const response = grecaptcha.getResponse(captchaWidgetId);
-            if (response.length === 0) {
-                alert("Please verify that you are not a robot (reCAPTCHA).");
-                return;
+            if (typeof grecaptcha !== 'undefined') {
+                const response = grecaptcha.getResponse();
+                if (response.length === 0) {
+                    alert("Please verify that you are not a robot (reCAPTCHA).");
+                    return;
+                }
             }
         }
 
+        // 1. Firebase-la Order Details-ai Store panrom
         try {
             const ordersRef = ref(db, 'official_payments'); 
             await push(ordersRef, {
@@ -788,6 +787,7 @@
             console.error("Firebase Error:", e);
         }
 
+        // 2. WhatsApp Message Ready panrom
         let msgText = `Hi Turt Industry, I want to procure ${name} via ${method}.`;
         if(method === 'COD') {
             msgText += `\n\nOrder Details:\n- Name: ${uName}\n- Phone: ${uPhone}\n- Address: ${addr}\n- Delivery: LKR 400 (Island Wide)`;
@@ -796,9 +796,12 @@
         }
 
         const msg = encodeURIComponent(msgText);
+        
+        // 3. WhatsApp thirakkum
         window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
         window.closePopup();
     };
+    
 </script>
 
 </body>
