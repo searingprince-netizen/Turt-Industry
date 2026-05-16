@@ -135,30 +135,13 @@
             width: max-content;
             cursor: pointer;
         }
-
-        /* --- F.R.I.D.Y.I Chatbot Styles --- */
-        #friday-trigger { position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #3b82f6; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); border: 2px solid rgba(255,255,255,0.2); transition: transform 0.3s; }
-        #friday-trigger:hover { transform: scale(1.1); }
-        #friday-chat-window { position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px; background: #0a0a0a; border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; display: none; flex-direction: column; z-index: 9999; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.8); backdrop-filter: blur(20px); }
-        .chat-header { padding: 20px; background: rgba(59, 130, 246, 0.1); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-        #chat-messages { flex-grow: 1; overflow-y: auto; padding: 20px; font-size: 13px; display: flex; flex-direction: column; gap: 12px; }
-        .msg { padding: 12px 16px; border-radius: 18px; max-width: 85%; line-height: 1.5; font-weight: 500; }
-        .msg-ai { background: #1a1a1a; color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
-        .msg-user { background: #3b82f6; color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
-        .chat-input-area { padding: 15px; background: #000; display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
-        #chat-input { background: #111 !important; border: 1px solid rgba(255,255,255,0.1) !important; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <nav class="flex justify-between items-center p-6 nav-blur sticky top-0 border-b border-white/5 z-50">
     <div class="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer" onclick="window.scrollTo(0,0)">TURT INDUSTRY</div>
-
-    <div class="flex items-center space-x-6 text-sm uppercase tracking-widest font-bold">
-        <button id="train-ai-btn" onclick="window.toggleModal('train-ai-modal')" class="hidden px-4 py-1.5 border border-red-500/50 rounded-full text-[10px] text-red-500 hover:bg-red-500 hover:text-white transition">
-            TRAIN AI
-        </button>    
-
+    
     <div class="flex items-center space-x-6 text-sm uppercase tracking-widest font-bold">
         <button onclick="window.toggleModal('product-store-modal')" class="hidden md:block px-4 py-1.5 border border-zinc-800 rounded-full text-[10px] font-bold hover:bg-white hover:text-black transition uppercase tracking-widest">
             PRODUCTS
@@ -176,35 +159,6 @@
     </div>
 </nav>
     
-<div id="friday-trigger" onclick="window.toggleFriday()">
-    <i class="fa-solid fa-robot text-white text-xl"></i>
-</div>
-
-<div id="friday-chat-window">
-    <div class="chat-header">
-        <div>
-            <span class="text-blue-500 font-black text-xs uppercase tracking-[0.2em]">F.R.I.D.Y.I.</span>
-            <p class="text-[8px] text-zinc-500 uppercase font-bold">Neural Assistant v2.0</p>
-        </div>
-        <button onclick="window.toggleFriday()" class="text-zinc-600 hover:text-white transition">✕</button>
-    </div>
-    <div id="chat-messages" class="custom-scrollbar"></div>
-    <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Initiate communication..." onkeypress="if(event.key==='Enter') window.sendToFriday()">
-        <button onclick="window.sendToFriday()" class="text-blue-500 px-2 hover:scale-110 transition"><i class="fa-solid fa-paper-plane"></i></button>
-    </div>
-</div>
-
-<div id="train-ai-modal" class="modal">
-    <div class="max-w-md w-full bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl shadow-2xl">
-        <h2 class="text-2xl font-black text-white italic mb-4 uppercase tracking-tighter">Train AI Core</h2>
-        <p class="text-[10px] text-zinc-500 mb-6 uppercase font-bold tracking-widest">Update F.R.I.D.Y.I's knowledge base with project prompts.</p>
-        <textarea id="ai-system-prompt" rows="8" placeholder="Enter specialized project data or personality traits..."></textarea>
-        <button onclick="window.saveAISettings()" class="w-full bg-red-600 py-4 mt-6 rounded-xl font-black text-[10px] uppercase text-white hover:bg-red-500 transition shadow-lg shadow-red-900/20">Archive to Brain</button>
-        <button onclick="window.closeModal('train-ai-modal')" class="w-full mt-4 text-zinc-600 text-[9px] uppercase font-bold">Cancel Operation</button>
-    </div>
-</div>
-
 <section class="hero-gradient min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
     <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter uppercase leading-tight">The Future of <br><span class="text-blue-500">Hardware.</span></h1>
@@ -440,13 +394,11 @@
     import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const ADMIN_EMAIL = "searingprince@gmail.com";
-    const GEMINI_API_KEY = "AIzaSyBK-u8-OkBkghCfOAyW0oP7VVWC6MTy2CA";
-
+    
     const firebaseConfig = {
         apiKey: "AIzaSyBS9hqZLTGnuoza1wFUE06iNE6nBtapRNs",
         authDomain: "turt-industry.firebaseapp.com",
         projectId: "turt-industry",
-        databaseURL: "https://turt-industry-default-rtdb.firebaseio.com",
         storageBucket: "turt-industry.firebasestorage.app",
         messagingSenderId: "643983461553",
         appId: "1:643983461553:web:e17457b3f57f0124b96690",
@@ -460,133 +412,42 @@
 
     window.isLoggedIn = false;
     let captchaWidgetId = null; // reCAPTCHA ID track panna
-    let currentUser = null;
-    let userBrainData = null; // Stores Nickname, Age etc.
 
-    // --- F.R.I.D.Y.I AI Core Functions ---
-    window.toggleFriday = () => {
-        const win = document.getElementById('friday-chat-window');
-        win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
-        if(win.style.display === 'flex' && !currentUser) {
-            addAiMessage("Neural link offline. Please login via the portal to access my core.");
-        } else if(win.style.display === 'flex' && !userBrainData) {
-            checkUserOnboarding();
-        }
+    window.toggleModal = (id) => {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.toggle('flex');
     };
 
-        async function checkUserOnboarding() {
-        const snap = await get(ref(db, `users/${currentUser.uid}/brain`));
-        if(snap.exists()) {
-            userBrainData = snap.val();
-            addAiMessage(`Welcome back, ${userBrainData.nickname}. All systems functional.`);
-            loadRecentChats();
+    window.closeModal = (id) => {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('flex');
+    };
+
+    window.handleConsultation = () => {
+        if (!window.isLoggedIn) {
+            window.toggleModal('login-modal');
         } else {
-            addAiMessage("Initializing first-time protocol... I am F.R.I.D.Y.I, the Turt Industry assistant. Before we begin, what should I call you? (Nickname)");
+            window.toggleModal('consult-modal');
         }
-    }
-
-        window.sendToFriday = async () => {
-        const input = document.getElementById('chat-input');
-        const text = input.value.trim();
-        if(!text || !currentUser) return;
-
-        input.value = '';
-        addUserMessage(text);
-
-        // Handle Onboarding Flow
-        if(!userBrainData) {
-            handleOnboarding(text);
-            return;
-        }
-
-        // Normal Chat with Gemini
-        const response = await callGemini(text);
-        addAiMessage(response);
-
-        // Save chat to Firebase (7-day memory logic)
-        push(ref(db, `chats/${currentUser.uid}`), {
-            text: text,
-            response: response,
-            timestamp: Date.now()
-        });
     };
-    
-    async function handleOnboarding(text) {
-        if(!window.onboardingStep) window.onboardingStep = 1;
 
-        if(window.onboardingStep === 1) {
-            window.tempNickname = text;
-            window.onboardingStep = 2;
-            addAiMessage(`Acknowledged, ${text}. Please provide your biological age for my records.`);
-        } else if(window.onboardingStep === 2) {
-            window.tempAge = text;
-            window.onboardingStep = 3;
-            addAiMessage("Finalizing data... Any specific hardware interests or specifications I should prioritize?");
-        } else if(window.onboardingStep === 3) {
-            userBrainData = {
-                nickname: window.tempNickname,
-                age: window.tempAge,
-                specs: text
-            };
-            await set(ref(db, `users/${currentUser.uid}/brain`), userBrainData);
-            addAiMessage(`Permanent data archived. Welcome to the network, ${userBrainData.nickname}. How can I assist with your projects today?`);
-        }
-    }
-    
-    async function callGemini(userText) {
-        // Fetch Admin Prompt
-        const adminSnap = await get(ref(db, 'ai_settings/system_prompt'));
-        const systemPrompt = adminSnap.val() || "You are F.R.I.D.Y.I, a professional AI for Turt Industry. Be concise and smart.";
-
-        const fullPrompt = `System: ${systemPrompt}\nUser Profile: ${JSON.stringify(userBrainData)}\nUser: ${userText}`;
-
+    window.loginWithGoogle = async () => {
         try {
-            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: fullPrompt }] }]
-                })
-            });
-            const data = await resp.json();
-            return data.candidates[0].content.parts[0].text;
-        } catch (e) { return "Link unstable. Unable to process neural request."; }
-    }
-    
-    function addAiMessage(text) {
-        const container = document.getElementById('chat-messages');
-        container.innerHTML += `<div class="msg msg-ai">${text}</div>`;
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function addUserMessage(text) {
-        const container = document.getElementById('chat-messages');
-        container.innerHTML += `<div class="msg msg-user">${text}</div>`;
-        container.scrollTop = container.scrollHeight;
-    }
-    
-    async function loadRecentChats() {
-        const snap = await get(ref(db, `chats/${currentUser.uid}`));
-        const oneWeek = 7 * 24 * 60 * 60 * 1000;
-        const now = Date.now();
-        
-        if(snap.exists()) {
-            snap.forEach(child => {
-                const data = child.val();
-                if(now - data.timestamp < oneWeek) {
-                    addUserMessage(data.text);
-                    addAiMessage(data.response);
-                }
-            });
+            provider.setCustomParameters({ prompt: 'select_account' });
+            await signInWithPopup(auth, provider);
+        } catch (e) { 
+            console.error("Auth Error: " + e.message); 
         }
-    }
-    
-        // --- Admin Train AI Logic ---
-    window.saveAISettings = async () => {
-        const prompt = document.getElementById('ai-system-prompt').value;
-        await set(ref(db, 'ai_settings/system_prompt'), prompt);
-        alert("F.R.I.D.Y.I brain updated with new protocols.");
-        window.closeModal('train-ai-modal');
+    };
+
+    window.logout = async () => {
+        try { 
+            await auth.signOut(); 
+            window.isLoggedIn = false;
+            const accountItem = document.getElementById('active-account-item');
+            if(accountItem) accountItem.innerHTML = ''; 
+            closeModal('login-modal');
+        } catch (e) { alert("Logout Error: " + e.message); }
     };
 
     window.updateAccountUI = (user) => {
@@ -605,8 +466,7 @@
         `;
     };
 
-    // --- Original Website Logic (Unchanged) ---
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
         const navPic = document.getElementById('nav-profile-pic');
         const portalBtn = document.getElementById('portal-btn');
         const modalMainInfo = document.getElementById('auth-main-panel');
@@ -614,7 +474,6 @@
         const modalControls = document.getElementById('auth-controls-panel');
         const modalMoreAccounts = document.getElementById('auth-more-panel');
         const adminBtn = document.getElementById('admin-add-btn');
-        const trainBtn = document.getElementById('train-ai-btn');
 
         if (user) {
             window.isLoggedIn = true;
@@ -647,7 +506,6 @@
             if(portalBtn) {
                 portalBtn.innerText = "Portal Access";
                 portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
-                trainBtn?.classList.add('hidden');
             }
             if(modalMainInfo) modalMainInfo.classList.add('hidden');
             if(modalSignedOut) modalSignedOut.classList.remove('hidden');
@@ -656,43 +514,6 @@
             if(adminBtn) adminBtn.classList.add('hidden');
         }
     });
-
-        window.toggleModal = (id) => {
-        const modal = document.getElementById(id);
-        if (modal) modal.classList.toggle('flex');
-    };
-
-    window.closeModal = (id) => {
-        const modal = document.getElementById(id);
-        if (modal) modal.classList.remove('flex');
-    };
-    
-        window.handleConsultation = () => {
-        if (!window.isLoggedIn) {
-            window.toggleModal('login-modal');
-        } else {
-            window.toggleModal('consult-modal');
-        }
-    };
-
-    window.loginWithGoogle = async () => {
-        try {
-            provider.setCustomParameters({ prompt: 'select_account' });
-            await signInWithPopup(auth, provider);
-        } catch (e) { 
-            console.error("Auth Error: " + e.message); 
-        }
-    };
-
-        window.logout = async () => {
-        try { 
-            await auth.signOut(); 
-            window.isLoggedIn = false;
-            const accountItem = document.getElementById('active-account-item');
-            if(accountItem) accountItem.innerHTML = ''; 
-            closeModal('login-modal');
-        } catch (e) { alert("Logout Error: " + e.message); }
-    };
 
     window.submitOrder = async () => {
         if (!window.isLoggedIn || !auth.currentUser) return;
