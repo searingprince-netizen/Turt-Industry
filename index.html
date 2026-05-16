@@ -290,7 +290,40 @@
                 <p class="text-[9px] text-zinc-600 uppercase tracking-widest font-bold italic">Active Archives</p>
             </div>
         </div>
-        
+        </div>
+</div> <div id="onboarding-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4" style="display: none;">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+    <div class="relative w-full max-w-md bg-zinc-900 border border-zinc-800 p-8 shadow-2xl rounded-3xl">
+        <div class="mb-8 text-center">
+            <div class="w-16 h-16 bg-blue-600/20 border border-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-microchip text-blue-500 text-2xl"></i>
+            </div>
+            <h2 class="text-xl font-black tracking-tighter uppercase italic">Initialize Identity</h2>
+            <p class="text-[10px] text-zinc-500 uppercase tracking-widest mt-1 font-bold">F.R.I.D.Y.I Core Synchronization</p>
+        </div>
+
+        <div class="space-y-6">
+            <div>
+                <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block text-zinc-400">Full Name</label>
+                <input type="text" id="ob-name" class="w-full bg-black border border-zinc-800 p-3 text-sm focus:border-blue-600 outline-none transition rounded-lg text-white" placeholder="Enter your name">
+            </div>
+
+            <div>
+                <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block text-zinc-400">Date of Birth</label>
+                <input type="date" id="ob-dob" class="w-full bg-black border border-zinc-800 p-3 text-sm focus:border-blue-600 outline-none transition text-zinc-400 rounded-lg">
+            </div>
+
+            <div>
+                <label class="text-[9px] font-bold text-zinc-500 uppercase mb-2 block text-zinc-400">Primary Interests</label>
+                <textarea id="ob-interests" rows="2" class="w-full bg-black border border-zinc-800 p-3 text-sm focus:border-blue-600 outline-none transition rounded-lg text-white" placeholder="e.g. Embedded Systems, AI Architecture..."></textarea>
+            </div>
+
+            <button onclick="saveOnboardingData()" class="w-full bg-blue-600 py-4 font-black uppercase tracking-widest text-[10px] text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/20 rounded-xl">
+                Sync with F.R.I.D.Y.I
+            </button>
+        </div>
+    </div>
+</div>
         <div class="w-full md:w-2/3 p-10 relative bg-black/40 overflow-y-auto custom-scrollbar h-full">
             <button onclick="closeModal('consult-modal')" class="absolute top-8 right-8 text-zinc-500 hover:text-white transition z-20">✕</button>
             <div id="builder-placeholder" class="h-full flex flex-col items-center justify-center text-center opacity-50">
@@ -388,11 +421,37 @@
     </div>
 </div>
 
+<div id="ai-chat-container" class="fixed bottom-6 right-6 z-[150] flex flex-col items-end">
+    <div id="ai-chat-window" class="hidden w-[350px] h-[500px] bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col mb-4">
+        <div class="bg-blue-600 p-4 flex justify-between items-center">
+            <span class="text-xs font-black uppercase italic tracking-widest text-white">F.R.I.D.Y.I Core</span>
+            <button onclick="toggleAIChat()" class="text-white/70 hover:text-white">✕</button>
+        </div>
+        <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto space-y-4 text-sm scroll-smooth custom-scrollbar">
+            <div class="bg-zinc-800 p-3 rounded-xl border border-white/5 text-[12px] leading-relaxed">
+                Hello Shan, F.R.I.D.Y.I core initialized. How can I assist your development today?
+            </div>
+        </div>
+        <div class="p-3 bg-black border-t border-white/5 flex gap-2">
+            <input type="text" id="ai-input" class="flex-grow bg-zinc-900 border border-white/10 rounded-lg p-2 text-xs outline-none focus:border-blue-500" placeholder="Type a command...">
+            <button onclick="sendMessageToAI()" class="bg-blue-600 px-3 py-2 rounded-lg text-xs font-bold uppercase hover:bg-blue-500 transition">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <button onclick="toggleAIChat()" class="w-14 h-14 bg-blue-600 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform active:scale-95 shadow-blue-600/40">
+        <i class="fa-solid fa-robot text-white text-xl"></i>
+    </button>
+</div>
+    
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+    import { getFirestore, doc, setDoc, getDoc, serverTimestamp as fsTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, addDoc, collection, query, where, getDocs, orderBy, limit, serverTimestamp as fsTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
     const ADMIN_EMAIL = "searingprince@gmail.com";
     
     const firebaseConfig = {
@@ -407,7 +466,8 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getDatabase(app);
+    const db = getDatabase(app); // Realtime DB (Orders-ku)
+    const db_fs = getFirestore(app);
     const provider = new GoogleAuthProvider();
 
     window.isLoggedIn = false;
@@ -466,55 +526,232 @@
         `;
     };
 
-    onAuthStateChanged(auth, (user) => {
-        const navPic = document.getElementById('nav-profile-pic');
-        const portalBtn = document.getElementById('portal-btn');
-        const modalMainInfo = document.getElementById('auth-main-panel');
-        const modalSignedOut = document.getElementById('auth-out-panel');
-        const modalControls = document.getElementById('auth-controls-panel');
-        const modalMoreAccounts = document.getElementById('auth-more-panel');
-        const adminBtn = document.getElementById('admin-add-btn');
+   onAuthStateChanged(auth, async (user) => { // 'async' add panni irukaen profile check panna
+    const navPic = document.getElementById('nav-profile-pic');
+    const portalBtn = document.getElementById('portal-btn');
+    const modalMainInfo = document.getElementById('auth-main-panel');
+    const modalSignedOut = document.getElementById('auth-out-panel');
+    const modalControls = document.getElementById('auth-controls-panel');
+    const modalMoreAccounts = document.getElementById('auth-more-panel');
+    const adminBtn = document.getElementById('admin-add-btn');
 
-        if (user) {
-            window.isLoggedIn = true;
-            if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
-            if(portalBtn) {
-                portalBtn.innerText = "ACCESS GRANTED";
-                portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
-            }
-            if(modalSignedOut) modalSignedOut.classList.add('hidden');
-            if(modalMainInfo) modalMainInfo.classList.remove('hidden');
-            if(modalControls) modalControls.classList.remove('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+    if (user) {
+        window.isLoggedIn = true;
+        
+        // --- NEW: PROFILE CHECK LOGIC START ---
+        // User login aana udane avanga details Firestore-la irukkanu check pannum
+        await window.checkUserProfile(user); 
+        // --- NEW: PROFILE CHECK LOGIC END ---
 
-            document.getElementById('auth-profile-pic').src = user.photoURL;
-            document.getElementById('auth-name').innerText = user.displayName;
-            document.getElementById('auth-email-top').innerText = user.email;
+        if(navPic) { navPic.style.display = 'block'; navPic.src = user.photoURL; }
+        if(portalBtn) {
+            portalBtn.innerText = "ACCESS GRANTED";
+            portalBtn.classList.replace('bg-blue-600', 'bg-zinc-800');
+        }
+        if(modalSignedOut) modalSignedOut.classList.add('hidden');
+        if(modalMainInfo) modalMainInfo.classList.remove('hidden');
+        if(modalControls) modalControls.classList.remove('hidden');
+        if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
 
-            if (user.email === ADMIN_EMAIL) {
-                if(adminBtn) adminBtn.classList.remove('hidden');
-            } else {
-                if(adminBtn) adminBtn.classList.add('hidden');
-            }
-      
-            window.updateAccountUI(user);
-            window.loadArchives();
-            window.loadProducts(); 
+        document.getElementById('auth-profile-pic').src = user.photoURL;
+        document.getElementById('auth-name').innerText = user.displayName;
+        document.getElementById('auth-email-top').innerText = user.email;
+
+        if (user.email === ADMIN_EMAIL) {
+            if(adminBtn) adminBtn.classList.remove('hidden');
         } else {
-            window.isLoggedIn = false;
-            if(navPic) navPic.style.display = 'none';
-            if(portalBtn) {
-                portalBtn.innerText = "Portal Access";
-                portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
-            }
-            if(modalMainInfo) modalMainInfo.classList.add('hidden');
-            if(modalSignedOut) modalSignedOut.classList.remove('hidden');
-            if(modalControls) modalControls.classList.add('hidden');
-            if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
             if(adminBtn) adminBtn.classList.add('hidden');
         }
-    });
+  
+        window.updateAccountUI(user);
+        window.loadArchives();
+        window.loadProducts(); 
+    } else {
+        window.isLoggedIn = false;
+        if(navPic) navPic.style.display = 'none';
+        if(portalBtn) {
+            portalBtn.innerText = "Portal Access";
+            portalBtn.classList.replace('bg-zinc-800', 'bg-blue-600');
+        }
+        if(modalMainInfo) modalMainInfo.classList.add('hidden');
+        if(modalSignedOut) modalSignedOut.classList.remove('hidden');
+        if(modalControls) modalControls.classList.add('hidden');
+        if(modalMoreAccounts) modalMoreAccounts.classList.add('hidden');
+        if(adminBtn) adminBtn.classList.add('hidden');
+    }
+});
 
+    // Profile irukkanu check pannum, illana onboarding modal-ai kaattum
+window.checkUserProfile = async (user) => {
+    const userRef = doc(db_fs, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+        console.log("New User! Opening Onboarding...");
+        if(typeof window.toggleModal === 'function') {
+            window.toggleModal('onboarding-modal'); // Onboarding modal-ai open pannum
+        }
+    } else {
+        window.userProfile = userSnap.data();
+        console.log("F.R.I.D.Y.I recognized: " + window.userProfile.name);
+    }
+};
+
+// Form submit aagumpothu Firestore-la data save panna
+window.saveOnboardingData = async () => {
+    const user = auth.currentUser;
+    if(!user) return;
+
+    const name = document.getElementById('ob-name').value;
+    const dob = document.getElementById('ob-dob').value;
+    const interests = document.getElementById('ob-interests').value;
+
+    if(!name || !dob) {
+        alert("F.R.I.D.Y.I needs your Name and DOB to proceed.");
+        return;
+    }
+
+    try {
+        // 1. Permanent data-vai save panrom
+        const profileData = {
+            uid: user.uid,
+            name: name,
+            dob: dob,
+            interests: interests,
+            email: user.email,
+            joinedAt: fsTimestamp()
+        };
+
+        await setDoc(doc(db_fs, "users", user.uid), profileData);
+        
+        // 2. NEW: AI memory-kku udanae context tharom
+        window.userProfile = profileData; 
+
+        alert("Turt Industry Profile Activated!");
+        
+        // 3. Modal-ai close panni, AI chat-ai initialize panrom
+        window.closeModal('onboarding-modal');
+        
+        console.log("F.R.I.D.Y.I Memory Synced for: " + name);
+
+    } catch (e) {
+        console.error("Sync Error:", e);
+        alert("Sync Failed. Core offline.");
+    }
+};
+
+// --- F.R.I.D.Y.I AI CORE LOGIC ---
+// --- F.R.I.D.Y.I AI CORE LOGIC (WITH MEMORY & AUTO-SYNC) ---
+const GEMINI_API_KEY = "AIzaSyAOzjd-CTydgpUyz_osvmPpa2i6FyZUeXM"; 
+
+window.toggleAIChat = () => {
+    const chatWin = document.getElementById('ai-chat-window');
+    if(chatWin) chatWin.classList.toggle('hidden');
+};
+
+window.sendMessageToAI = async () => {
+    const input = document.getElementById('ai-input');
+    const msgContainer = document.getElementById('ai-chat-messages');
+    const userMessage = input.value.trim();
+    const user = auth.currentUser; // Login check
+    
+    if (!userMessage) return;
+    if (!user) {
+        alert("Please login to communicate with F.R.I.D.Y.I");
+        return;
+    }
+
+    // 1. UI-la User message-ai display pannu (Right Side)
+    msgContainer.innerHTML += `
+        <div class="flex flex-col items-end mb-4">
+            <div class="bg-blue-600/10 border border-blue-500/20 p-3 rounded-2xl rounded-tr-none max-w-[80%] text-[12px] text-white italic shadow-sm">
+                ${userMessage}
+            </div>
+        </div>`;
+    input.value = '';
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+
+    try {
+        // 2. Fetch History (Last 14 days context)
+        const twoWeeksAgo = new Date();
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+        const q = query(
+            collection(db_fs, "users", user.uid, "chat_history"),
+            where("timestamp", ">", twoWeeksAgo),
+            orderBy("timestamp", "asc")
+        );
+        
+        const querySnapshot = await getDocs(q);
+        let chatHistoryContext = "";
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            chatHistoryContext += `${data.role === 'user' ? 'Boss' : 'F.R.I.D.Y.I'}: ${data.text}\n`;
+        });
+
+        // 3. System Instruction & Context
+        const userContext = window.userProfile ? 
+            `User: ${window.userProfile.name}, Field: ${window.userProfile.interests}.` : 
+            "User: Guest/Unknown.";
+
+        const systemInstruction = `You are F.R.I.D.Y.I, the core AI of Turt Industry. 
+        Your boss is Shan. Use a sophisticated, technical, yet loyal and friendly tone. 
+        Respond in Tanglish (Tamil + English). 
+        Current Context: ${userContext}. 
+        Recent Memory:\n${chatHistoryContext}`;
+
+        // 4. API Request to Gemini
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ role: "user", parts: [{ text: systemInstruction + "\n\nNew Input: " + userMessage }] }]
+            })
+        });
+
+        const data = await response.json();
+        const aiResponse = data.candidates[0].content.parts[0].text;
+
+        // 5. AUTO-DELETE LOGIC (Setting expiration for 14 days)
+        const expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() + 14);
+
+        const chatRef = collection(db_fs, "users", user.uid, "chat_history");
+        
+        // Firestore-la record panrom
+        await addDoc(chatRef, {
+            role: "user",
+            text: userMessage,
+            timestamp: fsTimestamp(),
+            expireAt: expireDate
+        });
+        await addDoc(chatRef, {
+            role: "fridyi",
+            text: aiResponse,
+            timestamp: fsTimestamp(),
+            expireAt: expireDate
+        });
+
+        // 6. UI-la F.R.I.D.Y.I response-ai display pannu (Left Side)
+        msgContainer.innerHTML += `
+            <div class="flex flex-col items-start mb-4">
+                <div class="bg-zinc-800 border border-white/5 p-3 rounded-2xl rounded-tl-none max-w-[85%] text-[12px] leading-relaxed text-zinc-300 shadow-xl">
+                    ${aiResponse}
+                </div>
+            </div>`;
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+
+    } catch (e) {
+        console.error("F.R.I.D.Y.I Core Error:", e);
+        msgContainer.innerHTML += `<div class="text-red-500 text-[9px] uppercase text-center p-2 tracking-tighter"> Neural Link Severed: Check Connection </div>`;
+    }
+};
+
+// Enter key press listener
+document.getElementById('ai-input')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') window.sendMessageToAI();
+});
+    
     window.submitOrder = async () => {
         if (!window.isLoggedIn || !auth.currentUser) return;
         const btn = document.querySelector("#builder-container button");
