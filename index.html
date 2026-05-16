@@ -598,30 +598,59 @@ window.openPopupWhatsApp = (method, name) => {
         }
     });
 
-    // --- DB Functions ---
-    window.submitOrder = async () => {
-        if (!window.isLoggedIn || !auth.currentUser) return;
-        const btn = document.querySelector("#builder-container button");
-        btn.innerText = "TRANSMITTING...";
-        btn.disabled = true;
-        try {
-            const orderData = {
-                userEmail: auth.currentUser.email,
-                model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
-                bodyMaterial: document.getElementById('body-mat').value,
-                backPanel: document.getElementById('back-panel').value, 
-                energyUnit: document.getElementById('energy-unit').value,
-                finishNotes: document.getElementById('finish-notes').value,
-                specialRequirements: document.getElementById('special-req').value,
-                timestamp: serverTimestamp()
-            };
-            await push(ref(db, 'orders'), orderData);
-            alert("SUCCESS: Hardware specifications archived.");
-            window.loadArchives();
-            closeModal('consult-modal');
-        } catch (e) { alert("Error: " + e.message); }
-        finally { btn.innerText = "Secure Transmission"; btn.disabled = false; }
-    };
+// --- Integrated Submit Order with CAPTCHA & Firebase ---
+window.submitOrder = async () => {
+    if (!window.isLoggedIn || !auth.currentUser) return;
+
+    // 1. CAPTCHA Check Logic
+    let orderCount = parseInt(localStorage.getItem('orderCount')) || 0;
+    
+    if (orderCount >= 2) {
+        document.getElementById('captcha-container-consult').style.display = 'block';
+        
+        var response = grecaptcha.getResponse();
+        if (response.length == 0) {
+            alert("Security Alert: Please verify you are not a robot to proceed with third order.");
+            return;
+        }
+    }
+
+    // 2. Firebase Transmission Logic
+    const btn = document.querySelector("#builder-container button");
+    btn.innerText = "TRANSMITTING...";
+    btn.disabled = true;
+
+    try {
+        const orderData = {
+            userEmail: auth.currentUser.email,
+            model: document.getElementById('builder-title').innerText.replace('CONFIG: ', ''),
+            bodyMaterial: document.getElementById('body-mat').value,
+            backPanel: document.getElementById('back-panel').value, 
+            energyUnit: document.getElementById('energy-unit').value,
+            finishNotes: document.getElementById('finish-notes').value,
+            specialRequirements: document.getElementById('special-req').value,
+            timestamp: serverTimestamp()
+        };
+
+        await push(ref(db, 'orders'), orderData);
+        
+        // Success Actions
+        localStorage.setItem('orderCount', orderCount + 1);
+        alert("SUCCESS: Hardware specifications archived.");
+        
+        // Reset UI
+        window.loadArchives();
+        window.closeModal('consult-modal');
+        grecaptcha.reset(); 
+        document.getElementById('captcha-container-consult').style.display = 'none';
+
+    } catch (e) { 
+        alert("Transmission Error: " + e.message); 
+    } finally { 
+        btn.innerText = "Secure Transmission"; 
+        btn.disabled = false; 
+    }
+};
  
     window.openBuilder = (name) => {
         document.getElementById('builder-placeholder').classList.add('hidden');
@@ -881,32 +910,6 @@ let currentTransaction = null;
         window.closePopup();
     };
 
-        function submitOrder() {
-        let orderCount = parseInt(localStorage.getItem('orderCount')) || 0;
-        
-        if (orderCount >= 2) {
-            document.getElementById('captcha-container-consult').style.display = 'block';
-            
-            var response = grecaptcha.getResponse();
-            if (response.length == 0) {
-                alert("Security Alert: Please verify you are not a robot to proceed with third order.");
-                return;
-            }
-        }
-
-        // Actual order logic
-        console.log("Order Processed!");
-        
-        localStorage.setItem('orderCount', orderCount + 1);
-        alert("Transmission Successful!");
-        
-        // Modal-ai close panna intha line-ai add pannikkonga
-        closeModal('consult-modal'); 
-        
-        // Verification success aana captcha-vai thirumbavum hide panna
-        grecaptcha.reset(); 
-        document.getElementById('captcha-container-consult').style.display = 'none';
-    }
 </script>
 
 </body>
