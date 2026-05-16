@@ -448,8 +448,14 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, push, serverTimestamp, get, query as dbQuery, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getFirestore, doc, setDoc, getDoc, addDoc, collection, query as fsQuery, where, getDocs, orderBy, serverTimestamp as fsTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getDatabase, ref, push, serverTimestamp, get, query as rtdbQuery, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// Firestore Imports - 'query' conflict fix panni irukaen
+    import { 
+        getFirestore, doc, setDoc, getDoc, addDoc, collection, 
+        query as fsQuery, where, getDocs, orderBy, limit, 
+        serverTimestamp as fsTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
     const ADMIN_EMAIL = "searingprince@gmail.com";
     
