@@ -155,18 +155,29 @@
 
      /* Blinking Face Core Styles */
 .bot-frame {
-    width: 280px; height: 240px;
-    background: linear-gradient(135deg, #111 0%, #050505 100%);
-    border: 2px solid rgba(59, 130, 246, 0.2);
-    border-radius: 60px 60px 90px 90px;
+    width: 250px; height: 200px;
+    background: #050505;
+    border: 2px solid rgba(59, 130, 246, 0.3);
+    border-radius: 40px;
     display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.1);
 }
+
 .eye {
-    width: 50px; height: 50px; background: #3b82f6;
-    border-radius: 50%; margin: 0 20px;
-    box-shadow: 0 0 20px #3b82f6; transition: 0.1s;
+    width: 45px; height: 45px; 
+    background: #3b82f6;
+    border-radius: 50%; 
+    margin: 0 15px;
+    box-shadow: 0 0 20px #3b82f6; 
+    transition: all 0.1s ease-in-out;
 }
-.wink { height: 4px !important; margin-top: 23px; }   
+
+/* Idhu dhaan blink logic - height-ai kammi pannum */
+.wink { 
+    height: 2px !important; 
+    margin-top: 20px; 
+    box-shadow: 0 0 5px #3b82f6;
+}   
         
     </style>
 </head>
@@ -443,11 +454,11 @@
         </button>
 
         <div class="bot-frame mx-auto">
-            <div id="robot" class="robot-container">
-                <div class="eye eye-l" id="eye-l"></div>
-                <div class="eye eye-r" id="eye-r"></div>
-            </div>
-        </div>
+    <div class="flex items-center">
+        <div class="eye eye-l" id="eye-l"></div>
+        <div class="eye eye-r" id="eye-r"></div>
+    </div>
+</div>
         
         <div id="status" class="text-center mt-6 font-black tracking-widest text-[10px] text-blue-500/50 uppercase">
             System Online
@@ -567,20 +578,25 @@
     };
 
     function startBlinking() {
+    const modal = document.getElementById('fridyi-core-modal');
+    // Modal open-la irundha mattum thaan blink aaganum
+    if (modal && !modal.classList.contains('hidden')) {
         const eyeL = document.getElementById('eye-l');
         const eyeR = document.getElementById('eye-r');
+        
         if(eyeL && eyeR) {
-            eyeL.classList.add('wink'); eyeR.classList.add('wink');
+            eyeL.classList.add('wink'); 
+            eyeR.classList.add('wink');
+            
             setTimeout(() => { 
-                eyeL.classList.remove('wink'); eyeR.classList.remove('wink'); 
+                eyeL.classList.remove('wink'); 
+                eyeR.classList.remove('wink'); 
             }, 150);
         }
-        // Infinite loop-ah prevent panna modal open-la irundha mattum thirumba blink pannum
-        const modal = document.getElementById('fridyi-core-modal');
-        if(modal && !modal.classList.contains('hidden')) {
-            setTimeout(startBlinking, 3000 + Math.random() * 2000);
-        }
+        // Next blink-ku random time set panrom
+        setTimeout(startBlinking, 3000 + Math.random() * 2000);
     }
+}
     
     onAuthStateChanged(auth, (user) => {
         const navPic = document.getElementById('nav-profile-pic');
