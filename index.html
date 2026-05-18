@@ -135,6 +135,24 @@
             width: max-content;
             cursor: pointer;
         }
+         
+        /* F.R.I.D.Y.I Floating Button Animation */
+     #fridyi-trigger {
+         animation: float-animation 3s ease-in-out infinite;
+     }
+
+     @keyframes float-animation {
+         0%, 100% { transform: translateY(0px); }
+         50% { transform: translateY(-10px); }
+     }
+
+     /* Chat window open aana, robot button-ai maraikka */
+     .chat-active #fridyi-trigger {
+         opacity: 0;
+         pointer-events: none;
+         transform: scale(0);
+     }
+        
     </style>
 </head>
 <body>
@@ -388,6 +406,20 @@
     </div>
 </div>
 
+    <div id="fridyi-trigger" onclick="toggleAIChat()" 
+         class="fixed bottom-6 right-6 w-16 h-16 rounded-full cursor-pointer z-[100] transition-all duration-300 hover:scale-110 active:scale-95 group">
+        
+        <div class="absolute inset-0 rounded-full bg-blue-500/20 blur-xl group-hover:bg-blue-500/40 transition-all"></div>
+        
+        <div class="relative w-full h-full rounded-full border-2 border-blue-500/50 overflow-hidden bg-black shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+            <img src="abstract-digital-ai-robot-neon-260nw-2477672875.webp" 
+                 alt="FRIDYI" 
+                 class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+        </div>
+
+        <div class="absolute top-0 right-0 w-4 h-4 bg-blue-500 rounded-full border-2 border-black animate-pulse"></div>
+    </div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -465,6 +497,15 @@
             </div>
         `;
     };
+
+    window.toggleAIChat = () => {
+    const chatWin = document.getElementById('ai-chat-window');
+    if(chatWin) {
+        chatWin.classList.toggle('hidden');
+        // Body-la oru class add panrom, appo thaan CSS-la button-ai maraikka mudiyum
+        document.body.classList.toggle('chat-active');
+    }
+};
 
     onAuthStateChanged(auth, (user) => {
         const navPic = document.getElementById('nav-profile-pic');
