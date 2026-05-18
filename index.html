@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,12 +113,12 @@
 
         @keyframes scroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); } /* Total length-la 50% pōnadhum loop aagum */
+            100% { transform: translateX(-50%); } 
         }
 
         .project-slider-track {
             display: flex;
-            width: max-content; /* Content-ku yetha maadhiri length edukkum */
+            width: max-content; 
             animation: scroll 40s linear infinite;
         }
 
@@ -200,11 +201,14 @@
         .tickle-face .digital-mouth { height: 40px; width: 100px; border-radius: 50px; }
 
         .voice-indicator {
-            padding: 10px 20px; border: 1px solid #3b82f6;
-            border-radius: 50px; font-size: 12px; color: #3b82f6;
-            cursor: pointer; transition: 0.3s;
+            padding: 10px 20px; border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50px; font-size: 10px; color: #3b82f6;
+            cursor: pointer; transition: all 0.3s;
+            display: inline-block; font-weight: bold;
         }
-        .voice-indicator.listening { background: #3b82f6; color: white; box-shadow: 0 0 15px #3b82f6; }
+        .voice-indicator.listening { background: rgba(59, 130, 246, 0.2); color: white; box-shadow: 0 0 15px #3b82f6; border-color: #3b82f6;}
+        .voice-indicator.thinking { background: rgba(245, 158, 11, 0.2); color: #fbbf24; box-shadow: 0 0 15px #fbbf24; border-color: #fbbf24;}
+        .voice-indicator.speaking { background: rgba(34, 197, 94, 0.2); color: #4ade80; box-shadow: 0 0 15px #4ade80; border-color: #4ade80;}
     </style>
 </head>
 <body>
@@ -271,13 +275,11 @@
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p><div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div></div></div></div>
-
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p><div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p><div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ Cyber-Core ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1531746790731-6c087fecd05a?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ TITAN Dynamics ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p><div class="view-specs-btn" onclick="handleConsultation()">FRAME DATA</div></div></div></div>
-     
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1559757175-5700dde675bc?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEUROSYNC ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">Synaplink Cerebro Array</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Advanced N-Core neural feedback loops.</p><div class="view-specs-btn" onclick="handleConsultation()">VIEW SPECIFICATIONS</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NEXA ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">NEXA Master Unit</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Virtual Operating & Response Agent.</p><div class="view-specs-btn" onclick="handleConsultation()">ACCESS NEXUS</div></div></div></div>
             <div class="project-card-h"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="text-blue-400 font-mono text-[10px] uppercase">[ NOVA CORE ]</span><h3 class="text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
@@ -294,7 +296,7 @@
     </div>
 </footer>
 
-<button onclick="toggleModal('robot-core-modal')" class="fixed bottom-6 right-6 z-[99] w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-[0_0_20px_#3b82f6] hover:scale-110 hover:shadow-[0_0_30px_#3b82f6] transition-all duration-300 border border-blue-400/50">
+<button onclick="window.openRobotAndListen()" class="fixed bottom-6 right-6 z-[99] w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-[0_0_20px_#3b82f6] hover:scale-110 hover:shadow-[0_0_30px_#3b82f6] transition-all duration-300 border border-blue-400/50">
     <i class="fa-solid fa-robot text-xl animate-pulse"></i>
 </button>
 
@@ -321,11 +323,11 @@
         </div>
 
         <div class="text-center mt-8 z-10">
-            <span class="text-blue-500 font-mono tracking-[0.4em] text-[10px] uppercase">Voice Command Active</span>
+            <span class="text-blue-500 font-mono tracking-[0.4em] text-[10px] uppercase">F.R.I.D.Y.I AI ASSISTANT</span>
             <h2 id="status-text" class="text-2xl font-black italic uppercase tracking-tighter mt-2 text-white">Core Active</h2>
-            <p id="heard-text" class="text-zinc-500 text-[11px] mt-2 italic">Say: "Happy", "Angry", "Sad", or "Reset" | Touch Screen to Tickle</p>
+            <p id="heard-text" class="text-zinc-500 text-[11px] mt-2 italic">Tap face to tickle | Click status below to re-listen</p>
             
-            <button id="start-voice" class="voice-indicator mt-4 uppercase tracking-widest bg-transparent">Start Listening</button>
+            <div id="ai-status" onclick="window.startListening()" class="voice-indicator mt-4 uppercase tracking-widest cursor-pointer mt-4">Standby</div>
         </div>
     </div>
 </div>
@@ -497,42 +499,151 @@
 <script>
     let currentMood = 'reset';
     let tickleActive = false;
-    let tickleVibrateInterval = null; // Continuous vibration loop-kkaga dynamic variable create seyyappattullathu
+    let tickleVibrateInterval = null; 
+    let aiStatus = 'standby'; // State: standby, listening, thinking, speaking
 
-    // --- Voice Logic ---
+    // Open Modal & Automatically Start Listening
+    window.openRobotAndListen = () => {
+        window.toggleModal('robot-core-modal');
+        window.startListening();
+    };
+
+    // --- Web Speech API Logic ---
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition;
+    
     if (SpeechRecognition) {
-        const recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.lang = 'en-US';
+        recognition = new SpeechRecognition();
+        recognition.continuous = false; // Auto-stop when user pauses (silence detection)
+        // Using Indian English locale for better Tanglish/English accent recognition
+        recognition.lang = 'en-IN'; 
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const btn = document.getElementById('start-voice');
-            if(btn) {
-                btn.onclick = () => {
-                    recognition.start();
-                    btn.innerText = "Listening...";
-                    btn.classList.add('listening');
-                };
+        recognition.onstart = () => {
+            aiStatus = "listening";
+            const ui = document.getElementById('ai-status');
+            if(ui) {
+                ui.innerText = "Listening...";
+                ui.className = "voice-indicator mt-4 uppercase tracking-widest listening";
             }
-        });
+            document.getElementById('heard-text').innerText = "Speak now...";
+        };
 
         recognition.onresult = (event) => {
-            const command = event.results[0][0].transcript.toLowerCase();
-            const heardText = document.getElementById('heard-text');
-            if(heardText) heardText.innerText = `I heard: "${command}"`;
-            processVoice(command);
+            const command = event.results[0][0].transcript;
+            document.getElementById('heard-text').innerText = `I heard: "${command}"`;
+            
+            // Check for basic local mood overrides first
+            processVoice(command.toLowerCase()); 
+            
+            // Send to Gemini LLM for dynamic text generation
+            callGeminiAI(command);
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Mic error:", event.error);
+            const ui = document.getElementById('ai-status');
+            if(ui) {
+                ui.innerText = "Standby";
+                ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
+            }
+            aiStatus = "standby";
         };
 
         recognition.onend = () => {
-            const btn = document.getElementById('start-voice');
-            if(btn) {
-                btn.innerText = "Start Listening";
-                btn.classList.remove('listening');
+            if(aiStatus === "listening") {
+                const ui = document.getElementById('ai-status');
+                if(ui) {
+                    ui.innerText = "Standby";
+                    ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
+                }
+                aiStatus = "standby";
             }
         };
     }
 
+    window.startListening = () => {
+        if(recognition) {
+            // Cancel TTS if currently speaking
+            if(aiStatus === "speaking") window.speechSynthesis.cancel();
+            try { recognition.start(); } catch(e) {}
+        } else {
+            alert("Speech Recognition is not supported in this browser.");
+        }
+    };
+
+    // --- Gemini LLM API Call ---
+    async function callGeminiAI(userText) {
+        aiStatus = "thinking";
+        const ui = document.getElementById('ai-status');
+        if(ui) {
+            ui.innerText = "Thinking...";
+            ui.className = "voice-indicator mt-4 uppercase tracking-widest thinking";
+        }
+
+        const apiKey = "AIzaSyAkNzrMRWEvaU62Rmcfua2YIz3SDgNftY4";
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        
+        // System Prompt: Ensuring F.R.I.D.Y.I responds in the exact language used (Tamil/English/Tanglish)
+        const payload = {
+            contents: [{
+                parts: [{
+                    text: `System Instruction: You are F.R.I.D.Y.I, an AI voice assistant at Turt Industry. The user's name is Shan. You must respond in the exact language the user speaks to you (if they speak in English, reply in English. If they speak in Tamil, reply in Tamil. If Tanglish, use Tanglish). Keep your responses concise, conversational, and completely suitable for Text-To-Speech audio output. Do NOT use emojis, asterisks, or markdown formatting.\n\nUser: ${userText}`
+                }]
+            }]
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            
+            if (data && data.candidates && data.candidates.length > 0) {
+                let aiResponse = data.candidates[0].content.parts[0].text;
+                speakAIResponse(aiResponse);
+            } else {
+                throw new Error("No valid response from Gemini");
+            }
+        } catch (error) {
+            console.error("Gemini Error:", error);
+            speakAIResponse("I'm sorry Shan, I couldn't process that request right now.");
+        }
+    }
+
+    // --- Text-to-Speech (TTS) ---
+    function speakAIResponse(text) {
+        aiStatus = "speaking";
+        const ui = document.getElementById('ai-status');
+        if(ui) {
+            ui.innerText = "Speaking...";
+            ui.className = "voice-indicator mt-4 uppercase tracking-widest speaking";
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-IN'; // Defaulting to IN locale gives a decent voice for English/Tanglish
+        
+        utterance.onend = () => {
+            aiStatus = "standby";
+            if(ui) {
+                ui.innerText = "Standby";
+                ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
+            }
+        };
+
+        utterance.onerror = () => {
+            aiStatus = "standby";
+            if(ui) {
+                ui.innerText = "Standby";
+                ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
+            }
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // --- Original Mood Parser (Fallback) ---
     function processVoice(cmd) {
         if (cmd.includes('happy') || cmd.includes('good')) changeMood('happy');
         else if (cmd.includes('angry') || cmd.includes('mad')) changeMood('angry');
@@ -540,7 +651,6 @@
         else if (cmd.includes('reset') || cmd.includes('normal') || cmd.includes('standard')) changeMood('reset');
     }
 
-    // --- Mood Logic ---
     function changeMood(mode) {
         currentMood = mode;
         const robotContainer = document.getElementById('robot-container');
@@ -567,7 +677,7 @@
         }
     }
 
-    // --- Tickle Logic (Touch/Mouse) [UPDATED FOR CONTINUOUS VIBRATION] ---
+    // --- Tickle Logic (Touch/Mouse) with Continuous Vibration ---
     function startTickle() {
         if (currentMood !== 'reset') return;
         tickleActive = true;
@@ -579,7 +689,6 @@
             status.classList.add('text-blue-400');
         }
 
-        // Click seithu hold panniyirukkum varai loop-il continuous-aaga hardware vibrate aaga setInterval set seyyappattullathu
         if (navigator.vibrate) {
             navigator.vibrate(150);
             tickleVibrateInterval = setInterval(() => {
@@ -603,7 +712,6 @@
             status.classList.remove('text-blue-400');
         }
 
-        // Hold release seiyum podhu loop matrum hardware vibration ai niruthuvadharkana logic
         if (tickleVibrateInterval) {
             clearInterval(tickleVibrateInterval);
             tickleVibrateInterval = null;
@@ -613,7 +721,7 @@
         }
     }
 
-    // Auto Blink
+    // --- Dynamic Blinking ---
     function blink() {
         if (currentMood === 'reset' && !tickleActive) {
             const eyeL = document.getElementById('eye-l');
@@ -626,7 +734,10 @@
                 }, 150);
             }
         }
-        setTimeout(blink, 4000 + Math.random() * 2000);
+        
+        // Visual Feedback: AI yosikkum pothu kangal vegamaga (fast) blink aagum
+        let blinkDelay = (aiStatus === 'thinking') ? (400 + Math.random() * 400) : (4000 + Math.random() * 2000);
+        setTimeout(blink, blinkDelay);
     }
     blink();
 </script>
@@ -974,7 +1085,7 @@
         }
     };
 
-    // --- Check Order Count function (சரிசெய்யப்பட்டது) ---
+    // --- Check Order Count function ---
     window.checkOrderCountForCaptcha = async () => {
         if (!auth.currentUser) return;
         try {
@@ -994,7 +1105,7 @@
             const captchaBox = document.getElementById('captcha-container');
             if (captchaBox && orderCount >= 2) {
                 captchaBox.classList.remove('hidden');
-                // Dynamic-ஆக உள்ளே புகுத்தப்பட்ட HTML-ல் reCAPTCHA-வை Explicitly render செய்கிறோம்
+                // Dynamic-aaga html il recaptha rendering
                 if (typeof grecaptcha !== 'undefined') {
                     grecaptcha.render('recaptcha-widget', {
                         'sitekey': '6LdO7-wsAAAAAEgjnnCjLuBlwZm8VZYX50go--Aq',
