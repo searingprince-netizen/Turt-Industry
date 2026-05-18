@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="google-site-verification" content="yP53drMzS8alkqugGzJayOEAWE3B2jdSpjL6l4KVrZQ" />
@@ -497,6 +497,7 @@
 <script>
     let currentMood = 'reset';
     let tickleActive = false;
+    let tickleVibrateInterval = null; // Continuous vibration loop-kkaga dynamic variable create seyyappattullathu
 
     // --- Voice Logic ---
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -566,43 +567,51 @@
         }
     }
 
-    // --- Tickle Logic (Touch/Mouse) with Vibration ---
-    window.startTickle = () => {
+    // --- Tickle Logic (Touch/Mouse) [UPDATED FOR CONTINUOUS VIBRATION] ---
+    function startTickle() {
         if (currentMood !== 'reset') return;
         tickleActive = true;
         const robotContainer = document.getElementById('robot-container');
         const status = document.getElementById('status-text');
-
         if(robotContainer && status) {
             robotContainer.classList.add('tickle-active', 'tickle-face');
             status.innerText = "SYSTEM INTRUSION!";
             status.classList.add('text-blue-400');
         }
 
-        // --- Vibration Logic ---
-        if ("vibrate" in navigator) {
-            // 200 milliseconds vibrate aagum
-            navigator.vibrate(200); 
+        // Click seithu hold panniyirukkum varai loop-il continuous-aaga hardware vibrate aaga setInterval set seyyappattullathu
+        if (navigator.vibrate) {
+            navigator.vibrate(150);
+            tickleVibrateInterval = setInterval(() => {
+                if (tickleActive && navigator.vibrate) {
+                    navigator.vibrate(150);
+                } else {
+                    clearInterval(tickleVibrateInterval);
+                }
+            }, 150);
         }
-    };
+    }
 
-    window.stopTickle = () => {
+    function stopTickle() {
         if (!tickleActive || currentMood !== 'reset') return;
         tickleActive = false;
         const robotContainer = document.getElementById('robot-container');
         const status = document.getElementById('status-text');
-
         if(robotContainer && status) {
             robotContainer.classList.remove('tickle-active', 'tickle-face');
             status.innerText = "CORE ACTIVE";
             status.classList.remove('text-blue-400');
         }
-        
-        // Stop vibration when touch ends
-        if ("vibrate" in navigator) {
+
+        // Hold release seiyum podhu loop matrum hardware vibration ai niruthuvadharkana logic
+        if (tickleVibrateInterval) {
+            clearInterval(tickleVibrateInterval);
+            tickleVibrateInterval = null;
+        }
+        if (navigator.vibrate) {
             navigator.vibrate(0);
         }
-    };
+    }
 
     // Auto Blink
     function blink() {
@@ -965,7 +974,7 @@
         }
     };
 
-    // --- Check Order Count function ---
+    // --- Check Order Count function (சரிசெய்யப்பட்டது) ---
     window.checkOrderCountForCaptcha = async () => {
         if (!auth.currentUser) return;
         try {
@@ -985,6 +994,7 @@
             const captchaBox = document.getElementById('captcha-container');
             if (captchaBox && orderCount >= 2) {
                 captchaBox.classList.remove('hidden');
+                // Dynamic-ஆக உள்ளே புகுத்தப்பட்ட HTML-ல் reCAPTCHA-வை Explicitly render செய்கிறோம்
                 if (typeof grecaptcha !== 'undefined') {
                     grecaptcha.render('recaptcha-widget', {
                         'sitekey': '6LdO7-wsAAAAAEgjnnCjLuBlwZm8VZYX50go--Aq',
