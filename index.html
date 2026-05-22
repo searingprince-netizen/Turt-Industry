@@ -132,7 +132,7 @@
         }
 
         /* ==========================================================================
-           ADDED: Blinking Robot Styles (Scoped safely inside modal to prevent conflict)
+           Eilik-Style Blinking Robot Enhanced Styles
            ========================================================================== */
         .bot-frame {
             position: relative; width: 320px; height: 280px;
@@ -168,10 +168,11 @@
             border: 4px solid #1e293b; position: relative; overflow: hidden;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
-        .digital-face { display: flex; flex-direction: column; align-items: center; gap: 30px; }
-        .eyes-container { display: flex; gap: 60px; align-items: center; height: 50px; }
+        .digital-face { display: flex; flex-direction: column; align-items: center; gap: 30px; transition: all 0.3s; }
+        .eyes-container { display: flex; gap: 60px; align-items: center; height: 50px; transition: all 0.3s; }
         .digital-eye {
             width: 45px; height: 45px; background: #3b82f6; border-radius: 12px;
             box-shadow: 0 0 20px #3b82f6; transition: all 0.2s ease;
@@ -179,20 +180,40 @@
         .digital-eye.wink { height: 10px; border-radius: 5px; transform: translateY(15px); }
         .digital-mouth { width: 80px; height: 10px; background: #3b82f6; border-radius: 20px; box-shadow: 0 0 15px #3b82f6; transition: all 0.3s ease; }
 
-        /* --- Moods --- */
-        .angry .digital-eye { background: #f43f5e; box-shadow: 0 0 20px #f43f5e; transform: rotate(15deg); }
-        .angry .digital-mouth { background: #f43f5e; width: 40px; }
-        .sad .digital-eye { opacity: 0.4; transform: translateY(10px); }
-        .sad .digital-mouth { width: 30px; opacity: 0.4; }
-        .happy .digital-eye { background: #22c55e; box-shadow: 0 0 20px #22c55e; height: 35px; border-radius: 20px 20px 10px 10px; }
-        .happy .digital-mouth { background: #22c55e; width: 100px; height: 15px; border-radius: 10px 10px 40px 40px; }
+        /* --- Realistic Moods --- */
+        /* Happy / Petting */
+        .happy .digital-eye { background: #22c55e; box-shadow: 0 0 20px #22c55e; height: 35px; border-radius: 30px 30px 10px 10px; }
+        .happy .digital-mouth { background: #22c55e; width: 90px; height: 30px; border-radius: 10px 10px 50px 50px; }
+        
+        /* Angry / Tapping */
+        @keyframes shake-hard { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-8px) rotate(-2deg);} 75% {transform: translateX(8px) rotate(2deg);} }
+        .angry .bot-frame { animation: shake-hard 0.1s infinite; border-color: rgba(244, 63, 94, 0.5); }
+        .angry .digital-eye { background: #f43f5e; box-shadow: 0 0 20px #f43f5e; transform: rotate(20deg) scaleY(0.5); border-radius: 5px; }
+        .angry #eye-l { transform: rotate(20deg) scaleY(0.5); }
+        .angry #eye-r { transform: rotate(-20deg) scaleY(0.5); }
+        .angry .digital-mouth { background: #f43f5e; width: 40px; transform: translateY(-10px); }
 
-        /* --- Tickle (Touch) State --- */
-        .tickle-active .bot-frame { animation: vibrate 0.1s infinite; }
-        @keyframes vibrate { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } }
+        /* Sad / Ignored long */
+        .sad .digital-eye { opacity: 0.5; height: 25px; transform: translateY(15px); border-radius: 20px 20px 5px 5px; }
+        .sad .digital-mouth { width: 30px; height: 5px; opacity: 0.5; transform: translateY(15px); border-radius: 10px 10px 20px 20px; }
+        .sad .digital-face { transform: translateY(20px); } /* Looking down */
 
-        .tickle-face .digital-eye { height: 10px; border-radius: 5px; transform: translateY(15px); }
-        .tickle-face .digital-mouth { height: 40px; width: 100px; border-radius: 50px; }
+        /* Bored / Idle */
+        .bored .digital-eye { height: 15px; border-radius: 20px 20px 5px 5px; opacity: 0.6; }
+        .bored .digital-mouth { width: 30px; height: 20px; border-radius: 50%; opacity: 0.6; animation: yawn 3s ease-in-out infinite; }
+        @keyframes yawn { 0%, 100% { height: 10px; } 50% { height: 35px; width: 25px; } }
+
+        /* Fear / Shaking or Height */
+        @keyframes vibrate-fast { 0% { transform: translate(3px, 3px); } 50% { transform: translate(-3px, -3px); } }
+        .fear .bot-frame { animation: vibrate-fast 0.05s infinite; border-color: rgba(250, 204, 21, 0.5); }
+        .fear .digital-eye { background: #facc15; box-shadow: 0 0 30px #facc15; width: 55px; height: 55px; border-radius: 50%; transform: translateY(-10px); }
+        .fear .digital-mouth { background: #facc15; width: 25px; height: 25px; border-radius: 50%; transform: translateY(10px); }
+
+        /* Curious / Hearing Sound */
+        .curious .ai-screen { transform: rotate(12deg); }
+        .curious .digital-eye { height: 45px; border-radius: 50%; }
+        .curious #eye-r { transform: scale(1.3); } /* One eye bigger */
+        .curious .digital-mouth { width: 20px; height: 20px; border-radius: 50%; }
 
         .voice-indicator {
             padding: 10px 20px; border: 1px solid rgba(59, 130, 246, 0.3);
@@ -299,7 +320,7 @@
         <div id="robot-container" class="relative flex items-center mt-8">
             <div class="titanium-hand hand-l"></div>
             <div id="main-core" class="bot-frame">
-                <div class="ai-screen" onmousedown="startTickle()" onmouseup="stopTickle()" onmouseleave="stopTickle()" ontouchstart="startTickle()" ontouchend="stopTickle()">
+                <div class="ai-screen" onmousedown="botInteractionStart()" onmousemove="botInteractionMove()" onmouseup="botInteractionEnd()" ontouchstart="botInteractionStart()" ontouchmove="botInteractionMove()" ontouchend="botInteractionEnd()" onmouseleave="botInteractionEnd()">
                     <div class="digital-face">
                         <div class="eyes-container">
                             <div id="eye-l" class="digital-eye"></div>
@@ -315,7 +336,7 @@
         <div class="text-center mt-8 z-10">
             <span class="text-blue-500 font-mono tracking-[0.4em] text-[10px] uppercase">F.R.I.D.Y.I AI ASSISTANT</span>
             <h2 id="status-text" class="text-2xl font-black italic uppercase tracking-tighter mt-2 text-white">Core Active</h2>
-            <p id="heard-text" class="text-zinc-500 text-[11px] mt-2 italic">Tap face to tickle | Click status below to re-listen</p>
+            <p id="heard-text" class="text-zinc-500 text-[11px] mt-2 italic">Pet my face gently or tap to wake me! | Click status below to re-listen</p>
             
             <div id="ai-status" onclick="window.startListening()" class="voice-indicator mt-4 uppercase tracking-widest cursor-pointer mt-4">Standby</div>
         </div>
@@ -488,13 +509,141 @@
 
 <script>
     let currentMood = 'reset';
-    let tickleActive = false;
-    let tickleVibrateInterval = null; 
-    let aiStatus = 'standby'; // State: standby, listening, thinking, speaking
+    let aiStatus = 'standby'; 
 
-    // Open Modal & Automatically Start Listening
+    // Eilik-style Interaction Tracking Variables
+    let isTouching = false;
+    let petCount = 0;
+    let tapCount = 0;
+    let tapTimer = null;
+    let idleTimer = null;
+    let sadTimer = null;
+    let femaleVoice = null;
+
+    // --- Voice Setup & Initialization ---
+    function loadVoices() {
+        const voices = window.speechSynthesis.getVoices();
+        // Priority for female-sounding voices (e.g. Zira, Samantha, Google UK English Female)
+        femaleVoice = voices.find(v => 
+            v.name.toLowerCase().includes('female') || 
+            v.name.toLowerCase().includes('zira') || 
+            v.name.toLowerCase().includes('samantha') ||
+            v.name.toLowerCase().includes('victoria') ||
+            v.name.toLowerCase().includes('sita')
+        );
+        if(!femaleVoice && voices.length > 0) femaleVoice = voices[0]; 
+    }
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+    }
+    setTimeout(loadVoices, 500); // Fallback to load on boot
+
+    // Sound Engine for Emotions
+    function playEmoteSound(type) {
+        if(!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        let text = ""; let pitch = 1; let rate = 1;
+        
+        switch(type) {
+            case 'happy': text = "Aww, hehehe!"; pitch = 1.6; rate = 1.2; break;
+            case 'angry': text = "Grrrrr! Stop it!"; pitch = 0.5; rate = 1.3; break;
+            case 'sad': text = "Mmm... I feel lonely..."; pitch = 0.7; rate = 0.8; break;
+            case 'fear': text = "Whoa! Careful!"; pitch = 1.8; rate = 1.5; break;
+            case 'bored': text = "Yaaawn... so boring."; pitch = 0.6; rate = 0.6; break;
+            case 'curious': text = "Hmm? What is that?"; pitch = 1.3; rate = 1.1; break;
+        }
+        
+        if(text) {
+            let u = new SpeechSynthesisUtterance(text);
+            if(femaleVoice) u.voice = femaleVoice;
+            u.pitch = pitch; u.rate = rate;
+            window.speechSynthesis.speak(u);
+        }
+    }
+
+    // --- Idle Tracking (Bored & Sad) ---
+    function resetIdleTimer() {
+        clearTimeout(idleTimer);
+        clearTimeout(sadTimer);
+        if (currentMood === 'bored' || currentMood === 'sad') changeMood('reset');
+        
+        // 15s idleness -> Bored
+        idleTimer = setTimeout(() => {
+            if(currentMood === 'reset') {
+                changeMood('bored');
+                playEmoteSound('bored');
+            }
+        }, 15000);
+        
+        // 30s idleness -> Sad
+        sadTimer = setTimeout(() => {
+            if(currentMood === 'bored') {
+                changeMood('sad');
+                playEmoteSound('sad');
+            }
+        }, 30000);
+    }
+
+    // --- Touch / Gesture Handlers ---
+    function botInteractionStart(e) {
+        isTouching = true;
+        resetIdleTimer();
+        
+        // Tap Tracking for Anger
+        tapCount++;
+        clearTimeout(tapTimer);
+        tapTimer = setTimeout(() => { tapCount = 0; }, 1000); // 1 sec limit to continuous taps
+
+        if (tapCount >= 4) {
+            // Rapid Taps -> Angry
+            changeMood('angry');
+            playEmoteSound('angry');
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); // Strong angry vibration
+            setTimeout(() => { changeMood('reset'); resetIdleTimer(); }, 3000);
+            tapCount = 0;
+            petCount = 0; // Cancel any petting
+        }
+    }
+
+    function botInteractionMove(e) {
+        if(isTouching) {
+            petCount++;
+            resetIdleTimer();
+            // Continuous motion -> Happy (Petting)
+            if(petCount > 20 && currentMood !== 'happy' && currentMood !== 'angry') {
+                changeMood('happy');
+                playEmoteSound('happy');
+                if (navigator.vibrate) navigator.vibrate(50); // Soft purr vibration
+                setTimeout(() => { changeMood('reset'); resetIdleTimer(); }, 4000);
+                petCount = 0;
+            }
+        }
+    }
+
+    function botInteractionEnd(e) {
+        isTouching = false;
+        petCount = 0;
+    }
+
+    // --- Motion Detection (Fear/Shake) ---
+    if (window.DeviceMotionEvent) {
+        window.addEventListener('devicemotion', (event) => {
+            let acc = event.accelerationIncludingGravity;
+            // High acceleration threshold (Table bump or fast pickup)
+            if (acc && (Math.abs(acc.x) > 15 || Math.abs(acc.y) > 15 || Math.abs(acc.z) > 15)) {
+                if (currentMood !== 'fear') {
+                    changeMood('fear');
+                    playEmoteSound('fear');
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]); // Trembling vibration
+                    setTimeout(() => { changeMood('reset'); resetIdleTimer(); }, 3000);
+                }
+            }
+        });
+    }
+
     window.openRobotAndListen = () => {
         window.toggleModal('robot-core-modal');
+        resetIdleTimer();
         window.startListening();
     };
 
@@ -504,12 +653,19 @@
     
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
-        recognition.continuous = false; // Auto-stop when user pauses (silence detection)
-        // Using Indian English locale for better Tanglish/English accent recognition
+        recognition.continuous = false;
         recognition.lang = 'en-IN'; 
 
         recognition.onstart = () => {
             aiStatus = "listening";
+            resetIdleTimer();
+            // Curious reaction when mic turns on
+            if(currentMood === 'reset') {
+                changeMood('curious');
+                playEmoteSound('curious');
+                setTimeout(() => { if(currentMood === 'curious') changeMood('reset'); }, 2000);
+            }
+            
             const ui = document.getElementById('ai-status');
             if(ui) {
                 ui.innerText = "Listening...";
@@ -521,11 +677,7 @@
         recognition.onresult = (event) => {
             const command = event.results[0][0].transcript;
             document.getElementById('heard-text').innerText = `I heard: "${command}"`;
-            
-            // Check for basic local mood overrides first
             processVoice(command.toLowerCase()); 
-            
-            // Send to Gemini LLM for dynamic text generation
             callGeminiAI(command);
         };
 
@@ -537,6 +689,7 @@
                 ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
             }
             aiStatus = "standby";
+            resetIdleTimer();
         };
 
         recognition.onend = () => {
@@ -553,7 +706,6 @@
 
     window.startListening = () => {
         if(recognition) {
-            // Cancel TTS if currently speaking
             if(aiStatus === "speaking") window.speechSynthesis.cancel();
             try { recognition.start(); } catch(e) {}
         } else {
@@ -564,6 +716,7 @@
     // --- Gemini LLM API Call ---
     async function callGeminiAI(userText) {
         aiStatus = "thinking";
+        resetIdleTimer();
         const ui = document.getElementById('ai-status');
         if(ui) {
             ui.innerText = "Thinking...";
@@ -573,7 +726,6 @@
         const apiKey = "AIzaSyAkNzrMRWEvaU62Rmcfua2YIz3SDgNftY4";
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         
-        // System Prompt: Ensuring F.R.I.D.Y.I responds in the exact language used (Tamil/English/Tanglish)
         const payload = {
             contents: [{
                 parts: [{
@@ -602,9 +754,12 @@
         }
     }
 
-    // --- Text-to-Speech (TTS) ---
+    // --- Text-to-Speech (TTS) with Female Voice ---
     function speakAIResponse(text) {
         aiStatus = "speaking";
+        resetIdleTimer();
+        changeMood('reset'); // Wake up to speak
+        
         const ui = document.getElementById('ai-status');
         if(ui) {
             ui.innerText = "Speaking...";
@@ -612,10 +767,12 @@
         }
 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-IN'; // Defaulting to IN locale gives a decent voice for English/Tanglish
+        utterance.lang = 'en-IN'; 
+        if(femaleVoice) utterance.voice = femaleVoice; // Apply female voice
         
         utterance.onend = () => {
             aiStatus = "standby";
+            resetIdleTimer();
             if(ui) {
                 ui.innerText = "Standby";
                 ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
@@ -633,87 +790,58 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    // --- Original Mood Parser (Fallback) ---
+    // --- Mood Parser from Text ---
     function processVoice(cmd) {
-        if (cmd.includes('happy') || cmd.includes('good')) changeMood('happy');
+        if (cmd.includes('happy') || cmd.includes('good') || cmd.includes('cute')) changeMood('happy');
         else if (cmd.includes('angry') || cmd.includes('mad')) changeMood('angry');
-        else if (cmd.includes('sad')) changeMood('sad');
+        else if (cmd.includes('sad') || cmd.includes('cry')) changeMood('sad');
+        else if (cmd.includes('scared') || cmd.includes('fear')) changeMood('fear');
         else if (cmd.includes('reset') || cmd.includes('normal') || cmd.includes('standard')) changeMood('reset');
     }
 
+    // --- Visual Emotion Controller ---
     function changeMood(mode) {
         currentMood = mode;
         const robotContainer = document.getElementById('robot-container');
         const status = document.getElementById('status-text');
         if(!robotContainer || !status) return;
 
+        // Clear all previous mood classes
         robotContainer.className = 'relative flex items-center'; 
-        status.classList.remove('text-red-400', 'text-green-400', 'text-zinc-500', 'text-blue-400');
+        status.classList.remove('text-red-400', 'text-green-400', 'text-zinc-500', 'text-yellow-400', 'text-blue-400');
 
         if (mode === 'happy') {
             robotContainer.classList.add('happy');
-            status.innerText = "OPTIMAL DIAGNOSTIC";
+            status.innerText = "YAY! HAPPY!";
             status.classList.add('text-green-400');
         } else if (mode === 'angry') {
             robotContainer.classList.add('angry');
-            status.innerText = "OVERRIDE ACTIVE";
+            status.innerText = "ANGRY MODE!";
             status.classList.add('text-red-400');
         } else if (mode === 'sad') {
             robotContainer.classList.add('sad');
-            status.innerText = "STASIS MODE";
+            status.innerText = "I FEEL LONELY...";
+            status.classList.add('text-zinc-500');
+        } else if (mode === 'fear') {
+            robotContainer.classList.add('fear');
+            status.innerText = "WHOA! SENSING DANGER!";
+            status.classList.add('text-yellow-400');
+        } else if (mode === 'curious') {
+            robotContainer.classList.add('curious');
+            status.innerText = "LISTENING CLOSELY...";
+            status.classList.add('text-blue-400');
+        } else if (mode === 'bored') {
+            robotContainer.classList.add('bored');
+            status.innerText = "SOOO BORING...";
             status.classList.add('text-zinc-500');
         } else {
             status.innerText = "CORE ACTIVE";
         }
     }
 
-    // --- Tickle Logic (Touch/Mouse) with Continuous Vibration ---
-    function startTickle() {
-        if (currentMood !== 'reset') return;
-        tickleActive = true;
-        const robotContainer = document.getElementById('robot-container');
-        const status = document.getElementById('status-text');
-        if(robotContainer && status) {
-            robotContainer.classList.add('tickle-active', 'tickle-face');
-            status.innerText = "SYSTEM INTRUSION!";
-            status.classList.add('text-blue-400');
-        }
-
-        if (navigator.vibrate) {
-            navigator.vibrate(150);
-            tickleVibrateInterval = setInterval(() => {
-                if (tickleActive && navigator.vibrate) {
-                    navigator.vibrate(150);
-                } else {
-                    clearInterval(tickleVibrateInterval);
-                }
-            }, 150);
-        }
-    }
-
-    function stopTickle() {
-        if (!tickleActive || currentMood !== 'reset') return;
-        tickleActive = false;
-        const robotContainer = document.getElementById('robot-container');
-        const status = document.getElementById('status-text');
-        if(robotContainer && status) {
-            robotContainer.classList.remove('tickle-active', 'tickle-face');
-            status.innerText = "CORE ACTIVE";
-            status.classList.remove('text-blue-400');
-        }
-
-        if (tickleVibrateInterval) {
-            clearInterval(tickleVibrateInterval);
-            tickleVibrateInterval = null;
-        }
-        if (navigator.vibrate) {
-            navigator.vibrate(0);
-        }
-    }
-
     // --- Dynamic Blinking ---
     function blink() {
-        if (currentMood === 'reset' && !tickleActive) {
+        if (currentMood === 'reset') {
             const eyeL = document.getElementById('eye-l');
             const eyeR = document.getElementById('eye-r');
             if (eyeL && eyeR) {
@@ -725,11 +853,11 @@
             }
         }
         
-        // Visual Feedback: AI yosikkum pothu kangal vegamaga (fast) blink aagum
         let blinkDelay = (aiStatus === 'thinking') ? (400 + Math.random() * 400) : (4000 + Math.random() * 2000);
         setTimeout(blink, blinkDelay);
     }
     blink();
+    resetIdleTimer(); // Start the idle timer on boot
 </script>
 
 <script type="module">
