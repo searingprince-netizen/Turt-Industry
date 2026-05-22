@@ -128,7 +128,7 @@
         .card-inner:hover::before { opacity: 1; }
         .card-inner:hover { border-color: #3b82f6; }
 
-        /* --- Boss Updates: Thanos Snap Effect --- */
+        /* --- Boss Updates: Thanos Snap Effect (Card Inner) --- */
         .card-info-bg {
             position: relative;
             z-index: 5;
@@ -161,7 +161,6 @@
             transform: scale(1) translateY(0);
         }
 
-        /* Staggered dust effect timings */
         .card-inner .snap-text:nth-child(1) { transition-delay: 0.05s; }
         .card-inner .snap-text:nth-child(2) { transition-delay: 0.1s; }
         .card-inner .snap-text:nth-child(3) { transition-delay: 0.15s; }
@@ -192,6 +191,43 @@
             0% { background-position: 200% center; }
             100% { background-position: 0% center; }
         }
+
+        /* --- NEW: Transparent Side Panel with Thanos Snap Effect --- */
+        #hover-specs-panel {
+            position: fixed;
+            z-index: 1000;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: max-content;
+            transform: translateY(-50%); /* Center Vertically */
+        }
+
+        .spec-line {
+            opacity: 0;
+            filter: blur(15px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: 0 0 10px rgba(0,0,0,0.8); /* Ensures text is readable over dim background */
+        }
+
+        /* Directional Thanos Snap */
+        #hover-specs-panel.snap-right .spec-line { transform: translateX(-30px) scale(1.1); }
+        #hover-specs-panel.snap-left .spec-line { transform: translateX(30px) scale(1.1); }
+
+        #hover-specs-panel.active .spec-line {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateX(0) scale(1);
+        }
+
+        /* Staggered Dust Form Timing (Medium Speed) */
+        .spec-line:nth-child(1) { transition-delay: 0.05s; }
+        .spec-line:nth-child(2) { transition-delay: 0.15s; }
+        .spec-line:nth-child(3) { transition-delay: 0.25s; }
+        .spec-line:nth-child(4) { transition-delay: 0.35s; }
+        .spec-line:nth-child(5) { transition-delay: 0.45s; }
+        .spec-line:nth-child(6) { transition-delay: 0.55s; }
 
         /* ==========================================================================
            Eilik-Style Blinking Robot Enhanced Styles
@@ -243,11 +279,9 @@
         .digital-mouth { width: 80px; height: 10px; background: #3b82f6; border-radius: 20px; box-shadow: 0 0 15px #3b82f6; transition: all 0.3s ease; }
 
         /* --- Realistic Moods --- */
-        /* Happy / Petting */
         .happy .digital-eye { background: #22c55e; box-shadow: 0 0 20px #22c55e; height: 35px; border-radius: 30px 30px 10px 10px; }
         .happy .digital-mouth { background: #22c55e; width: 90px; height: 30px; border-radius: 10px 10px 50px 50px; }
         
-        /* Angry / Tapping */
         @keyframes shake-hard { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-8px) rotate(-2deg);} 75% {transform: translateX(8px) rotate(2deg);} }
         .angry .bot-frame { animation: shake-hard 0.1s infinite; border-color: rgba(244, 63, 94, 0.5); }
         .angry .digital-eye { background: #f43f5e; box-shadow: 0 0 20px #f43f5e; transform: rotate(20deg) scaleY(0.5); border-radius: 5px; }
@@ -255,39 +289,31 @@
         .angry #eye-r { transform: rotate(-20deg) scaleY(0.5); }
         .angry .digital-mouth { background: #f43f5e; width: 40px; transform: translateY(-10px); }
 
-        /* Sad / Ignored long */
         .sad .digital-eye { opacity: 0.5; height: 25px; transform: translateY(15px); border-radius: 20px 20px 5px 5px; }
         .sad .digital-mouth { width: 30px; height: 5px; opacity: 0.5; transform: translateY(15px); border-radius: 10px 10px 20px 20px; }
         .sad .digital-face { transform: translateY(20px); }
 
-        /* Bored / Idle */
         .bored .digital-eye { height: 15px; border-radius: 20px 20px 5px 5px; opacity: 0.6; }
         .bored .digital-mouth { width: 30px; height: 20px; border-radius: 50%; opacity: 0.6; animation: yawn 3s ease-in-out infinite; }
         @keyframes yawn { 0%, 100% { height: 10px; } 50% { height: 35px; width: 25px; } }
 
-        /* Fear / Shaking or Height */
         @keyframes vibrate-fast { 0% { transform: translate(3px, 3px); } 50% { transform: translate(-3px, -3px); } }
         .fear .bot-frame { animation: vibrate-fast 0.05s infinite; border-color: rgba(250, 204, 21, 0.5); }
         .fear .digital-eye { background: #facc15; box-shadow: 0 0 30px #facc15; width: 55px; height: 55px; border-radius: 50%; transform: translateY(-10px); }
         .fear .digital-mouth { background: #facc15; width: 25px; height: 25px; border-radius: 50%; transform: translateY(10px); }
 
-        /* Curious / Hearing Sound */
         .curious .ai-screen { transform: rotate(12deg); }
         .curious .digital-eye { height: 45px; border-radius: 50%; }
         .curious #eye-r { transform: scale(1.3); } 
         .curious .digital-mouth { width: 20px; height: 20px; border-radius: 50%; }
 
-        /* --- NEW EXPRESSIONS --- */
-        /* Surprised (Wow) */
         .surprised .digital-eye { height: 60px; width: 60px; border-radius: 50%; transform: translateY(-15px); background: #38bdf8; box-shadow: 0 0 25px #38bdf8;}
         .surprised .digital-mouth { width: 35px; height: 35px; border-radius: 50%; background: #38bdf8; transform: translateY(10px); }
         
-        /* Loving (Heart/Affection) */
         .loving .digital-eye { background: #ec4899; box-shadow: 0 0 25px #ec4899; border-radius: 50px 50px 10px 10px; height: 35px; animation: heartbeat 1s infinite; }
         .loving .digital-mouth { background: #ec4899; width: 60px; height: 15px; border-radius: 10px 10px 50px 50px; }
         @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
-        /* Dizzy (Confused) */
         .dizzy .digital-eye { border-radius: 10px; }
         .dizzy #eye-l { transform: rotate(45deg) scale(0.8); }
         .dizzy #eye-r { transform: rotate(-45deg) scale(1.2); }
@@ -295,7 +321,6 @@
         .dizzy .digital-face { animation: dizzy-spin 2s linear infinite; }
         @keyframes dizzy-spin { 100% { transform: rotate(360deg); } }
 
-        /* Sleepy (Deep Idle) */
         @keyframes breathing { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02) translateY(-5px); } }
         .sleepy .bot-frame { animation: breathing 4s ease-in-out infinite; }
         .sleepy .digital-eye { height: 6px; transform: translateY(20px); opacity: 0.3; border-radius: 5px; }
@@ -311,7 +336,6 @@
         .voice-indicator.thinking { background: rgba(245, 158, 11, 0.2); color: #fbbf24; box-shadow: 0 0 15px #fbbf24; border-color: #fbbf24;}
         .voice-indicator.speaking { background: rgba(34, 197, 94, 0.2); color: #4ade80; box-shadow: 0 0 15px #4ade80; border-color: #4ade80;}
 
-        /* --- 5s Jump Animation --- */
         @keyframes eilik-periodic-jump {
             0%, 85%, 100% { transform: translateY(0) scale(1); }
             88% { transform: translateY(-12px) scale(0.95); }
@@ -321,7 +345,6 @@
         }
         .animate-eilik-jump { animation: eilik-periodic-jump 5s infinite ease-in-out; }
 
-        /* --- Gemini Sheen & Glow Animations --- */
         @keyframes sheen {
             0% { left: -100%; }
             20% { left: 100%; }
@@ -393,8 +416,8 @@
     </div>
 </section>
 
-<section id="projects" class="py-32 bg-[#050505] overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6 mb-16 text-center">
+<section id="projects" class="py-32 bg-[#050505] overflow-hidden relative">
+    <div class="max-w-7xl mx-auto px-6 mb-16 text-center relative z-10">
         <header>
             <span class="text-blue-500 font-mono tracking-[0.3em] uppercase text-xs">Industrial Portfolio</span>
             <h2 class="text-5xl font-black mt-4 tracking-tighter uppercase italic">Current Projects.</h2>
@@ -642,7 +665,50 @@
     </div>
 </div>
 
+<div id="hover-specs-panel">
+    <h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Hardware Specifications</h4>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-microchip text-blue-400"></i> <span>N-Core Neural Processor</span></div>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-bolt text-blue-400"></i> <span>Zero-Point Energy Cell</span></div>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-shield-halved text-blue-400"></i> <span>Grade 5 Titanium Armor</span></div>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-eye text-blue-400"></i> <span>Quantum Vision Array</span></div>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-satellite-dish text-blue-400"></i> <span>Latency-Free Uplink</span></div>
+</div>
+
 <script>
+    // --- NEW: Hover Specs Panel Logic ---
+    document.addEventListener("DOMContentLoaded", () => {
+        const cards = document.querySelectorAll('.project-card-h');
+        const panel = document.getElementById('hover-specs-panel');
+
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', (e) => {
+                const rect = card.getBoundingClientRect();
+                const centerY = rect.top + (rect.height / 2);
+                
+                panel.style.top = `${centerY}px`;
+
+                // Screen Math to find Left or Right side
+                if (rect.left < window.innerWidth / 2) {
+                    panel.style.left = `${rect.right + 30}px`;
+                    panel.style.right = 'auto';
+                    panel.classList.remove('snap-left');
+                    panel.classList.add('snap-right');
+                } else {
+                    panel.style.right = `${window.innerWidth - rect.left + 30}px`;
+                    panel.style.left = 'auto';
+                    panel.classList.remove('snap-right');
+                    panel.classList.add('snap-left');
+                }
+
+                panel.classList.add('active');
+            });
+
+            card.addEventListener('mouseleave', () => {
+                panel.classList.remove('active');
+            });
+        });
+    });
+
     let currentMood = 'reset';
     let aiStatus = 'standby'; 
 
@@ -691,7 +757,7 @@
         }
     };
 
-    // Tab visibility handling - strictly checks document state to block post-tab audio/loops
+    // Tab visibility handling
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             window.forceStandby();
@@ -700,13 +766,8 @@
         }
     });
 
-    // Handle abrupt page close, reload, or background transitions natively
-    window.addEventListener('pagehide', () => {
-        window.forceStandby();
-    });
-    window.addEventListener('beforeunload', () => {
-        window.forceStandby();
-    });
+    window.addEventListener('pagehide', () => { window.forceStandby(); });
+    window.addEventListener('beforeunload', () => { window.forceStandby(); });
 
     // --- Voice Setup & Initialization ---
     function loadVoices() {
@@ -727,7 +788,6 @@
 
     // Sound Engine
     function playEmoteSound(type) {
-        // Stop speech processing instantly if the tab is closed/hidden
         if(document.hidden || !window.speechSynthesis) return;
         
         window.speechSynthesis.cancel();
@@ -753,13 +813,12 @@
         }
     }
 
-    // --- Idle Tracking (Bored, Sad, Sleepy) ---
+    // --- Idle Tracking ---
     function resetIdleTimer() {
         clearTimeout(idleTimer);
         clearTimeout(sadTimer);
         clearTimeout(sleepTimer);
         
-        // Prevent registering background actions if the user leaves the page context
         if (document.hidden) return;
         
         if (currentMood === 'bored' || currentMood === 'sad' || currentMood === 'sleepy') {
@@ -798,7 +857,7 @@
         }
     });
 
-    // --- Petting (Hover/Move) Handler ---
+    // --- Petting Handler ---
     function handlePetting() {
         if(document.hidden || currentMood === 'angry' || currentMood === 'dizzy' || currentMood === 'fear') return; 
         
@@ -822,7 +881,7 @@
         petCount = 0; 
     }
 
-    // --- Tapping (Click) Handler ---
+    // --- Tapping Handler ---
     function handleTap() {
         if(document.hidden) return;
         tapCount++;
@@ -846,7 +905,7 @@
         }
     }
 
-    // --- Motion Detection (Fear/Shake) ---
+    // --- Motion Detection ---
     if (window.DeviceMotionEvent) {
         window.addEventListener('devicemotion', (event) => {
             if(document.hidden) return;
