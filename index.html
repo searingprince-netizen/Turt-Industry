@@ -249,7 +249,7 @@
         .voice-indicator.thinking { background: rgba(245, 158, 11, 0.2); color: #fbbf24; box-shadow: 0 0 15px #fbbf24; border-color: #fbbf24;}
         .voice-indicator.speaking { background: rgba(34, 197, 94, 0.2); color: #4ade80; box-shadow: 0 0 15px #4ade80; border-color: #4ade80;}
 
-        /* --- New 5s Jump & Blink Animations --- */
+        /* --- 5s Jump Animation --- */
         @keyframes eilik-periodic-jump {
             0%, 85%, 100% { transform: translateY(0) scale(1); }
             88% { transform: translateY(-12px) scale(0.95); }
@@ -259,11 +259,27 @@
         }
         .animate-eilik-jump { animation: eilik-periodic-jump 5s infinite ease-in-out; }
 
-        @keyframes eilik-blink {
-            0%, 48%, 52%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.1); }
+        /* --- Gemini Sheen & Glow Animations --- */
+        @keyframes sheen {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
         }
-        .animate-eilik-blink { animation: eilik-blink 4s infinite ease-in-out; }
+        .gemini-sheen {
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-20deg);
+            animation: sheen 5s infinite;
+        }
+        .gemini-glow {
+            animation: pulse-glow 2s infinite ease-in-out alternate;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px #38bdf8, inset 0 0 10px #38bdf8; border-color: #1e293b; }
+            100% { box-shadow: 0 0 30px #c084fc, inset 0 0 20px #818cf8; border-color: #c084fc; }
+        }
 
     </style>
 </head>
@@ -348,13 +364,23 @@
     </div>
 </footer>
 
-<button onclick="window.openRobotAndListen()" class="fixed bottom-6 right-6 z-[99] w-16 h-16 bg-[#000] text-white rounded-[24px] flex flex-col items-center justify-center shadow-[0_0_20px_#3b82f6] hover:scale-110 hover:shadow-[0_0_30px_#3b82f6] transition-all duration-300 border-2 border-[#1e293b] animate-eilik-jump cursor-pointer overflow-hidden group">
-    <div class="flex flex-col items-center gap-1.5 mt-1 transition-transform group-hover:scale-110">
-        <div class="flex gap-3">
-            <div class="w-3.5 h-3.5 bg-blue-500 rounded-[4px] shadow-[0_0_8px_#3b82f6] animate-eilik-blink"></div>
-            <div class="w-3.5 h-3.5 bg-blue-500 rounded-[4px] shadow-[0_0_8px_#3b82f6] animate-eilik-blink"></div>
-        </div>
-        <div class="w-6 h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_#3b82f6]"></div>
+<button onclick="window.openRobotAndListen()" class="fixed bottom-6 right-6 z-[99] w-16 h-16 bg-[#000] text-white rounded-[24px] flex items-center justify-center transition-all duration-300 animate-eilik-jump cursor-pointer overflow-hidden group gemini-glow border-2">
+    <div class="gemini-sheen"></div>
+    
+    <div class="transition-transform group-hover:scale-110 group-hover:rotate-180 duration-500 relative z-10 flex items-center justify-center">
+        <svg class="w-8 h-8 drop-shadow-[0_0_10px_rgba(56,189,248,0.8)]" viewBox="0 0 24 24" fill="url(#gemini-grad)">
+            <defs>
+                <linearGradient id="gemini-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#38bdf8" />
+                    <stop offset="50%" stop-color="#818cf8" />
+                    <stop offset="100%" stop-color="#c084fc" />
+                </linearGradient>
+            </defs>
+            <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"/>
+        </svg>
+        <svg class="w-3 h-3 absolute text-white opacity-90 drop-shadow-[0_0_5px_rgba(255,255,255,1)]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"/>
+        </svg>
     </div>
 </button>
 
