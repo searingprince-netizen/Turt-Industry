@@ -39,28 +39,8 @@
         select:focus, input:focus, textarea:focus { border-color: #3b82f6 !important; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
         
         .profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; }
-        
-        /* --- Boss Updates: Feature Cards Sheening --- */
-        .feature-card { 
-            background: rgba(255,255,255,0.02); 
-            border: 1px solid rgba(255,255,255,0.05); 
-            transition: all 0.3s; 
-            position: relative; 
-            overflow: hidden; 
-        }
+        .feature-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; }
         .feature-card:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
-
-        .feature-sheen {
-            position: absolute;
-            top: 0; left: -100%;
-            width: 10%; /* Thikness similar to Eilik bot button */
-            height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-            transform: skewX(-20deg);
-            animation: sheen 5s infinite; /* Synchronized speed */
-            pointer-events: none;
-            z-index: 0;
-        }
         
         .project-card { position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .project-card:hover { border-color: rgba(59, 130, 246, 0.5); transform: translateY(-10px); }
@@ -197,21 +177,19 @@
             cursor: pointer;
         }
 
-        /* --- Boss Updates: Text Sheening (Updated Slow Speed + 10s Delay) --- */
+        /* --- Boss Updates: Text Sheening --- */
         .text-sheen {
             background: linear-gradient(120deg, #3b82f6 0%, #3b82f6 40%, #ffffff 50%, #3b82f6 60%, #3b82f6 100%);
             background-size: 200% auto;
             color: transparent;
             -webkit-background-clip: text;
             background-clip: text;
-            /* 18s total: 8s for the animation + 10s pause */
-            animation: textSheen 18s infinite linear;
+            animation: textSheen 3s infinite linear;
             display: inline-block;
         }
         @keyframes textSheen {
             0% { background-position: 200% center; }
-            44% { background-position: 0% center; } /* 44% of 18s is ~8 seconds */
-            100% { background-position: 0% center; } /* Holds position for the remaining 10s */
+            100% { background-position: 0% center; }
         }
 
         /* --- NEW: Transparent Side Panel with Thanos Snap Effect --- */
@@ -424,19 +402,16 @@
 
     <div class="grid md:grid-cols-3 gap-8 max-w-6xl w-full px-6 pb-20 z-10">
         <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
-            <div class="feature-sheen"></div>
-            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg relative z-10">Automated Precision</div>
-            <p class="text-gray-400 text-sm relative z-10">AI-driven manufacturing lines ensuring 99.9% accuracy.</p>
+            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Automated Precision</div>
+            <p class="text-gray-400 text-sm">AI-driven manufacturing lines ensuring 99.9% accuracy.</p>
         </div>
         <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
-            <div class="feature-sheen"></div>
-            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg relative z-10">Scalable Tech</div>
-            <p class="text-gray-400 text-sm relative z-10">From prototypes to mass production in record time.</p>
+            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Scalable Tech</div>
+            <p class="text-gray-400 text-sm">From prototypes to mass production in record time.</p>
         </div>
         <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
-            <div class="feature-sheen"></div>
-            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg relative z-10">Global Export</div>
-            <p class="text-gray-400 text-sm relative z-10">Direct logistics from our facilities to your HQ.</p>
+            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Global Export</div>
+            <p class="text-gray-400 text-sm">Direct logistics from our facilities to your HQ.</p>
         </div>
     </div>
 </section>
@@ -690,78 +665,29 @@
     </div>
 </div>
 
-<div id="hover-specs-panel"></div>
+<div id="hover-specs-panel">
+    <h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Hardware Specifications</h4>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-microchip text-blue-400"></i> <span>N-Core Neural Processor</span></div>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-bolt text-blue-400"></i> <span>Zero-Point Energy Cell</span></div>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-shield-halved text-blue-400"></i> <span>Grade 5 Titanium Armor</span></div>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-eye text-blue-400"></i> <span>Quantum Vision Array</span></div>
+    <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-satellite-dish text-blue-400"></i> <span>Latency-Free Uplink</span></div>
+</div>
 
 <script>
-    // --- NEW: Hover Specs Panel Logic with Dynamic Data per Project ---
+    // --- NEW: Hover Specs Panel Logic ---
     document.addEventListener("DOMContentLoaded", () => {
         const cards = document.querySelectorAll('.project-card-h');
         const panel = document.getElementById('hover-specs-panel');
 
-        // Dynamic Database for 5 Different Projects
-        const projectSpecs = {
-            "Synaplink Cerebro Array": [
-                { icon: "fa-microchip", text: "N-Core Neural Processor" },
-                { icon: "fa-brain", text: "Cognitive Sync Protocol" },
-                { icon: "fa-network-wired", text: "Terabit Neural Link" },
-                { icon: "fa-shield-halved", text: "Cerebral Firewall" },
-                { icon: "fa-bolt", text: "Bio-Electric Power" }
-            ],
-            "NEXA Master Unit": [
-                { icon: "fa-server", text: "Quantum Logic Core" },
-                { icon: "fa-robot", text: "Sentient Heuristics" },
-                { icon: "fa-globe", text: "Global Network Uplink" },
-                { icon: "fa-lock", text: "Sub-Zero Encryption" },
-                { icon: "fa-eye", text: "Omniscient Vision Array" }
-            ],
-            "ARC UNIT": [
-                { icon: "fa-bolt", text: "Zero-Point Fusion Cell" },
-                { icon: "fa-atom", text: "Cold Fusion Reactor" },
-                { icon: "fa-temperature-low", text: "Cryogenic Coolant" },
-                { icon: "fa-battery-full", text: "Infinite Output Capacity" },
-                { icon: "fa-shield", text: "Magnetic Containment" }
-            ],
-            "SENTINEL GATEWAY": [
-                { icon: "fa-shield-halved", text: "Adaptive AI Firewall" },
-                { icon: "fa-bug-slash", text: "Intrusion Countermeasures" },
-                { icon: "fa-tower-broadcast", text: "Threat Detection Radar" },
-                { icon: "fa-code", text: "Polymorphic Codebase" },
-                { icon: "fa-eye", text: "Quantum Surveillance" }
-            ],
-            "EXO-FRAME V2": [
-                { icon: "fa-dumbbell", text: "Titanium Alloy Skeleton" },
-                { icon: "fa-gears", text: "Hydraulic Micro-Motors" },
-                { icon: "fa-bolt", text: "High-Torque Actuators" },
-                { icon: "fa-shield", text: "Impact Resistance Armor" },
-                { icon: "fa-battery-half", text: "120-Hour Power Cell" }
-            ]
-        };
-
         cards.forEach(card => {
             card.addEventListener('mouseenter', (e) => {
-                // Get the exact title of the hovered card to find matching specs
-                const titleEl = card.querySelector('h3.snap-text');
-                const title = titleEl ? titleEl.innerText.trim() : "Synaplink Cerebro Array";
-                const specs = projectSpecs[title] || projectSpecs["Synaplink Cerebro Array"]; // Default fallback
-                
-                // Construct HTML specific to this project
-                let html = '<h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Hardware Specifications</h4>';
-                specs.forEach(s => {
-                    html += `<div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid ${s.icon} text-blue-400"></i> <span>${s.text}</span></div>`;
-                });
-                
-                // Inject new content
-                panel.innerHTML = html;
-
-                // Force DOM reflow to ensure CSS transition animations trigger fresh
-                void panel.offsetWidth;
-
                 const rect = card.getBoundingClientRect();
                 const centerY = rect.top + (rect.height / 2);
                 
                 panel.style.top = `${centerY}px`;
 
-                // Screen Math to find Left or Right side positioning
+                // Screen Math to find Left or Right side
                 if (rect.left < window.innerWidth / 2) {
                     panel.style.left = `${rect.right + 30}px`;
                     panel.style.right = 'auto';
