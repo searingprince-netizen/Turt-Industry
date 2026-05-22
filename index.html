@@ -172,7 +172,7 @@
         }
 
         .digital-face { display: flex; flex-direction: column; align-items: center; gap: 30px; transition: all 0.3s; }
-        .eyes-container { display: flex; gap: 60px; align-items: center; height: 50px; transition: all 0.3s; }
+        .eyes-container { display: flex; gap: 60px; align-items: center; height: 50px; transition: transform 0.1s ease-out; } /* Eye tracking transition */
         .digital-eye {
             width: 45px; height: 45px; background: #3b82f6; border-radius: 12px;
             box-shadow: 0 0 20px #3b82f6; transition: all 0.2s ease;
@@ -196,7 +196,7 @@
         /* Sad / Ignored long */
         .sad .digital-eye { opacity: 0.5; height: 25px; transform: translateY(15px); border-radius: 20px 20px 5px 5px; }
         .sad .digital-mouth { width: 30px; height: 5px; opacity: 0.5; transform: translateY(15px); border-radius: 10px 10px 20px 20px; }
-        .sad .digital-face { transform: translateY(20px); } /* Looking down */
+        .sad .digital-face { transform: translateY(20px); }
 
         /* Bored / Idle */
         .bored .digital-eye { height: 15px; border-radius: 20px 20px 5px 5px; opacity: 0.6; }
@@ -212,8 +212,32 @@
         /* Curious / Hearing Sound */
         .curious .ai-screen { transform: rotate(12deg); }
         .curious .digital-eye { height: 45px; border-radius: 50%; }
-        .curious #eye-r { transform: scale(1.3); } /* One eye bigger */
+        .curious #eye-r { transform: scale(1.3); } 
         .curious .digital-mouth { width: 20px; height: 20px; border-radius: 50%; }
+
+        /* --- NEW EXPRESSIONS --- */
+        /* Surprised (Wow) */
+        .surprised .digital-eye { height: 60px; width: 60px; border-radius: 50%; transform: translateY(-15px); background: #38bdf8; box-shadow: 0 0 25px #38bdf8;}
+        .surprised .digital-mouth { width: 35px; height: 35px; border-radius: 50%; background: #38bdf8; transform: translateY(10px); }
+        
+        /* Loving (Heart/Affection) */
+        .loving .digital-eye { background: #ec4899; box-shadow: 0 0 25px #ec4899; border-radius: 50px 50px 10px 10px; height: 35px; animation: heartbeat 1s infinite; }
+        .loving .digital-mouth { background: #ec4899; width: 60px; height: 15px; border-radius: 10px 10px 50px 50px; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+        /* Dizzy (Confused) */
+        .dizzy .digital-eye { border-radius: 10px; }
+        .dizzy #eye-l { transform: rotate(45deg) scale(0.8); }
+        .dizzy #eye-r { transform: rotate(-45deg) scale(1.2); }
+        .dizzy .digital-mouth { width: 60px; height: 15px; border-radius: 20px; transform: rotate(10deg); }
+        .dizzy .digital-face { animation: dizzy-spin 2s linear infinite; }
+        @keyframes dizzy-spin { 100% { transform: rotate(360deg); } }
+
+        /* Sleepy (Deep Idle) */
+        @keyframes breathing { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02) translateY(-5px); } }
+        .sleepy .bot-frame { animation: breathing 4s ease-in-out infinite; }
+        .sleepy .digital-eye { height: 6px; transform: translateY(20px); opacity: 0.3; border-radius: 5px; }
+        .sleepy .digital-mouth { width: 20px; height: 6px; opacity: 0.3; transform: translateY(20px); border-radius: 10px; }
 
         .voice-indicator {
             padding: 10px 20px; border: 1px solid rgba(59, 130, 246, 0.3);
@@ -320,9 +344,9 @@
         <div id="robot-container" class="relative flex items-center mt-8">
             <div class="titanium-hand hand-l"></div>
             <div id="main-core" class="bot-frame">
-                <div class="ai-screen" onmousedown="botInteractionStart()" onmousemove="botInteractionMove()" onmouseup="botInteractionEnd()" ontouchstart="botInteractionStart()" ontouchmove="botInteractionMove()" ontouchend="botInteractionEnd()" onmouseleave="botInteractionEnd()">
+                <div class="ai-screen" onmousemove="handlePetting()" ontouchmove="handlePetting()" onmouseleave="stopPetting()" onclick="handleTap()">
                     <div class="digital-face">
-                        <div class="eyes-container">
+                        <div class="eyes-container" id="bot-eyes">
                             <div id="eye-l" class="digital-eye"></div>
                             <div id="eye-r" class="digital-eye"></div>
                         </div>
@@ -336,7 +360,7 @@
         <div class="text-center mt-8 z-10">
             <span class="text-blue-500 font-mono tracking-[0.4em] text-[10px] uppercase">F.R.I.D.Y.I AI ASSISTANT</span>
             <h2 id="status-text" class="text-2xl font-black italic uppercase tracking-tighter mt-2 text-white">Core Active</h2>
-            <p id="heard-text" class="text-zinc-500 text-[11px] mt-2 italic">Pet my face gently or tap to wake me! | Click status below to re-listen</p>
+            <p id="heard-text" class="text-zinc-500 text-[11px] mt-2 italic">Hover & move on my face to pet me, or tap me! | Click status below to re-listen</p>
             
             <div id="ai-status" onclick="window.startListening()" class="voice-indicator mt-4 uppercase tracking-widest cursor-pointer mt-4">Standby</div>
         </div>
@@ -511,19 +535,18 @@
     let currentMood = 'reset';
     let aiStatus = 'standby'; 
 
-    // Eilik-style Interaction Tracking Variables
-    let isTouching = false;
+    // Enhanced Interaction Variables
     let petCount = 0;
     let tapCount = 0;
     let tapTimer = null;
     let idleTimer = null;
     let sadTimer = null;
+    let sleepTimer = null;
     let femaleVoice = null;
 
     // --- Voice Setup & Initialization ---
     function loadVoices() {
         const voices = window.speechSynthesis.getVoices();
-        // Priority for female-sounding voices (e.g. Zira, Samantha, Google UK English Female)
         femaleVoice = voices.find(v => 
             v.name.toLowerCase().includes('female') || 
             v.name.toLowerCase().includes('zira') || 
@@ -536,9 +559,9 @@
     if (speechSynthesis.onvoiceschanged !== undefined) {
         speechSynthesis.onvoiceschanged = loadVoices;
     }
-    setTimeout(loadVoices, 500); // Fallback to load on boot
+    setTimeout(loadVoices, 500);
 
-    // Sound Engine for Emotions
+    // Sound Engine
     function playEmoteSound(type) {
         if(!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
@@ -546,11 +569,14 @@
         
         switch(type) {
             case 'happy': text = "Aww, hehehe!"; pitch = 1.6; rate = 1.2; break;
-            case 'angry': text = "Grrrrr! Stop it!"; pitch = 0.5; rate = 1.3; break;
+            case 'angry': text = "Grrrrr! Stop tapping me!"; pitch = 0.5; rate = 1.3; break;
             case 'sad': text = "Mmm... I feel lonely..."; pitch = 0.7; rate = 0.8; break;
             case 'fear': text = "Whoa! Careful!"; pitch = 1.8; rate = 1.5; break;
             case 'bored': text = "Yaaawn... so boring."; pitch = 0.6; rate = 0.6; break;
             case 'curious': text = "Hmm? What is that?"; pitch = 1.3; rate = 1.1; break;
+            case 'surprised': text = "Oh wow!"; pitch = 1.7; rate = 1.2; break;
+            case 'loving': text = "Aww, I love you too!"; pitch = 1.5; rate = 1.1; break;
+            case 'dizzy': text = "Whoa, my head is spinning..."; pitch = 0.8; rate = 0.7; break;
         }
         
         if(text) {
@@ -561,81 +587,109 @@
         }
     }
 
-    // --- Idle Tracking (Bored & Sad) ---
+    // --- Idle Tracking (Bored, Sad, Sleepy) ---
     function resetIdleTimer() {
         clearTimeout(idleTimer);
         clearTimeout(sadTimer);
-        if (currentMood === 'bored' || currentMood === 'sad') changeMood('reset');
+        clearTimeout(sleepTimer);
         
-        // 15s idleness -> Bored
+        if (currentMood === 'bored' || currentMood === 'sad' || currentMood === 'sleepy') {
+            changeMood('reset');
+        }
+        
         idleTimer = setTimeout(() => {
-            if(currentMood === 'reset') {
-                changeMood('bored');
-                playEmoteSound('bored');
-            }
-        }, 15000);
+            if(currentMood === 'reset') { changeMood('bored'); playEmoteSound('bored'); }
+        }, 15000); // 15s Idle -> Bored
         
-        // 30s idleness -> Sad
         sadTimer = setTimeout(() => {
-            if(currentMood === 'bored') {
-                changeMood('sad');
-                playEmoteSound('sad');
-            }
-        }, 30000);
+            if(currentMood === 'bored') { changeMood('sad'); playEmoteSound('sad'); }
+        }, 30000); // 30s Idle -> Sad
+
+        sleepTimer = setTimeout(() => {
+            if(currentMood === 'sad') { changeMood('sleepy'); }
+        }, 45000); // 45s Idle -> Sleepy (Zzz)
     }
 
-    // --- Touch / Gesture Handlers ---
-    function botInteractionStart(e) {
-        isTouching = true;
+    // --- Eye Tracking Logic ---
+    document.getElementById('robot-core-modal').addEventListener('mousemove', (e) => {
+        // Eye tracking works only if awake and not dizzy
+        if(currentMood !== 'sleepy' && currentMood !== 'sad' && currentMood !== 'dizzy') {
+            const eyes = document.getElementById('bot-eyes');
+            if(eyes) {
+                const rect = eyes.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                // Calculate distance from center, limit movement to a small radius
+                const moveX = (e.clientX - centerX) / 25; 
+                const moveY = (e.clientY - centerY) / 25;
+                eyes.style.transform = `translate(${Math.max(-12, Math.min(12, moveX))}px, ${Math.max(-10, Math.min(10, moveY))}px)`;
+            }
+        } else {
+            const eyes = document.getElementById('bot-eyes');
+            if(eyes) eyes.style.transform = `translate(0px, 0px)`;
+        }
+    });
+
+    // --- Petting (Hover/Move) Handler ---
+    function handlePetting() {
+        if(currentMood === 'angry' || currentMood === 'dizzy' || currentMood === 'fear') return; 
+        
+        petCount++;
         resetIdleTimer();
         
-        // Tap Tracking for Anger
-        tapCount++;
-        clearTimeout(tapTimer);
-        tapTimer = setTimeout(() => { tapCount = 0; }, 1000); // 1 sec limit to continuous taps
+        // If hovered enough times consistently, trigger happy
+        if(petCount > 25 && currentMood !== 'happy') {
+            changeMood('happy');
+            playEmoteSound('happy');
+            if (navigator.vibrate) navigator.vibrate(50); // Soft purr
+            
+            setTimeout(() => { 
+                if(currentMood === 'happy') changeMood('reset'); 
+                resetIdleTimer(); 
+            }, 3000);
+            petCount = 0;
+        }
+    }
 
+    function stopPetting() {
+        petCount = 0; // Reset pet tracking if mouse leaves face
+    }
+
+    // --- Tapping (Click) Handler ---
+    function handleTap() {
+        tapCount++;
+        resetIdleTimer();
+        clearTimeout(tapTimer);
+        
+        // Reset tap count after 1.5s of no taps
+        tapTimer = setTimeout(() => { tapCount = 0; }, 1500); 
+
+        // 4 rapid taps -> Angry
         if (tapCount >= 4) {
-            // Rapid Taps -> Angry
             changeMood('angry');
             playEmoteSound('angry');
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); // Strong angry vibration
-            setTimeout(() => { changeMood('reset'); resetIdleTimer(); }, 3000);
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); 
+            
+            setTimeout(() => { 
+                if(currentMood === 'angry') changeMood('reset'); 
+                resetIdleTimer(); 
+            }, 3500);
+            
             tapCount = 0;
-            petCount = 0; // Cancel any petting
+            petCount = 0; // Cancel any ongoing petting
         }
-    }
-
-    function botInteractionMove(e) {
-        if(isTouching) {
-            petCount++;
-            resetIdleTimer();
-            // Continuous motion -> Happy (Petting)
-            if(petCount > 20 && currentMood !== 'happy' && currentMood !== 'angry') {
-                changeMood('happy');
-                playEmoteSound('happy');
-                if (navigator.vibrate) navigator.vibrate(50); // Soft purr vibration
-                setTimeout(() => { changeMood('reset'); resetIdleTimer(); }, 4000);
-                petCount = 0;
-            }
-        }
-    }
-
-    function botInteractionEnd(e) {
-        isTouching = false;
-        petCount = 0;
     }
 
     // --- Motion Detection (Fear/Shake) ---
     if (window.DeviceMotionEvent) {
         window.addEventListener('devicemotion', (event) => {
             let acc = event.accelerationIncludingGravity;
-            // High acceleration threshold (Table bump or fast pickup)
             if (acc && (Math.abs(acc.x) > 15 || Math.abs(acc.y) > 15 || Math.abs(acc.z) > 15)) {
-                if (currentMood !== 'fear') {
+                if (currentMood !== 'fear' && currentMood !== 'dizzy') {
                     changeMood('fear');
                     playEmoteSound('fear');
-                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]); // Trembling vibration
-                    setTimeout(() => { changeMood('reset'); resetIdleTimer(); }, 3000);
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                    setTimeout(() => { if(currentMood==='fear') changeMood('reset'); resetIdleTimer(); }, 3000);
                 }
             }
         });
@@ -659,8 +713,7 @@
         recognition.onstart = () => {
             aiStatus = "listening";
             resetIdleTimer();
-            // Curious reaction when mic turns on
-            if(currentMood === 'reset') {
+            if(currentMood === 'reset' || currentMood === 'sleepy') {
                 changeMood('curious');
                 playEmoteSound('curious');
                 setTimeout(() => { if(currentMood === 'curious') changeMood('reset'); }, 2000);
@@ -729,7 +782,7 @@
         const payload = {
             contents: [{
                 parts: [{
-                    text: `System Instruction: You are F.R.I.D.Y.I, an AI voice assistant at Turt Industry. The user's name is Shan. You must respond in the exact language the user speaks to you (if they speak in English, reply in English. If they speak in Tamil, reply in Tamil. If Tanglish, use Tanglish). Keep your responses concise, conversational, and completely suitable for Text-To-Speech audio output. Do NOT use emojis, asterisks, or markdown formatting.\n\nUser: ${userText}`
+                    text: `System Instruction: You are F.R.I.D.Y.I, an AI voice assistant at Turt Industry. The user's name is Buddy. You must respond in the exact language the user speaks to you (if they speak in English, reply in English. If they speak in Tamil, reply in Tamil. If Tanglish, use Tanglish). Keep your responses concise, conversational, and completely suitable for Text-To-Speech audio output. Do NOT use emojis, asterisks, or markdown formatting.\n\nUser: ${userText}`
                 }]
             }]
         };
@@ -750,15 +803,19 @@
             }
         } catch (error) {
             console.error("Gemini Error:", error);
-            speakAIResponse("I'm sorry Shan, I couldn't process that request right now.");
+            speakAIResponse("I'm sorry Buddy, I couldn't process that request right now.");
         }
     }
 
-    // --- Text-to-Speech (TTS) with Female Voice ---
+    // --- Text-to-Speech (TTS) ---
     function speakAIResponse(text) {
         aiStatus = "speaking";
         resetIdleTimer();
-        changeMood('reset'); // Wake up to speak
+        
+        // Wake up from sleep/sad if about to speak
+        if(currentMood === 'sleepy' || currentMood === 'sad') {
+            changeMood('reset'); 
+        }
         
         const ui = document.getElementById('ai-status');
         if(ui) {
@@ -768,7 +825,7 @@
 
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'en-IN'; 
-        if(femaleVoice) utterance.voice = femaleVoice; // Apply female voice
+        if(femaleVoice) utterance.voice = femaleVoice; 
         
         utterance.onend = () => {
             aiStatus = "standby";
@@ -796,7 +853,11 @@
         else if (cmd.includes('angry') || cmd.includes('mad')) changeMood('angry');
         else if (cmd.includes('sad') || cmd.includes('cry')) changeMood('sad');
         else if (cmd.includes('scared') || cmd.includes('fear')) changeMood('fear');
-        else if (cmd.includes('reset') || cmd.includes('normal') || cmd.includes('standard')) changeMood('reset');
+        else if (cmd.includes('love') || cmd.includes('beautiful')) { changeMood('loving'); playEmoteSound('loving'); }
+        else if (cmd.includes('spin') || cmd.includes('dizzy')) { changeMood('dizzy'); playEmoteSound('dizzy'); }
+        else if (cmd.includes('surprise') || cmd.includes('wow') || cmd.includes('shock')) { changeMood('surprised'); playEmoteSound('surprised'); }
+        else if (cmd.includes('sleep') || cmd.includes('tired')) changeMood('sleepy');
+        else if (cmd.includes('reset') || cmd.includes('normal') || cmd.includes('standard') || cmd.includes('wake')) changeMood('reset');
     }
 
     // --- Visual Emotion Controller ---
@@ -806,9 +867,8 @@
         const status = document.getElementById('status-text');
         if(!robotContainer || !status) return;
 
-        // Clear all previous mood classes
         robotContainer.className = 'relative flex items-center'; 
-        status.classList.remove('text-red-400', 'text-green-400', 'text-zinc-500', 'text-yellow-400', 'text-blue-400');
+        status.classList.remove('text-red-400', 'text-green-400', 'text-zinc-500', 'text-yellow-400', 'text-blue-400', 'text-pink-400', 'text-sky-400');
 
         if (mode === 'happy') {
             robotContainer.classList.add('happy');
@@ -834,6 +894,22 @@
             robotContainer.classList.add('bored');
             status.innerText = "SOOO BORING...";
             status.classList.add('text-zinc-500');
+        } else if (mode === 'surprised') {
+            robotContainer.classList.add('surprised');
+            status.innerText = "WOW! SHOCKING!";
+            status.classList.add('text-sky-400');
+        } else if (mode === 'loving') {
+            robotContainer.classList.add('loving');
+            status.innerText = "FEELING LOVED <3";
+            status.classList.add('text-pink-400');
+        } else if (mode === 'dizzy') {
+            robotContainer.classList.add('dizzy');
+            status.innerText = "SYSTEM SPINNING...";
+            status.classList.add('text-zinc-500');
+        } else if (mode === 'sleepy') {
+            robotContainer.classList.add('sleepy');
+            status.innerText = "SLEEP MODE (Zzz)";
+            status.classList.add('text-blue-400');
         } else {
             status.innerText = "CORE ACTIVE";
         }
@@ -841,7 +917,7 @@
 
     // --- Dynamic Blinking ---
     function blink() {
-        if (currentMood === 'reset') {
+        if (currentMood === 'reset' || currentMood === 'loving' || currentMood === 'curious') {
             const eyeL = document.getElementById('eye-l');
             const eyeR = document.getElementById('eye-r');
             if (eyeL && eyeR) {
@@ -857,7 +933,7 @@
         setTimeout(blink, blinkDelay);
     }
     blink();
-    resetIdleTimer(); // Start the idle timer on boot
+    resetIdleTimer(); // Start idle tracking on boot
 </script>
 
 <script type="module">
@@ -883,7 +959,7 @@
     const provider = new GoogleAuthProvider();
 
     window.isLoggedIn = false;
-    let captchaWidgetId = null; // reCAPTCHA ID track panna
+    let captchaWidgetId = null;
 
     window.toggleModal = (id) => {
         const modal = document.getElementById(id);
@@ -1185,7 +1261,6 @@
                 <button onclick="window.openPopupWhatsApp('COD', '${name}')" class="w-full bg-blue-600 py-3 rounded-lg font-bold text-[10px] text-white uppercase mt-4">Confirm Order</button>
                 <button onclick="window.openProcure('${name}')" class="w-full mt-4 text-zinc-600 text-[8px] uppercase font-bold tracking-widest text-center">Back</button>`;
             
-            // Check orders count to toggle Captcha visibility
             window.checkOrderCountForCaptcha();
         } else if(type === 'pickup') {
             content.innerHTML = `
@@ -1203,7 +1278,6 @@
         }
     };
 
-    // --- Check Order Count function ---
     window.checkOrderCountForCaptcha = async () => {
         if (!auth.currentUser) return;
         try {
@@ -1223,7 +1297,6 @@
             const captchaBox = document.getElementById('captcha-container');
             if (captchaBox && orderCount >= 2) {
                 captchaBox.classList.remove('hidden');
-                // Dynamic-aaga html il recaptha rendering
                 if (typeof grecaptcha !== 'undefined') {
                     grecaptcha.render('recaptcha-widget', {
                         'sitekey': '6LdO7-wsAAAAAEgjnnCjLuBlwZm8VZYX50go--Aq',
@@ -1241,7 +1314,6 @@
         const uPhone = document.getElementById('p-phone')?.value || "Not provided";
         const addr = document.getElementById('p-addr')?.value || "Not provided";
         
-        // Validation for reCAPTCHA if it is visible
         const captchaContainer = document.getElementById('captcha-container');
         if (captchaContainer && !captchaContainer.classList.contains('hidden')) {
             if (typeof grecaptcha !== 'undefined') {
@@ -1253,7 +1325,6 @@
             }
         }
 
-        // 1. Firebase-la Order Details-ai Store panrom
         try {
             const ordersRef = ref(db, 'official_payments'); 
             await push(ordersRef, {
@@ -1271,7 +1342,6 @@
             console.error("Firebase Error:", e);
         }
 
-        // 2. WhatsApp Message Ready panrom
         let msgText = `Hi Turt Industry, I want to procure ${name} via ${method}.`;
         if(method === 'COD') {
             msgText += `\n\nOrder Details:\n- Name: ${uName}\n- Phone: ${uPhone}\n- Address: ${addr}\n- Delivery: LKR 400 (Island Wide)`;
@@ -1281,7 +1351,6 @@
 
         const msg = encodeURIComponent(msgText);
         
-        // 3. WhatsApp thirakkum
         window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
         window.closePopup();
     };
