@@ -172,7 +172,7 @@
         }
 
         .digital-face { display: flex; flex-direction: column; align-items: center; gap: 30px; transition: all 0.3s; }
-        .eyes-container { display: flex; gap: 60px; align-items: center; height: 50px; transition: transform 0.1s ease-out; } /* Eye tracking transition */
+        .eyes-container { display: flex; gap: 60px; align-items: center; height: 50px; transition: transform 0.1s ease-out; } 
         .digital-eye {
             width: 45px; height: 45px; background: #3b82f6; border-radius: 12px;
             box-shadow: 0 0 20px #3b82f6; transition: all 0.2s ease;
@@ -567,29 +567,57 @@
     let sleepTimer = null;
     let femaleVoice = null;
 
-    // --- NEW: STANDBY LOGIC ---
+    // --- STANDBY & TERMINATION LOGIC ---
     window.forceStandby = () => {
-        if(window.speechSynthesis) window.speechSynthesis.cancel();
+        // Clear all active async loops and timers immediately
+        clearTimeout(idleTimer);
+        clearTimeout(sadTimer);
+        clearTimeout(sleepTimer);
+        clearTimeout(tapTimer);
+        
+        if(window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+        }
         if(typeof recognition !== 'undefined' && recognition) {
             try { recognition.stop(); } catch(e){}
         }
+        
         aiStatus = "standby";
+        currentMood = "reset";
+
         const ui = document.getElementById('ai-status');
         if(ui) {
             ui.innerText = "Standby";
             ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
         }
-        if(typeof changeMood === 'function') changeMood('reset');
-        clearTimeout(idleTimer);
-        clearTimeout(sadTimer);
-        clearTimeout(sleepTimer);
+        
+        const statusText = document.getElementById('status-text');
+        if(statusText) {
+            statusText.innerText = "CORE ACTIVE";
+            statusText.className = "text-2xl font-black italic uppercase tracking-tighter mt-2 text-white";
+        }
+
+        const robotContainer = document.getElementById('robot-container');
+        if(robotContainer) {
+            robotContainer.className = 'relative flex items-center';
+        }
     };
 
-    // Tab close / Background handle pannum
+    // Tab visibility handling - strictly checks document state to block post-tab audio/loops
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             window.forceStandby();
+        } else {
+            resetIdleTimer();
         }
+    });
+
+    // Handle abrupt page close, reload, or background transitions natively
+    window.addEventListener('pagehide', () => {
+        window.forceStandby();
+    });
+    window.addEventListener('beforeunload', () => {
+        window.forceStandby();
     });
 
     // --- Voice Setup & Initialization ---
@@ -611,7 +639,9 @@
 
     // Sound Engine
     function playEmoteSound(type) {
-        if(!window.speechSynthesis) return;
+        // Stop speech processing instantly if the tab is closed/hidden
+        if(document.hidden || !window.speechSynthesis) return;
+        
         window.speechSynthesis.cancel();
         let text = ""; let pitch = 1; let rate = 1;
         
@@ -627,7 +657,7 @@
             case 'dizzy': text = "Whoa, my head is spinning..."; pitch = 0.8; rate = 0.7; break;
         }
         
-        if(text) {
+        if(text && !document.hidden) {
             let u = new SpeechSynthesisUtterance(text);
             if(femaleVoice) u.voice = femaleVoice;
             u.pitch = pitch; u.rate = rate;
@@ -641,33 +671,35 @@
         clearTimeout(sadTimer);
         clearTimeout(sleepTimer);
         
+        // Prevent registering background actions if the user leaves the page context
+        if (document.hidden) return;
+        
         if (currentMood === 'bored' || currentMood === 'sad' || currentMood === 'sleepy') {
             changeMood('reset');
         }
         
         idleTimer = setTimeout(() => {
-            if(currentMood === 'reset') { changeMood('bored'); playEmoteSound('bored'); }
-        }, 15000); // 15s Idle -> Bored
+            if(currentMood === 'reset' && !document.hidden) { changeMood('bored'); playEmoteSound('bored'); }
+        }, 15000); 
         
         sadTimer = setTimeout(() => {
-            if(currentMood === 'bored') { changeMood('sad'); playEmoteSound('sad'); }
-        }, 30000); // 30s Idle -> Sad
+            if(currentMood === 'bored' && !document.hidden) { changeMood('sad'); playEmoteSound('sad'); }
+        }, 30000); 
 
         sleepTimer = setTimeout(() => {
-            if(currentMood === 'sad') { changeMood('sleepy'); }
-        }, 45000); // 45s Idle -> Sleepy (Zzz)
+            if(currentMood === 'sad' && !document.hidden) { changeMood('sleepy'); }
+        }, 45000); 
     }
 
     // --- Eye Tracking Logic ---
     document.getElementById('robot-core-modal').addEventListener('mousemove', (e) => {
-        // Eye tracking works only if awake and not dizzy
+        if(document.hidden) return;
         if(currentMood !== 'sleepy' && currentMood !== 'sad' && currentMood !== 'dizzy') {
             const eyes = document.getElementById('bot-eyes');
             if(eyes) {
                 const rect = eyes.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
-                // Calculate distance from center, limit movement to a small radius
                 const moveX = (e.clientX - centerX) / 25; 
                 const moveY = (e.clientY - centerY) / 25;
                 eyes.style.transform = `translate(${Math.max(-12, Math.min(12, moveX))}px, ${Math.max(-10, Math.min(10, moveY))}px)`;
@@ -680,19 +712,18 @@
 
     // --- Petting (Hover/Move) Handler ---
     function handlePetting() {
-        if(currentMood === 'angry' || currentMood === 'dizzy' || currentMood === 'fear') return; 
+        if(document.hidden || currentMood === 'angry' || currentMood === 'dizzy' || currentMood === 'fear') return; 
         
         petCount++;
         resetIdleTimer();
         
-        // If hovered enough times consistently, trigger happy
         if(petCount > 25 && currentMood !== 'happy') {
             changeMood('happy');
             playEmoteSound('happy');
-            if (navigator.vibrate) navigator.vibrate(50); // Soft purr
+            if (navigator.vibrate) navigator.vibrate(50); 
             
             setTimeout(() => { 
-                if(currentMood === 'happy') changeMood('reset'); 
+                if(currentMood === 'happy' && !document.hidden) changeMood('reset'); 
                 resetIdleTimer(); 
             }, 3000);
             petCount = 0;
@@ -700,44 +731,44 @@
     }
 
     function stopPetting() {
-        petCount = 0; // Reset pet tracking if mouse leaves face
+        petCount = 0; 
     }
 
     // --- Tapping (Click) Handler ---
     function handleTap() {
+        if(document.hidden) return;
         tapCount++;
         resetIdleTimer();
         clearTimeout(tapTimer);
         
-        // Reset tap count after 1.5s of no taps
         tapTimer = setTimeout(() => { tapCount = 0; }, 1500); 
 
-        // 4 rapid taps -> Angry
         if (tapCount >= 4) {
             changeMood('angry');
             playEmoteSound('angry');
             if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); 
             
             setTimeout(() => { 
-                if(currentMood === 'angry') changeMood('reset'); 
+                if(currentMood === 'angry' && !document.hidden) changeMood('reset'); 
                 resetIdleTimer(); 
             }, 3500);
             
             tapCount = 0;
-            petCount = 0; // Cancel any ongoing petting
+            petCount = 0; 
         }
     }
 
     // --- Motion Detection (Fear/Shake) ---
     if (window.DeviceMotionEvent) {
         window.addEventListener('devicemotion', (event) => {
+            if(document.hidden) return;
             let acc = event.accelerationIncludingGravity;
             if (acc && (Math.abs(acc.x) > 15 || Math.abs(acc.y) > 15 || Math.abs(acc.z) > 15)) {
                 if (currentMood !== 'fear' && currentMood !== 'dizzy') {
                     changeMood('fear');
                     playEmoteSound('fear');
                     if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                    setTimeout(() => { if(currentMood==='fear') changeMood('reset'); resetIdleTimer(); }, 3000);
+                    setTimeout(() => { if(currentMood==='fear' && !document.hidden) changeMood('reset'); resetIdleTimer(); }, 3000);
                 }
             }
         });
@@ -759,12 +790,16 @@
         recognition.lang = 'en-IN'; 
 
         recognition.onstart = () => {
+            if(document.hidden) {
+                window.forceStandby();
+                return;
+            }
             aiStatus = "listening";
             resetIdleTimer();
             if(currentMood === 'reset' || currentMood === 'sleepy') {
                 changeMood('curious');
                 playEmoteSound('curious');
-                setTimeout(() => { if(currentMood === 'curious') changeMood('reset'); }, 2000);
+                setTimeout(() => { if(currentMood === 'curious' && !document.hidden) changeMood('reset'); }, 2000);
             }
             
             const ui = document.getElementById('ai-status');
@@ -776,6 +811,7 @@
         };
 
         recognition.onresult = (event) => {
+            if(document.hidden) return;
             const command = event.results[0][0].transcript;
             document.getElementById('heard-text').innerText = `I heard: "${command}"`;
             processVoice(command.toLowerCase()); 
@@ -806,6 +842,7 @@
     }
 
     window.startListening = () => {
+        if(document.hidden) return;
         if(recognition) {
             if(aiStatus === "speaking") window.speechSynthesis.cancel();
             try { recognition.start(); } catch(e) {}
@@ -816,6 +853,7 @@
 
     // --- Gemini LLM API Call ---
     async function callGeminiAI(userText) {
+        if(document.hidden) return;
         aiStatus = "thinking";
         resetIdleTimer();
         const ui = document.getElementById('ai-status');
@@ -843,6 +881,8 @@
             });
             const data = await response.json();
             
+            if(document.hidden) { window.forceStandby(); return; }
+            
             if (data && data.candidates && data.candidates.length > 0) {
                 let aiResponse = data.candidates[0].content.parts[0].text;
                 speakAIResponse(aiResponse);
@@ -851,16 +891,19 @@
             }
         } catch (error) {
             console.error("Gemini Error:", error);
-            speakAIResponse("I'm sorry Buddy, I couldn't process that request right now.");
+            if(!document.hidden) speakAIResponse("I'm sorry Buddy, I couldn't process that request right now.");
         }
     }
 
     // --- Text-to-Speech (TTS) ---
     function speakAIResponse(text) {
+        if(document.hidden) {
+            window.forceStandby();
+            return;
+        }
         aiStatus = "speaking";
         resetIdleTimer();
         
-        // Wake up from sleep/sad if about to speak
         if(currentMood === 'sleepy' || currentMood === 'sad') {
             changeMood('reset'); 
         }
@@ -910,6 +953,7 @@
 
     // --- Visual Emotion Controller ---
     function changeMood(mode) {
+        if (document.hidden) return;
         currentMood = mode;
         const robotContainer = document.getElementById('robot-container');
         const status = document.getElementById('status-text');
@@ -965,6 +1009,7 @@
 
     // --- Dynamic Blinking ---
     function blink() {
+        if(document.hidden) return;
         if (currentMood === 'reset' || currentMood === 'loving' || currentMood === 'curious') {
             const eyeL = document.getElementById('eye-l');
             const eyeR = document.getElementById('eye-r');
@@ -981,7 +1026,7 @@
         setTimeout(blink, blinkDelay);
     }
     blink();
-    resetIdleTimer(); // Start idle tracking on boot
+    resetIdleTimer(); 
 </script>
 
 <script type="module">
@@ -1014,7 +1059,6 @@
         if (modal) modal.classList.toggle('flex');
     };
 
-    // Modal Close aagumbothu bot Standby poidum
     window.closeModal = (id) => {
         const modal = document.getElementById(id);
         if (modal) modal.classList.remove('flex');
