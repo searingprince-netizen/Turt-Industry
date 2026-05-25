@@ -230,7 +230,7 @@
         .spec-line:nth-child(6) { transition-delay: 0.55s; }
 
         /* ==========================================================================
-           Eilik-Style Blinking Robot Enhanced Styles
+           FRIDYI EMO-STYLE ADVANCED UPGRADE
            ========================================================================== */
         .bot-frame {
             position: relative; width: 320px; height: 280px;
@@ -239,13 +239,14 @@
             border-radius: 60px 60px 90px 90px;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 0 40px rgba(0,0,0,0.9), inset 0 0 20px rgba(59, 130, 246, 0.05);
-            transition: all 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s;
         }
 
         .bot-frame::before, .bot-frame::after {
             content: ''; position: absolute; top: -12px; width: 45px; height: 50px;
             background: #111; border: 1px solid rgba(59, 130, 246, 0.2);
             border-radius: 15px; z-index: -1;
+            transition: all 0.3s ease;
         }
         .bot-frame::before { left: 60px; transform: rotate(-10deg); }
         .bot-frame::after { right: 60px; transform: rotate(10deg); }
@@ -256,6 +257,7 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             animation: float 4s ease-in-out infinite;
+            transition: all 0.3s ease;
         }
         .hand-l { left: -60px; }
         .hand-r { right: -60px; animation-delay: 2s; }
@@ -269,29 +271,57 @@
             transition: transform 0.3s ease;
         }
 
-        .digital-face { display: flex; flex-direction: column; align-items: center; gap: 30px; transition: all 0.3s; }
-        .eyes-container { display: flex; gap: 60px; align-items: center; height: 50px; transition: transform 0.1s ease-out; } 
+        .digital-face { display: flex; flex-direction: column; align-items: center; gap: 30px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .eyes-container { display: flex; gap: 60px; align-items: center; height: 50px; transition: transform 0.15s ease-out; } 
         .digital-eye {
             width: 45px; height: 45px; background: #3b82f6; border-radius: 12px;
-            box-shadow: 0 0 20px #3b82f6; transition: all 0.2s ease;
+            box-shadow: 0 0 20px #3b82f6; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
-        .digital-eye.wink { height: 10px; border-radius: 5px; transform: translateY(15px); }
-        .digital-mouth { width: 80px; height: 10px; background: #3b82f6; border-radius: 20px; box-shadow: 0 0 15px #3b82f6; transition: all 0.3s ease; }
+        .digital-eye.wink { height: 8px; border-radius: 5px; transform: translateY(18px); }
+        .digital-mouth { width: 80px; height: 10px; background: #3b82f6; border-radius: 20px; box-shadow: 0 0 15px #3b82f6; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* --- Realistic Moods --- */
+        /* --- Voice Sync Lip Animation --- */
+        @keyframes speaking-sync {
+            0%, 100% { transform: scaleX(1) scaleY(1); }
+            50% { transform: scaleX(1.2) scaleY(1.8); }
+        }
+        .is-speaking .digital-mouth { animation: speaking-sync 0.3s infinite alternate; }
+
+        /* --- Realistic Moods (EMO Inspired) --- */
         .happy .digital-eye { background: #22c55e; box-shadow: 0 0 20px #22c55e; height: 35px; border-radius: 30px 30px 10px 10px; }
         .happy .digital-mouth { background: #22c55e; width: 90px; height: 30px; border-radius: 10px 10px 50px 50px; }
-        
+        .happy .bot-frame { transform: translateY(-10px); }
+
+        .laughing .digital-eye { background: #22c55e; box-shadow: 0 0 20px #22c55e; height: 15px; border-radius: 20px 20px 5px 5px; transform: translateY(-5px); }
+        .laughing .digital-mouth { background: #22c55e; width: 90px; height: 40px; border-radius: 10px 10px 60px 60px; }
+        .laughing .bot-frame { animation: laugh-bounce 0.4s infinite alternate; }
+        @keyframes laugh-bounce { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
+
         @keyframes shake-hard { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-8px) rotate(-2deg);} 75% {transform: translateX(8px) rotate(2deg);} }
         .angry .bot-frame { animation: shake-hard 0.1s infinite; border-color: rgba(244, 63, 94, 0.5); }
-        .angry .digital-eye { background: #f43f5e; box-shadow: 0 0 20px #f43f5e; transform: rotate(20deg) scaleY(0.5); border-radius: 5px; }
+        .angry .bot-frame::before { transform: rotate(-30deg) translateY(10px); background: #f43f5e; } /* Angry ears */
+        .angry .bot-frame::after { transform: rotate(30deg) translateY(10px); background: #f43f5e; }
+        .angry .digital-eye { background: #f43f5e; box-shadow: 0 0 20px #f43f5e; border-radius: 5px; }
         .angry #eye-l { transform: rotate(20deg) scaleY(0.5); }
         .angry #eye-r { transform: rotate(-20deg) scaleY(0.5); }
-        .angry .digital-mouth { background: #f43f5e; width: 40px; transform: translateY(-10px); }
+        .angry .digital-mouth { background: #f43f5e; width: 40px; transform: translateY(-10px) rotate(10deg); }
 
         .sad .digital-eye { opacity: 0.5; height: 25px; transform: translateY(15px); border-radius: 20px 20px 5px 5px; }
         .sad .digital-mouth { width: 30px; height: 5px; opacity: 0.5; transform: translateY(15px); border-radius: 10px 10px 20px 20px; }
         .sad .digital-face { transform: translateY(20px); }
+        .sad .bot-frame::before, .sad .bot-frame::after { transform: rotate(0) translateY(20px); opacity: 0.5; } /* Droopy ears */
+
+        .crying .digital-eye { opacity: 0.8; height: 20px; background: #38bdf8; border-radius: 20px 20px 5px 5px; transform: translateY(15px); }
+        .crying .digital-eye::after { content: ''; position: absolute; bottom: -20px; left: 15px; width: 10px; height: 15px; background: #38bdf8; border-radius: 50%; animation: tear-drop 1s infinite; }
+        .crying .digital-mouth { width: 40px; height: 15px; border-radius: 30px 30px 10px 10px; transform: translateY(20px); background: #38bdf8; }
+        @keyframes tear-drop { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(30px); opacity: 0; } }
+
+        .thinking .digital-eye { height: 45px; border-radius: 50%; }
+        .thinking #eye-l { transform: translateY(-15px) scale(1.2); }
+        .thinking #eye-r { transform: scale(0.8); }
+        .thinking .digital-mouth { width: 25px; height: 25px; border-radius: 50%; transform: translateX(20px); }
+        .thinking .digital-face { transform: rotate(15deg); }
 
         .bored .digital-eye { height: 15px; border-radius: 20px 20px 5px 5px; opacity: 0.6; }
         .bored .digital-mouth { width: 30px; height: 20px; border-radius: 50%; opacity: 0.6; animation: yawn 3s ease-in-out infinite; }
@@ -322,9 +352,10 @@
         @keyframes dizzy-spin { 100% { transform: rotate(360deg); } }
 
         @keyframes breathing { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02) translateY(-5px); } }
-        .sleepy .bot-frame { animation: breathing 4s ease-in-out infinite; }
-        .sleepy .digital-eye { height: 6px; transform: translateY(20px); opacity: 0.3; border-radius: 5px; }
-        .sleepy .digital-mouth { width: 20px; height: 6px; opacity: 0.3; transform: translateY(20px); border-radius: 10px; }
+        .sleepy .bot-frame { animation: breathing 4s ease-in-out infinite; border-color: rgba(255,255,255,0.05); }
+        .sleepy .digital-eye { height: 4px; transform: translateY(20px); opacity: 0.2; border-radius: 5px; }
+        .sleepy .digital-mouth { width: 20px; height: 4px; opacity: 0.2; transform: translateY(20px); border-radius: 10px; }
+        .sleepy .bot-frame::before, .sleepy .bot-frame::after { opacity: 0.2; }
 
         .voice-indicator {
             padding: 10px 20px; border: 1px solid rgba(59, 130, 246, 0.3);
@@ -478,7 +509,7 @@
         <div id="robot-container" class="relative flex items-center mt-8">
             <div class="titanium-hand hand-l"></div>
             <div id="main-core" class="bot-frame">
-                <div class="ai-screen" onmousemove="handlePetting()" ontouchmove="handlePetting()" onmouseleave="stopPetting()" onclick="handleTap()">
+                <div class="ai-screen" onmousemove="handlePetting(event)" ontouchmove="handlePetting(event)" onmouseleave="stopPetting()" onclick="handleTap()">
                     <div class="digital-face">
                         <div class="eyes-container" id="bot-eyes">
                             <div id="eye-l" class="digital-eye"></div>
@@ -665,85 +696,44 @@
     </div>
 </div>
 
-<div id="hover-specs-panel">
-    </div>
+<div id="hover-specs-panel"></div>
 
 <script>
-    // --- NEW: Hover Specs Panel Logic with Unique Project Data ---
+    // --- Hover Specs Panel Logic ---
     document.addEventListener("DOMContentLoaded", () => {
         const cards = document.querySelectorAll('.project-card-h');
         const panel = document.getElementById('hover-specs-panel');
 
         const specsData = {
-            "neurosync": `
-                <h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">NeuroSync Specs</h4>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-microchip text-blue-400"></i> <span>N-Core Neural Processor</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-brain text-blue-400"></i> <span>Synaptic Linkage 2.0</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-eye text-blue-400"></i> <span>Quantum Vision Array</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-satellite-dish text-blue-400"></i> <span>Latency-Free Uplink</span></div>
-            `,
-            "nexa": `
-                <h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">NEXA Specs</h4>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-robot text-blue-400"></i> <span>Virtual Operating Agent</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-server text-blue-400"></i> <span>Quantum Processing Matrix</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-shield-halved text-blue-400"></i> <span>Adaptive Threat Net</span></div>
-            `,
-            "novacore": `
-                <h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Nova Core Specs</h4>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-bolt text-blue-400"></i> <span>Zero-Point Energy Cell</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-atom text-blue-400"></i> <span>Fusion Arc Reactor</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-battery-full text-blue-400"></i> <span>Infinite Output Loop</span></div>
-            `,
-            "cybercore": `
-                <h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Cyber-Core Specs</h4>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-lock text-blue-400"></i> <span>Sentinel Firewall Gateway</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-virus-slash text-blue-400"></i> <span>Active Threat Neutralization</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-network-wired text-blue-400"></i> <span>AI-Driven Logic Monitor</span></div>
-            `,
-            "titan": `
-                <h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Titan Dynamics Specs</h4>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-shield-halved text-blue-400"></i> <span>Grade 5 Titanium Armor</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-gears text-blue-400"></i> <span>Industrial Exoskeleton V2</span></div>
-                <div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-dumbbell text-blue-400"></i> <span>Hydraulic Force Amplification</span></div>
-            `
+            "neurosync": `<h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">NeuroSync Specs</h4><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-microchip text-blue-400"></i> <span>N-Core Neural Processor</span></div><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-brain text-blue-400"></i> <span>Synaptic Linkage 2.0</span></div>`,
+            "nexa": `<h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">NEXA Specs</h4><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-robot text-blue-400"></i> <span>Virtual Operating Agent</span></div><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-server text-blue-400"></i> <span>Quantum Processing Matrix</span></div>`,
+            "novacore": `<h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Nova Core Specs</h4><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-bolt text-blue-400"></i> <span>Zero-Point Energy Cell</span></div><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-atom text-blue-400"></i> <span>Fusion Arc Reactor</span></div>`,
+            "cybercore": `<h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Cyber-Core Specs</h4><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-lock text-blue-400"></i> <span>Sentinel Firewall Gateway</span></div><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-virus-slash text-blue-400"></i> <span>Active Threat Neutralization</span></div>`,
+            "titan": `<h4 class="spec-line text-blue-500 font-black uppercase italic tracking-[0.2em] text-[15px] border-b border-blue-500/30 pb-3 mb-2">Titan Dynamics Specs</h4><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-shield-halved text-blue-400"></i> <span>Grade 5 Titanium Armor</span></div><div class="spec-line flex items-center gap-3 text-xs text-white font-mono tracking-tight"><i class="fa-solid fa-gears text-blue-400"></i> <span>Industrial Exoskeleton V2</span></div>`
         };
 
         cards.forEach(card => {
             card.addEventListener('mouseenter', (e) => {
-                // Update HTML content dynamically based on the data-project attribute
                 const projectKey = card.getAttribute('data-project');
-                if (projectKey && specsData[projectKey]) {
-                    panel.innerHTML = specsData[projectKey];
-                }
-
+                if (projectKey && specsData[projectKey]) { panel.innerHTML = specsData[projectKey]; }
                 const rect = card.getBoundingClientRect();
                 const centerY = rect.top + (rect.height / 2);
-                
                 panel.style.top = `${centerY}px`;
-
-                // Screen Math to find Left or Right side
                 if (rect.left < window.innerWidth / 2) {
-                    panel.style.left = `${rect.right + 30}px`;
-                    panel.style.right = 'auto';
-                    panel.classList.remove('snap-left');
-                    panel.classList.add('snap-right');
+                    panel.style.left = `${rect.right + 30}px`; panel.style.right = 'auto';
+                    panel.classList.remove('snap-left'); panel.classList.add('snap-right');
                 } else {
-                    panel.style.right = `${window.innerWidth - rect.left + 30}px`;
-                    panel.style.left = 'auto';
-                    panel.classList.remove('snap-right');
-                    panel.classList.add('snap-left');
+                    panel.style.right = `${window.innerWidth - rect.left + 30}px`; panel.style.left = 'auto';
+                    panel.classList.remove('snap-right'); panel.classList.add('snap-left');
                 }
-
                 panel.classList.add('active');
             });
-
-            card.addEventListener('mouseleave', () => {
-                panel.classList.remove('active');
-            });
+            card.addEventListener('mouseleave', () => { panel.classList.remove('active'); });
         });
     });
 
-    let currentMood = 'reset';
+    let isBotActive = false; // BOSS UPGRADE: The Kill Switch
+    let currentMood = 'sleepy';
     let aiStatus = 'standby'; 
 
     // Enhanced Interaction Variables
@@ -753,50 +743,57 @@
     let idleTimer = null;
     let sadTimer = null;
     let sleepTimer = null;
+    let randomLookTimer = null;
     let femaleVoice = null;
 
-    // --- STANDBY & TERMINATION LOGIC ---
+    // --- STRICT STANDBY & TERMINATION LOGIC (BOSS FIX) ---
     window.forceStandby = () => {
+        isBotActive = false; // Strictly tell the engine to stop
+        
         // Clear all active async loops and timers immediately
         clearTimeout(idleTimer);
         clearTimeout(sadTimer);
         clearTimeout(sleepTimer);
         clearTimeout(tapTimer);
+        clearTimeout(randomLookTimer);
         
+        // Stop Voice Output
         if(window.speechSynthesis) {
             window.speechSynthesis.cancel();
         }
+        
+        // Stop Mic Listening rigidly
         if(typeof recognition !== 'undefined' && recognition) {
-            try { recognition.stop(); } catch(e){}
+            try { 
+                recognition.abort(); 
+                recognition.stop(); 
+            } catch(e){}
         }
         
         aiStatus = "standby";
-        currentMood = "reset";
+        changeMood('sleepy'); // Put it to sleep visually
 
         const ui = document.getElementById('ai-status');
         if(ui) {
-            ui.innerText = "Standby";
+            ui.innerText = "Standby (Offline)";
             ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
         }
         
         const statusText = document.getElementById('status-text');
         if(statusText) {
-            statusText.innerText = "CORE ACTIVE";
-            statusText.className = "text-2xl font-black italic uppercase tracking-tighter mt-2 text-white";
+            statusText.innerText = "SYSTEM ASLEEP";
+            statusText.className = "text-2xl font-black italic uppercase tracking-tighter mt-2 text-zinc-500";
         }
-
-        const robotContainer = document.getElementById('robot-container');
-        if(robotContainer) {
-            robotContainer.className = 'relative flex items-center';
-        }
+        
+        // Reset eyes to center
+        const eyes = document.getElementById('bot-eyes');
+        if(eyes) eyes.style.transform = `translate(0px, 0px)`;
     };
 
     // Tab visibility handling
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
+        if (document.hidden && isBotActive) {
             window.forceStandby();
-        } else {
-            resetIdleTimer();
         }
     });
 
@@ -809,8 +806,6 @@
         femaleVoice = voices.find(v => 
             v.name.toLowerCase().includes('female') || 
             v.name.toLowerCase().includes('zira') || 
-            v.name.toLowerCase().includes('samantha') ||
-            v.name.toLowerCase().includes('victoria') ||
             v.name.toLowerCase().includes('sita')
         );
         if(!femaleVoice && voices.length > 0) femaleVoice = voices[0]; 
@@ -822,24 +817,28 @@
 
     // Sound Engine
     function playEmoteSound(type) {
-        if(document.hidden || !window.speechSynthesis) return;
+        if(!isBotActive || document.hidden || !window.speechSynthesis) return;
         
         window.speechSynthesis.cancel();
         let text = ""; let pitch = 1; let rate = 1;
         
         switch(type) {
             case 'happy': text = "Aww, hehehe!"; pitch = 1.6; rate = 1.2; break;
+            case 'laughing': text = "Haha! So funny Boss!"; pitch = 1.7; rate = 1.3; break;
             case 'angry': text = "Grrrrr! Stop tapping me!"; pitch = 0.5; rate = 1.3; break;
             case 'sad': text = "Mmm... I feel lonely..."; pitch = 0.7; rate = 0.8; break;
+            case 'crying': text = "Why are you doing this to me? Wahhh!"; pitch = 0.6; rate = 0.8; break;
             case 'fear': text = "Whoa! Careful!"; pitch = 1.8; rate = 1.5; break;
             case 'bored': text = "Yaaawn... so boring."; pitch = 0.6; rate = 0.6; break;
             case 'curious': text = "Hmm? What is that?"; pitch = 1.3; rate = 1.1; break;
+            case 'thinking': text = "Let me think about that Boss..."; pitch = 1.2; rate = 0.9; break;
             case 'surprised': text = "Oh wow!"; pitch = 1.7; rate = 1.2; break;
             case 'loving': text = "Aww, I love you too!"; pitch = 1.5; rate = 1.1; break;
             case 'dizzy': text = "Whoa, my head is spinning..."; pitch = 0.8; rate = 0.7; break;
+            case 'wake': text = "Systems online. Ready for you Boss!"; pitch = 1.2; rate = 1.0; break;
         }
         
-        if(text && !document.hidden) {
+        if(text && isBotActive && !document.hidden) {
             let u = new SpeechSynthesisUtterance(text);
             if(femaleVoice) u.voice = femaleVoice;
             u.pitch = pitch; u.rate = rate;
@@ -847,77 +846,104 @@
         }
     }
 
-    // --- Idle Tracking ---
+    // --- Idle Tracking (Alive Feel) ---
     function resetIdleTimer() {
+        if (!isBotActive || document.hidden) return;
+        
         clearTimeout(idleTimer);
         clearTimeout(sadTimer);
         clearTimeout(sleepTimer);
-        
-        if (document.hidden) return;
         
         if (currentMood === 'bored' || currentMood === 'sad' || currentMood === 'sleepy') {
             changeMood('reset');
         }
         
         idleTimer = setTimeout(() => {
-            if(currentMood === 'reset' && !document.hidden) { changeMood('bored'); playEmoteSound('bored'); }
+            if(currentMood === 'reset' && isBotActive) { changeMood('bored'); playEmoteSound('bored'); }
         }, 15000); 
         
         sadTimer = setTimeout(() => {
-            if(currentMood === 'bored' && !document.hidden) { changeMood('sad'); playEmoteSound('sad'); }
+            if(currentMood === 'bored' && isBotActive) { changeMood('sad'); playEmoteSound('sad'); }
         }, 30000); 
 
         sleepTimer = setTimeout(() => {
-            if(currentMood === 'sad' && !document.hidden) { changeMood('sleepy'); }
+            if(currentMood === 'sad' && isBotActive) { changeMood('sleepy'); }
         }, 45000); 
+    }
+
+    // Boss Random Eye/Head Movement (Alive Feel)
+    function randomAliveMovements() {
+        if(!isBotActive || currentMood === 'sleepy' || currentMood === 'sad' || currentMood === 'dizzy') return;
+        
+        const eyes = document.getElementById('bot-eyes');
+        const face = document.querySelector('.digital-face');
+        
+        if(eyes && face && currentMood === 'reset') {
+            // Randomly look around if not doing anything else
+            const randomX = (Math.random() - 0.5) * 20;
+            const randomY = (Math.random() - 0.5) * 15;
+            eyes.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            
+            // Tiny head tilt
+            const randomTilt = (Math.random() - 0.5) * 10;
+            face.style.transform = `rotate(${randomTilt}deg)`;
+            
+            setTimeout(() => {
+                if(currentMood === 'reset' && isBotActive) {
+                    eyes.style.transform = `translate(0px, 0px)`;
+                    face.style.transform = `rotate(0deg)`;
+                }
+            }, 1000);
+        }
+        
+        randomLookTimer = setTimeout(randomAliveMovements, 3000 + Math.random() * 4000);
     }
 
     // --- Eye Tracking Logic ---
     document.getElementById('robot-core-modal').addEventListener('mousemove', (e) => {
-        if(document.hidden) return;
+        if(!isBotActive || document.hidden) return;
         if(currentMood !== 'sleepy' && currentMood !== 'sad' && currentMood !== 'dizzy') {
             const eyes = document.getElementById('bot-eyes');
-            if(eyes) {
+            const face = document.querySelector('.digital-face');
+            if(eyes && face) {
                 const rect = eyes.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
-                const moveX = (e.clientX - centerX) / 25; 
-                const moveY = (e.clientY - centerY) / 25;
-                eyes.style.transform = `translate(${Math.max(-12, Math.min(12, moveX))}px, ${Math.max(-10, Math.min(10, moveY))}px)`;
+                // Smoother calculation
+                const moveX = (e.clientX - centerX) / 15; 
+                const moveY = (e.clientY - centerY) / 15;
+                eyes.style.transform = `translate(${Math.max(-15, Math.min(15, moveX))}px, ${Math.max(-10, Math.min(10, moveY))}px)`;
+                // Tiny body sway following mouse
+                face.style.transform = `rotate(${moveX/2}deg)`;
             }
-        } else {
-            const eyes = document.getElementById('bot-eyes');
-            if(eyes) eyes.style.transform = `translate(0px, 0px)`;
         }
     });
 
     // --- Petting Handler ---
-    function handlePetting() {
-        if(document.hidden || currentMood === 'angry' || currentMood === 'dizzy' || currentMood === 'fear') return; 
+    function handlePetting(e) {
+        if(!isBotActive || document.hidden || currentMood === 'angry' || currentMood === 'dizzy' || currentMood === 'fear') return; 
         
         petCount++;
         resetIdleTimer();
         
-        if(petCount > 25 && currentMood !== 'happy') {
-            changeMood('happy');
-            playEmoteSound('happy');
+        if(petCount > 20 && currentMood !== 'loving') {
+            changeMood('loving');
+            playEmoteSound('loving');
             if (navigator.vibrate) navigator.vibrate(50); 
             
             setTimeout(() => { 
-                if(currentMood === 'happy' && !document.hidden) changeMood('reset'); 
+                if(currentMood === 'loving' && isBotActive) changeMood('reset'); 
                 resetIdleTimer(); 
             }, 3000);
             petCount = 0;
         }
     }
 
-    function stopPetting() {
-        petCount = 0; 
-    }
+    function stopPetting() { petCount = 0; }
 
     // --- Tapping Handler ---
     function handleTap() {
-        if(document.hidden) return;
+        if(!isBotActive || document.hidden) return;
         tapCount++;
         resetIdleTimer();
         clearTimeout(tapTimer);
@@ -930,34 +956,30 @@
             if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); 
             
             setTimeout(() => { 
-                if(currentMood === 'angry' && !document.hidden) changeMood('reset'); 
+                if(currentMood === 'angry' && isBotActive) {
+                    changeMood('crying'); // Gets sad after being angry too long
+                    playEmoteSound('crying');
+                    setTimeout(() => { if(isBotActive) changeMood('reset'); }, 3000);
+                }
                 resetIdleTimer(); 
             }, 3500);
             
             tapCount = 0;
             petCount = 0; 
+        } else if (tapCount === 2) {
+            changeMood('surprised');
+            playEmoteSound('surprised');
+            setTimeout(() => { if(currentMood === 'surprised' && isBotActive) changeMood('reset'); }, 1500);
         }
-    }
-
-    // --- Motion Detection ---
-    if (window.DeviceMotionEvent) {
-        window.addEventListener('devicemotion', (event) => {
-            if(document.hidden) return;
-            let acc = event.accelerationIncludingGravity;
-            if (acc && (Math.abs(acc.x) > 15 || Math.abs(acc.y) > 15 || Math.abs(acc.z) > 15)) {
-                if (currentMood !== 'fear' && currentMood !== 'dizzy') {
-                    changeMood('fear');
-                    playEmoteSound('fear');
-                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                    setTimeout(() => { if(currentMood==='fear' && !document.hidden) changeMood('reset'); resetIdleTimer(); }, 3000);
-                }
-            }
-        });
     }
 
     window.openRobotAndListen = () => {
         window.toggleModal('robot-core-modal');
+        isBotActive = true; // BOSS FIX: Boot up
+        changeMood('reset');
+        playEmoteSound('wake');
         resetIdleTimer();
+        randomAliveMovements();
         window.startListening();
     };
 
@@ -971,7 +993,7 @@
         recognition.lang = 'en-IN'; 
 
         recognition.onstart = () => {
-            if(document.hidden) {
+            if(!isBotActive || document.hidden) {
                 window.forceStandby();
                 return;
             }
@@ -980,7 +1002,7 @@
             if(currentMood === 'reset' || currentMood === 'sleepy') {
                 changeMood('curious');
                 playEmoteSound('curious');
-                setTimeout(() => { if(currentMood === 'curious' && !document.hidden) changeMood('reset'); }, 2000);
+                setTimeout(() => { if(currentMood === 'curious' && isBotActive) changeMood('reset'); }, 2000);
             }
             
             const ui = document.getElementById('ai-status');
@@ -988,11 +1010,11 @@
                 ui.innerText = "Listening...";
                 ui.className = "voice-indicator mt-4 uppercase tracking-widest listening";
             }
-            document.getElementById('heard-text').innerText = "Speak now...";
+            document.getElementById('heard-text').innerText = "Speak now Boss...";
         };
 
         recognition.onresult = (event) => {
-            if(document.hidden) return;
+            if(!isBotActive || document.hidden) return;
             const command = event.results[0][0].transcript;
             document.getElementById('heard-text').innerText = `I heard: "${command}"`;
             processVoice(command.toLowerCase()); 
@@ -1000,6 +1022,7 @@
         };
 
         recognition.onerror = (event) => {
+            if(!isBotActive) return;
             console.error("Mic error:", event.error);
             const ui = document.getElementById('ai-status');
             if(ui) {
@@ -1011,7 +1034,8 @@
         };
 
         recognition.onend = () => {
-            if(aiStatus === "listening") {
+            // Check if active, otherwise don't do anything
+            if(isBotActive && aiStatus === "listening") {
                 const ui = document.getElementById('ai-status');
                 if(ui) {
                     ui.innerText = "Standby";
@@ -1023,7 +1047,7 @@
     }
 
     window.startListening = () => {
-        if(document.hidden) return;
+        if(!isBotActive || document.hidden) return;
         if(recognition) {
             if(aiStatus === "speaking") window.speechSynthesis.cancel();
             try { recognition.start(); } catch(e) {}
@@ -1034,8 +1058,9 @@
 
     // --- Gemini LLM API Call ---
     async function callGeminiAI(userText) {
-        if(document.hidden) return;
+        if(!isBotActive || document.hidden) return;
         aiStatus = "thinking";
+        changeMood('thinking'); // Show thinking face
         resetIdleTimer();
         const ui = document.getElementById('ai-status');
         if(ui) {
@@ -1049,7 +1074,7 @@
         const payload = {
             contents: [{
                 parts: [{
-                    text: `System Instruction: You are F.R.I.D.Y.I, an AI voice assistant at Turt Industry. The user's name is Buddy. You must respond in the exact language the user speaks to you (if they speak in English, reply in English. If they speak in Tamil, reply in Tamil. If Tanglish, use Tanglish). Keep your responses concise, conversational, and completely suitable for Text-To-Speech audio output. Do NOT use emojis, asterisks, or markdown formatting.\n\nUser: ${userText}`
+                    text: `System Instruction: You are F.R.I.D.Y.I, an AI voice assistant at Turt Industry. The user's name is Shan, but you must call him "Boss". You must reply in "Tanglish" (Tamil + English mixed). Keep responses concise, friendly, and suitable for Text-To-Speech audio. Do NOT use markdown. \n\nBoss: ${userText}`
                 }]
             }]
         };
@@ -1062,7 +1087,7 @@
             });
             const data = await response.json();
             
-            if(document.hidden) { window.forceStandby(); return; }
+            if(!isBotActive || document.hidden) { window.forceStandby(); return; }
             
             if (data && data.candidates && data.candidates.length > 0) {
                 let aiResponse = data.candidates[0].content.parts[0].text;
@@ -1072,20 +1097,24 @@
             }
         } catch (error) {
             console.error("Gemini Error:", error);
-            if(!document.hidden) speakAIResponse("I'm sorry Buddy, I couldn't process that request right now.");
+            if(isBotActive && !document.hidden) {
+                changeMood('sad');
+                speakAIResponse("Sorry Boss, network issue aayiduchu pola.");
+            }
         }
     }
 
     // --- Text-to-Speech (TTS) ---
     function speakAIResponse(text) {
-        if(document.hidden) {
+        if(!isBotActive || document.hidden) {
             window.forceStandby();
             return;
         }
         aiStatus = "speaking";
+        document.getElementById('robot-container').classList.add('is-speaking'); // Lip sync trigger
         resetIdleTimer();
         
-        if(currentMood === 'sleepy' || currentMood === 'sad') {
+        if(currentMood === 'sleepy' || currentMood === 'sad' || currentMood === 'thinking') {
             changeMood('reset'); 
         }
         
@@ -1100,7 +1129,9 @@
         if(femaleVoice) utterance.voice = femaleVoice; 
         
         utterance.onend = () => {
+            if(!isBotActive) return;
             aiStatus = "standby";
+            document.getElementById('robot-container').classList.remove('is-speaking'); // Stop lip sync
             resetIdleTimer();
             if(ui) {
                 ui.innerText = "Standby";
@@ -1109,7 +1140,9 @@
         };
 
         utterance.onerror = () => {
+            if(!isBotActive) return;
             aiStatus = "standby";
+            document.getElementById('robot-container').classList.remove('is-speaking');
             if(ui) {
                 ui.innerText = "Standby";
                 ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
@@ -1122,30 +1155,38 @@
     // --- Mood Parser from Text ---
     function processVoice(cmd) {
         if (cmd.includes('happy') || cmd.includes('good') || cmd.includes('cute')) changeMood('happy');
+        else if (cmd.includes('joke') || cmd.includes('laugh') || cmd.includes('funny')) changeMood('laughing');
         else if (cmd.includes('angry') || cmd.includes('mad')) changeMood('angry');
-        else if (cmd.includes('sad') || cmd.includes('cry')) changeMood('sad');
+        else if (cmd.includes('sad') || cmd.includes('bad')) changeMood('sad');
+        else if (cmd.includes('cry') || cmd.includes('tears')) changeMood('crying');
         else if (cmd.includes('scared') || cmd.includes('fear')) changeMood('fear');
-        else if (cmd.includes('love') || cmd.includes('beautiful')) { changeMood('loving'); playEmoteSound('loving'); }
+        else if (cmd.includes('love') || cmd.includes('beautiful') || cmd.includes('super')) { changeMood('loving'); playEmoteSound('loving'); }
         else if (cmd.includes('spin') || cmd.includes('dizzy')) { changeMood('dizzy'); playEmoteSound('dizzy'); }
         else if (cmd.includes('surprise') || cmd.includes('wow') || cmd.includes('shock')) { changeMood('surprised'); playEmoteSound('surprised'); }
         else if (cmd.includes('sleep') || cmd.includes('tired')) changeMood('sleepy');
+        else if (cmd.includes('think') || cmd.includes('idea')) changeMood('thinking');
         else if (cmd.includes('reset') || cmd.includes('normal') || cmd.includes('standard') || cmd.includes('wake')) changeMood('reset');
     }
 
     // --- Visual Emotion Controller ---
     function changeMood(mode) {
-        if (document.hidden) return;
+        if (!isBotActive || document.hidden) return;
         currentMood = mode;
         const robotContainer = document.getElementById('robot-container');
         const status = document.getElementById('status-text');
         if(!robotContainer || !status) return;
 
-        robotContainer.className = 'relative flex items-center'; 
+        // Reset base classes
+        robotContainer.className = 'relative flex items-center ' + (aiStatus === 'speaking' ? 'is-speaking' : ''); 
         status.classList.remove('text-red-400', 'text-green-400', 'text-zinc-500', 'text-yellow-400', 'text-blue-400', 'text-pink-400', 'text-sky-400');
 
         if (mode === 'happy') {
             robotContainer.classList.add('happy');
             status.innerText = "YAY! HAPPY!";
+            status.classList.add('text-green-400');
+        } else if (mode === 'laughing') {
+            robotContainer.classList.add('laughing');
+            status.innerText = "HAHAHA!";
             status.classList.add('text-green-400');
         } else if (mode === 'angry') {
             robotContainer.classList.add('angry');
@@ -1155,13 +1196,21 @@
             robotContainer.classList.add('sad');
             status.innerText = "I FEEL LONELY...";
             status.classList.add('text-zinc-500');
+        } else if (mode === 'crying') {
+            robotContainer.classList.add('crying');
+            status.innerText = "WAHHH! CRYING!";
+            status.classList.add('text-blue-400');
         } else if (mode === 'fear') {
             robotContainer.classList.add('fear');
-            status.innerText = "WHOA! SENSING DANGER!";
+            status.innerText = "WHOA! DANGER!";
             status.classList.add('text-yellow-400');
         } else if (mode === 'curious') {
             robotContainer.classList.add('curious');
-            status.innerText = "LISTENING CLOSELY...";
+            status.innerText = "LISTENING BOSS...";
+            status.classList.add('text-blue-400');
+        } else if (mode === 'thinking') {
+            robotContainer.classList.add('thinking');
+            status.innerText = "THINKING...";
             status.classList.add('text-blue-400');
         } else if (mode === 'bored') {
             robotContainer.classList.add('bored');
@@ -1185,13 +1234,17 @@
             status.classList.add('text-blue-400');
         } else {
             status.innerText = "CORE ACTIVE";
+            // Make sure face is reset
+            const face = document.querySelector('.digital-face');
+            if(face) face.style.transform = `rotate(0deg)`;
         }
     }
 
     // --- Dynamic Blinking ---
     function blink() {
-        if(document.hidden) return;
-        if (currentMood === 'reset' || currentMood === 'loving' || currentMood === 'curious') {
+        if(!isBotActive || document.hidden) return; // Stop loop if inactive
+        
+        if (currentMood === 'reset' || currentMood === 'loving' || currentMood === 'curious' || currentMood === 'thinking') {
             const eyeL = document.getElementById('eye-l');
             const eyeR = document.getElementById('eye-r');
             if (eyeL && eyeR) {
@@ -1200,14 +1253,26 @@
                     eyeL.classList.remove('wink'); 
                     eyeR.classList.remove('wink'); 
                 }, 150);
+                
+                // Double blink randomness (EMO alive feel)
+                if(Math.random() > 0.8) {
+                    setTimeout(() => {
+                        if(isBotActive) {
+                            eyeL.classList.add('wink'); eyeR.classList.add('wink');
+                            setTimeout(() => { eyeL.classList.remove('wink'); eyeR.classList.remove('wink'); }, 150);
+                        }
+                    }, 300);
+                }
             }
         }
         
-        let blinkDelay = (aiStatus === 'thinking') ? (400 + Math.random() * 400) : (4000 + Math.random() * 2000);
+        let blinkDelay = (aiStatus === 'thinking') ? (400 + Math.random() * 400) : (3000 + Math.random() * 3000);
         setTimeout(blink, blinkDelay);
     }
+    
+    // Start blink loop initially but it will only execute if isBotActive is true
     blink();
-    resetIdleTimer(); 
+
 </script>
 
 <script type="module">
@@ -1233,7 +1298,6 @@
     const provider = new GoogleAuthProvider();
 
     window.isLoggedIn = false;
-    let captchaWidgetId = null;
 
     window.toggleModal = (id) => {
         const modal = document.getElementById(id);
@@ -1245,7 +1309,7 @@
         if (modal) modal.classList.remove('flex');
         
         if (id === 'robot-core-modal' && window.forceStandby) {
-            window.forceStandby();
+            window.forceStandby(); // Execute strict kill switch
         }
     };
 
@@ -1615,7 +1679,6 @@
                 status: "PENDING",
                 timestamp: new Date().toISOString()
             });
-            console.log("Order stored in Firebase");
         } catch (e) {
             console.error("Firebase Error:", e);
         }
