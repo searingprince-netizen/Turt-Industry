@@ -39,44 +39,8 @@
         select:focus, input:focus, textarea:focus { border-color: #3b82f6 !important; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
         
         .profile-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; }
-        
-        /* --- Boss Updates: Feature Card Animation --- */
-        .feature-card { 
-            position: relative; 
-            overflow: hidden; 
-            background: rgba(255,255,255,0.02); 
-            border: 1px solid rgba(255,255,255,0.05); 
-            transition: all 0.3s; 
-        }
-        .feature-card:hover { 
-            border-color: #3b82f6; 
-            background: rgba(59, 130, 246, 0.05); 
-        }
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            width: 50px;
-            height: 3px;
-            background: #3b82f6;
-            box-shadow: 0 0 15px #3b82f6, 0 0 30px #3b82f6;
-            border-radius: 10px;
-            z-index: 0;
-            animation: scanLoop 8s infinite ease-in-out;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .feature-card:hover::before {
-            opacity: 0;
-        }
-        .feature-card > * {
-            position: relative;
-            z-index: 1;
-        }
-        @keyframes scanLoop {
-            0%, 31.25% { top: 30px; left: 30px; transform: translate(-50%, -50%) rotate(45deg); }
-            50%, 81.25% { top: calc(100% - 30px); left: calc(100% - 30px); transform: translate(-50%, -50%) rotate(45deg); }
-            100% { top: 30px; left: 30px; transform: translate(-50%, -50%) rotate(45deg); }
-        }
+        .feature-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; }
+        .feature-card:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
         
         .project-card { position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .project-card:hover { border-color: rgba(59, 130, 246, 0.5); transform: translateY(-10px); }
