@@ -417,6 +417,9 @@
             <button id="portal-btn" onclick="toggleModal('login-modal')" class="bg-blue-600 px-6 py-2 rounded-md hover:bg-blue-700 transition shadow-lg shadow-blue-900/20 whitespace-nowrap">
                 Portal Access
             </button>
+            <button onclick="window.toggleModal('main-menu-modal')" class="bg-white/5 border border-white/10 px-4 py-2 rounded-md hover:bg-blue-600 hover:border-blue-600 transition text-[10px] font-bold uppercase tracking-widest ml-2 flex items-center gap-2">
+                <i class="fa-solid fa-bars"></i> MENU
+            </button>
         </div>
     </div>
 </nav>
@@ -689,6 +692,66 @@
     </div>
 </div>
 
+<div id="main-menu-modal" class="modal">
+    <div class="bg-[#0a0a0a] border border-white/10 w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl flex flex-col h-auto max-h-[85vh] m-4 relative z-50">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-900/50 relative z-10">
+            <div>
+                <h2 class="text-white font-black tracking-tighter text-xl uppercase">System Directory</h2>
+                <p class="text-blue-500 text-[10px] font-bold uppercase tracking-widest">Turt Industry Navigation</p>
+            </div>
+            <button onclick="window.closeModal('main-menu-modal')" class="text-zinc-500 hover:text-white text-2xl">✕</button>
+        </div>
+        
+        <div class="p-8 overflow-y-auto flex-grow custom-scrollbar relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div>
+                <h3 class="text-blue-500 font-black uppercase italic text-sm mb-4 border-b border-blue-500/30 pb-2">Help</h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">About Us</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">My Account</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Contact Us</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Delivery Policy</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-blue-500 font-black uppercase italic text-sm mb-4 border-b border-blue-500/30 pb-2">Legal</h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Terms & Conditions</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Privacy Policy</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Refund Policy</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-blue-500 font-black uppercase italic text-sm mb-4 border-b border-blue-500/30 pb-2">Categories</h3>
+                <ul class="space-y-3">
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">SENTINEL GATEWAY</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">EXO-FRAME V2</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Synaplink Cerebro Array</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">NEXA Master Unit</a></li>
+                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">ARC UNIT</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-blue-500 font-black uppercase italic text-sm mb-4 border-b border-blue-500/30 pb-2">Follow Us</h3>
+                <ul class="space-y-3">
+                    <li><a href="https://www.facebook.com/share/1D3gZoV2Uu/" target="_blank" class="text-zinc-400 hover:text-blue-500 text-xs uppercase tracking-widest transition flex items-center gap-2"><i class="fa-brands fa-facebook text-lg"></i> Facebook</a></li>
+                    <li><a href="https://www.instagram.com/turtindustry?igsh=M2dzNG85bHFzenhr" target="_blank" class="text-zinc-400 hover:text-pink-500 text-xs uppercase tracking-widest transition flex items-center gap-2"><i class="fa-brands fa-instagram text-lg"></i> Instagram</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-blue-500 font-black uppercase italic text-sm mb-4 border-b border-blue-500/30 pb-2">Get in touch</h3>
+                <ul class="space-y-3">
+                    <li><a href="mailto:turtindustry@gmail.com" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition flex items-center gap-2"><i class="fa-solid fa-envelope text-lg"></i> turtindustry@gmail.com</a></li>
+                    <li><a href="https://wa.me/94740523507" target="_blank" class="text-zinc-400 hover:text-green-500 text-xs uppercase tracking-widest transition flex items-center gap-2"><i class="fa-brands fa-whatsapp text-lg"></i> +94 74 052 3507</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="procure-popup" class="popup-overlay" onclick="if(event.target === this) window.closePopup()">
     <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl max-w-sm w-full relative">
         <button onclick="window.closePopup()" class="absolute top-4 right-4 text-zinc-500 hover:text-white">✕</button>
