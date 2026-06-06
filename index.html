@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turt Industry | Technology Manufacturing</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -397,6 +397,13 @@
             100% { box-shadow: 0 0 30px #c084fc, inset 0 0 20px #818cf8; border-color: #c084fc; }
         }
 
+        /* Unique Directory Pop-Up Content Styles */
+        .directory-title { font-family: 'JetBrains Mono', monospace; font-style: italic; background: linear-gradient(to right, #3b82f6, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .chat-message { border-radius: 16px; padding: 12px 16px; max-width: 80%; font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
+        .chat-incoming { background: #161616; color: #e4e4e7; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .chat-outgoing { background: #2563eb; color: #ffffff; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chart-bar { transition: height 1s cubic-bezier(0.4, 0, 0.2, 1); }
+
     </style>
 </head>
 <body>
@@ -707,30 +714,30 @@
             <div>
                 <h3 class="text-blue-500 font-black uppercase italic text-sm mb-4 border-b border-blue-500/30 pb-2">Help</h3>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">About Us</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">My Account</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Contact Us</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Delivery Policy</a></li>
+                    <li><button onclick="window.openDirectoryPanel('about')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">About Us</button></li>
+                    <li><button onclick="window.openDirectoryPanel('account')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">My Account</button></li>
+                    <li><button onclick="window.openDirectoryPanel('contact')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">Contact Us</button></li>
+                    <li><button onclick="window.openDirectoryPanel('delivery')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">Delivery Policy</button></li>
                 </ul>
             </div>
             
             <div>
                 <h3 class="text-blue-500 font-black uppercase italic text-sm mb-4 border-b border-blue-500/30 pb-2">Legal</h3>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Terms & Conditions</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Privacy Policy</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Refund Policy</a></li>
+                    <li><button onclick="window.openDirectoryPanel('terms')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">Terms & Conditions</button></li>
+                    <li><button onclick="window.openDirectoryPanel('privacy')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">Privacy Policy</button></li>
+                    <li><button onclick="window.openDirectoryPanel('refund')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">Refund Policy</button></li>
                 </ul>
             </div>
             
             <div>
                 <h3 class="text-blue-500 font-black uppercase italic text-sm mb-4 border-b border-blue-500/30 pb-2">Categories</h3>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">SENTINEL GATEWAY</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">EXO-FRAME V2</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">Synaplink Cerebro Array</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">NEXA Master Unit</a></li>
-                    <li><a href="#" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition">ARC UNIT</a></li>
+                    <li><button onclick="window.openDirectoryPanel('sentinel')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">SENTINEL GATEWAY</button></li>
+                    <li><button onclick="window.openDirectoryPanel('exo')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">EXO-FRAME V2</button></li>
+                    <li><button onclick="window.openDirectoryPanel('synaplink')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">Synaplink Cerebro Array</button></li>
+                    <li><button onclick="window.openDirectoryPanel('nexa')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">NEXA Master Unit</button></li>
+                    <li><button onclick="window.openDirectoryPanel('arc')" class="text-zinc-400 hover:text-white text-xs uppercase tracking-widest transition text-left w-full">ARC UNIT</button></li>
                 </ul>
             </div>
             
@@ -756,6 +763,17 @@
     <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-3xl max-w-sm w-full relative">
         <button onclick="window.closePopup()" class="absolute top-4 right-4 text-zinc-500 hover:text-white">✕</button>
         <div id="popup-content"></div>
+    </div>
+</div>
+
+<div id="directory-panel-modal" class="modal">
+    <div class="max-w-4xl w-full bg-[#090909] border border-blue-500/30 rounded-3xl overflow-hidden flex flex-col shadow-[0_0_5px_rgba(59,130,246,0.3)] max-h-[85vh] m-4 relative">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5 pointer-events-none"></div>
+        <div class="p-6 border-b border-white/5 flex justify-between items-center bg-zinc-950">
+            <h2 id="directory-panel-title" class="text-xl font-black uppercase tracking-wider directory-title">System Node Data</h2>
+            <button onclick="window.closeModal('directory-panel-modal')" class="text-zinc-500 hover:text-white text-xl">✕</button>
+        </div>
+        <div id="directory-panel-body" class="p-8 overflow-y-auto flex-grow custom-scrollbar bg-black/40 text-sm leading-relaxed text-zinc-300"></div>
     </div>
 </div>
 
@@ -1757,6 +1775,575 @@
         
         window.open(`https://wa.me/94740523507?text=${msg}`, '_blank');
         window.closePopup();
+    };
+
+    // --- Dynamic Advanced System Directory Pop-Up Logic ---
+    window.openDirectoryPanel = (nodeKey) => {
+        window.closeModal('main-menu-modal');
+        const titleEl = document.getElementById('directory-panel-title');
+        const bodyEl = document.getElementById('directory-panel-body');
+        
+        if(!titleEl || !bodyEl) return;
+        
+        let titleText = "System Node Description";
+        let bodyHTML = "";
+        
+        switch(nodeKey) {
+            case 'about':
+                titleText = "About Turt Industry";
+                bodyHTML = `
+                    <div class="space-y-6">
+                        <p class="text-zinc-200">Turt Industry is a forward-thinking technology and innovation company dedicated to creating advanced solutions that bridge the gap between imagination and reality. Founded on the principles of innovation, quality, and engineering excellence, we strive to develop products and technologies that empower individuals, businesses, and industries to embrace the future with confidence.</p>
+                        <p class="text-zinc-400">In a rapidly evolving world, technology is more than just a tool—it is the foundation of progress. At Turt Industry, we believe that great innovation begins with bold ideas. Our mission is to transform those ideas into practical, reliable, and impactful solutions that solve real-world challenges while pushing the boundaries of what is possible.</p>
+                        <p class="text-zinc-400">Our team is passionate about designing and developing next-generation hardware, intelligent systems, and innovative digital solutions that combine cutting-edge technology with exceptional user experiences. Every project we undertake is driven by a commitment to precision, creativity, and continuous improvement, ensuring that our products meet the highest standards of performance, reliability, and design.</p>
+                        <p class="text-zinc-400">We are constantly exploring emerging technologies, investing in research and development, and embracing new opportunities to create solutions that make a meaningful difference. Whether it is advanced hardware development, smart technologies, automation systems, or future-focused innovations, Turt Industry is committed to delivering products that inspire progress and unlock new possibilities.</p>
+                        <p class="text-zinc-400">Beyond technology, we believe in building lasting relationships with our customers, partners, and communities. Trust, transparency, and customer satisfaction remain at the core of everything we do. By understanding the unique needs of those we serve, we aim to provide solutions that are not only innovative but also practical, accessible, and valuable.</p>
+                        <p class="text-zinc-400">As we continue to grow, our vision remains clear: to become a recognized leader in technological innovation by creating products and solutions that shape the future, improve lives, and contribute to a smarter, more connected world.</p>
+                        <p class="text-zinc-200 font-bold border-l-2 border-blue-500 pl-4 py-1 bg-blue-500/5 italic">At Turt Industry, we are not just building products—we are building the future.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 pt-6 border-t border-white/5">
+                            <div class="p-4 bg-zinc-900/60 border border-white/5 rounded-xl">
+                                <h4 class="text-blue-400 font-bold uppercase tracking-wider mb-2 text-xs"><i class="fa-solid fa-crosshairs mr-2"></i>Our Mission</h4>
+                                <p class="text-zinc-400 text-xs">To develop innovative and reliable technology solutions that empower people, drive progress, and create lasting value through engineering excellence and continuous innovation.</p>
+                            </div>
+                            <div class="p-4 bg-zinc-900/60 border border-white/5 rounded-xl">
+                                <h4 class="text-purple-400 font-bold uppercase tracking-wider mb-2 text-xs"><i class="fa-solid fa-eye mr-2"></i>Our Vision</h4>
+                                <p class="text-zinc-400 text-xs">To become a global symbol of technological advancement, recognized for transforming bold ideas into groundbreaking solutions that shape the future.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-5 bg-zinc-950 border border-white/5 rounded-xl">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-widest mb-4 text-xs">Our Core Values</h4>
+                            <ul class="space-y-2 text-xs text-zinc-400">
+                                <li><strong class="text-zinc-300">Innovation</strong> – Continuously exploring new ideas and technologies.</li>
+                                <li><strong class="text-zinc-300">Quality</strong> – Delivering excellence in every product and service.</li>
+                                <li><strong class="text-zinc-300">Integrity</strong> – Building trust through honesty and transparency.</li>
+                                <li><strong class="text-zinc-300">Customer Focus</strong> – Creating solutions centered around real needs.</li>
+                                <li><strong class="text-zinc-300">Growth</strong> – Embracing learning, improvement, and future opportunities.</li>
+                            </ul>
+                        </div>
+                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-500/80 pt-4">Turt Industry — Innovating Today. Engineering Tomorrow.</div>
+                    </div>`;
+                break;
+            case 'account':
+                titleText = "Quantum Dashboard";
+                if(!window.isLoggedIn || !auth.currentUser) {
+                    bodyHTML = `
+                        <div class="flex flex-col items-center justify-center py-12 text-center">
+                            <div class="w-16 h-16 bg-red-500/10 text-red-500 border border-red-500/20 rounded-full flex items-center justify-center mb-4 text-xl animate-pulse">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <h3 class="text-white font-bold text-base uppercase tracking-wider">Access Restricted</h3>
+                            <p class="text-zinc-500 text-xs mt-2 max-w-xs">Please login through the main portal verification link to sync account analytics matrix nodes.</p>
+                            <button onclick="window.closeModal('directory-panel-modal'); window.toggleModal('login-modal');" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase px-6 py-2.5 rounded-lg tracking-wider transition">Authenticate Portal</button>
+                        </div>`;
+                } else {
+                    const u = auth.currentUser;
+                    const simulatedLoginTime = new Date(Date.now() - 45 * 60 * 1000).toLocaleTimeString();
+                    bodyHTML = `
+                        <div class="space-y-6">
+                            <div class="flex flex-col sm:flex-row items-center gap-6 bg-zinc-950 p-6 rounded-2xl border border-white/5">
+                                <img src="${u.photoURL}" class="w-20 h-20 rounded-full border-2 border-blue-500 object-cover shadow-xl">
+                                <div class="text-center sm:text-left flex-grow">
+                                    <span class="text-[9px] font-mono uppercase bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded">Core User Profile Node</span>
+                                    <h3 class="text-white font-black uppercase text-2xl tracking-tight mt-1">${u.displayName}</h3>
+                                    <p class="text-zinc-500 font-mono text-xs lowercase mt-0.5"><i class="fa-solid fa-envelope mr-1.5 text-zinc-600"></i>${u.email}</p>
+                                </div>
+                                <div class="text-center sm:text-right font-mono bg-black/40 border border-white/5 p-4 rounded-xl shrink-0">
+                                    <div class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Network Status</div>
+                                    <div class="text-green-400 text-sm font-bold uppercase tracking-tighter mt-1 animate-pulse"><i class="fa-solid fa-circle text-[8px] mr-1.5 align-middle"></i>Synchronized</div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="p-4 bg-zinc-900/60 border border-white/5 rounded-xl font-mono">
+                                    <span class="text-zinc-500 text-[10px] uppercase block font-bold tracking-wider">Node Terminal Login Timestamp</span>
+                                    <span class="text-zinc-200 text-sm font-bold block mt-1"><i class="fa-solid fa-clock mr-2 text-blue-500"></i>Today, ${simulatedLoginTime}</span>
+                                </div>
+                                <div class="p-4 bg-zinc-900/60 border border-white/5 rounded-xl font-mono">
+                                    <span class="text-zinc-500 text-[10px] uppercase block font-bold tracking-wider">Total Active Infrastructure Connection Time</span>
+                                    <span class="text-zinc-200 text-sm font-bold block mt-1"><i class="fa-solid fa-bolt mr-2 text-blue-500"></i>02 Hrs 44 Mins 19 Secs</span>
+                                </div>
+                            </div>
+
+                            <div class="p-6 bg-zinc-950 border border-white/5 rounded-2xl">
+                                <h4 class="text-xs uppercase font-mono tracking-widest text-zinc-400 mb-6 flex justify-between items-center">
+                                    <span><i class="fa-solid fa-chart-simple mr-2 text-blue-500"></i>System Resource Load Activity Matrix</span>
+                                    <span class="text-[9px] text-zinc-600">NODE REF: #TURT-99X</span>
+                                </h4>
+                                <div class="flex items-end justify-between gap-2 h-36 pt-4 px-2 bg-black/40 border border-white/5 rounded-xl">
+                                    <div class="flex flex-col items-center flex-grow group">
+                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 45%;"></div>
+                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">MON</span>
+                                    </div>
+                                    <div class="flex flex-col items-center flex-grow group">
+                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 70%;"></div>
+                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">TUE</span>
+                                    </div>
+                                    <div class="flex flex-col items-center flex-grow group">
+                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 35%;"></div>
+                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">WED</span>
+                                    </div>
+                                    <div class="flex flex-col items-center flex-grow group">
+                                        <div class="bg-blue-500 border border-blue-400 w-full rounded-t-md chart-bar shadow-[0_0_15px_#3b82f6]" style="height: 90%;"></div>
+                                        <span class="text-[9px] font-mono text-blue-400 font-bold mt-2">THU</span>
+                                    </div>
+                                    <div class="flex flex-col items-center flex-grow group">
+                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 55%;"></div>
+                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">FRI</span>
+                                    </div>
+                                    <div class="flex flex-col items-center flex-grow group">
+                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 20%;"></div>
+                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">SAT</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+                break;
+            case 'contact':
+                titleText = "Secure Comms Nexus";
+                bodyHTML = `
+                    <div class="flex flex-col h-[55vh] max-h-[500px]">
+                        <div class="flex items-center gap-3 bg-zinc-950 p-4 border-b border-white/5 rounded-t-xl shrink-0">
+                            <div class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></div>
+                            <div class="flex-grow">
+                                <h4 class="text-white text-xs font-bold uppercase tracking-wider">Turt Support Node</h4>
+                                <p class="text-[9px] font-mono text-zinc-500 uppercase mt-0.5">Encrypted Direct Handshake Operational</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="https://wa.me/94740523507" target="_blank" class="w-8 h-8 rounded-full border border-white/10 hover:border-green-500 hover:text-green-400 transition flex items-center justify-center text-xs text-zinc-400"><i class="fa-brands fa-whatsapp text-sm"></i></a>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-grow p-4 overflow-y-auto custom-scrollbar flex flex-col space-y-4 bg-black/60 border-x border-white/5">
+                            <div class="chat-message chat-incoming">Welcome to Turt Industry Secure Core Transmission Tunnel. Drop your custom parameters or questions right below.</div>
+                            <div class="chat-message chat-incoming">Our tactical field engineering support matrix is standing by to assist with hardware deployment notes or ordering configurations.</div>
+                        </div>
+                        
+                        <div class="p-4 bg-zinc-950 border-t border-white/5 rounded-b-xl shrink-0 flex gap-3">
+                            <input type="text" id="comms-input-box" placeholder="Write message code..." class="flex-grow text-xs px-4 py-3 bg-zinc-900 border border-white/10 rounded-xl outline-none text-white focus:border-blue-500">
+                            <button onclick="const input = document.getElementById('comms-input-box'); if(input && input.value.trim()) { alert('Secure handshake transmission broadcast successfully.'); input.value=''; }" class="bg-blue-600 hover:bg-blue-700 transition text-white text-xs px-5 py-3 rounded-xl font-bold uppercase font-mono tracking-wider shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>`;
+                break;
+            case 'delivery':
+                titleText = "Delivery Policy";
+                bodyHTML = `
+                    <div class="space-y-6">
+                        <p class="text-zinc-200">At TURT INDUSTRY, we strive to ensure a smooth and reliable delivery experience for our customers. Please review our delivery policy below:</p>
+                        <ul class="space-y-3 text-zinc-400 text-xs">
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-chevron-right text-blue-500 text-[10px] mt-1 shrink-0"></i> <span>Cash on Delivery (COD) is accepted island-wide across World wide</span></li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-chevron-right text-blue-500 text-[10px] mt-1 shrink-0"></i> <span>We accept multiple payment options, including VISA, MasterCard, American Express, Sampath Vishwa, eZ Cash, M Cash, and FriMi for all customers within</span></li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-chevron-right text-blue-500 text-[10px] mt-1 shrink-0"></i> <span>Order Dispatch: Orders are dispatched only on working days (Monday to Friday), excluding Poya days and other mercantile holidays.</span></li>
+                            <li class="flex items-start gap-3"><i class="fa-solid fa-chevron-right text-blue-500 text-[10px] mt-1 shrink-0"></i> <span>Pick-Up Option: Customers have the option to pick up their orders from the Laveena Saree showroom.</span></li>
+                        </ul>
+                        
+                        <div class="p-5 bg-zinc-950 border border-white/5 rounded-xl space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-widest text-xs border-b border-white/5 pb-2">Delivery Timeframes:</h4>
+                            <p class="text-xs text-zinc-400"><strong class="text-zinc-200 uppercase block font-mono text-[10px] text-blue-400 mb-1">Cash on Delivery (COD) orders:</strong> Delivery will take a maximum of 4 working days from the date of order placement.</p>
+                            <p class="text-xs text-zinc-400"><strong class="text-zinc-200 uppercase block font-mono text-[10px] text-blue-400 mb-1">Pre-Paid Orders:</strong> Orders will be dispatched only after payment confirmation. Once payment proof is received, the order will be dispatched on the next working day. Delivery may take up to a maximum of 7 working days, depending on the delivery location.</p>
+                        </div>
+
+                        <div class="p-5 bg-zinc-900/60 border border-white/5 rounded-xl space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-widest text-xs border-b border-white/5 pb-2">Order Acceptance & Responsibility:</h4>
+                            <p class="text-xs text-zinc-400">Once an order has been accepted by the recipient or a representative, it will be considered delivered. TURT INDUSTRY will not be held responsible for any lost goods after acceptance by the recipient.</p>
+                        </div>
+
+                        <div class="p-5 bg-zinc-950 border border-white/5 rounded-xl space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-widest text-xs border-b border-white/5 pb-2">Delivery Failure & Address Issues:</h4>
+                            <p class="text-xs text-zinc-400">Orders will be delivered to one delivery address per order. If an incorrect or non-existent address is provided, an additional rerouting delivery charge will be applicable and must be borne by the customer.</p>
+                        </div>
+                        
+                        <p class="text-zinc-400 text-xs italic text-center pt-4 border-t border-white/5">For any further inquiries, please contact our customer support team. Thank you for shopping with TURT INDUSTRY!</p>
+                    </div>`;
+                break;
+            case 'terms':
+                titleText = "Terms & Conditions";
+                bodyHTML = `
+                    <div class="space-y-6 text-xs text-zinc-400">
+                        <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                            <span class="font-mono text-[10px] uppercase text-zinc-500">Legal Architecture Protocol</span>
+                            <span class="font-mono text-[10px] text-blue-400 uppercase font-bold">Last Updated: June 2026</span>
+                        </div>
+                        <p class="text-zinc-300">Welcome to Turt Industry. By accessing or using our website, products, services, or platforms, you agree to comply with and be bound by the following Terms and Conditions. Please read them carefully before using our services.</p>
+                        
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">1. Acceptance of Terms</h4>
+                            <p>By accessing, browsing, or using Turt Industry's website and services, you acknowledge that you have read, understood, and agreed to these Terms and Conditions. If you do not agree with any part of these terms, you should discontinue use of our website and services immediately.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">2. About Turt Industry</h4>
+                            <p>Turt Industry is a technology-focused company engaged in the development, manufacturing, customization, and distribution of innovative hardware solutions, intelligent systems, software applications, and related technological products.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">3. Eligibility</h4>
+                            <p>You must be at least 18 years old or have the consent of a parent or legal guardian to use our services. By using our platform, you confirm that you meet these eligibility requirements.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">4. Products and Services</h4>
+                            <p>Turt Industry strives to provide accurate descriptions, specifications, and information regarding its products and services. However, we reserve the right to modify product specifications without prior notice, discontinue products or services at any time, refuse or cancel orders when necessary, and correct errors in pricing, descriptions, or availability. All product images and illustrations are for reference purposes and may differ from the final product.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">5. Custom Orders and Configurations</h4>
+                            <p>Certain products may be customized according to customer requirements. By submitting a custom order, you agree that all information provided is accurate, design requirements comply with applicable laws, customized products may require additional production time, and customized orders may not be eligible for refunds once production begins.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">6. Pricing and Payments</h4>
+                            <p>All prices displayed on our website are subject to change without notice. Customers agree to provide accurate billing information, complete payments using authorized payment methods, and pay applicable taxes, duties, and shipping fees where required. Turt Industry reserves the right to suspend or cancel orders due to payment verification issues.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">7. Shipping and Delivery</h4>
+                            <p>Delivery times provided are estimates and may vary due to manufacturing schedules, logistics providers, customs clearance, or force majeure events. Turt Industry is not responsible for delays caused by third-party shipping providers or circumstances beyond our control.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">8. Returns and Refunds</h4>
+                            <p>Refund and return eligibility will be determined according to our Refund Policy. Generally, damaged or defective products may qualify for replacement or refund. Customized products may not be refundable unless a manufacturing defect exists. Claims must be submitted within the specified return period, and proof of purchase may be required.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">9. Intellectual Property</h4>
+                            <p>All content on this website, including but not limited to logos, designs, graphics, product concepts, software, text, images, and videos are the exclusive property of Turt Industry and protected under applicable intellectual property laws. Unauthorized copying, distribution, reproduction, or modification is strictly prohibited.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">10. User Accounts</h4>
+                            <p>Users may create accounts to access certain features. You are responsible for maintaining account confidentiality, protecting login credentials, and all activities performed under your account. Turt Industry reserves the right to suspend or terminate accounts involved in suspicious, fraudulent, or abusive activities.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">11. Prohibited Activities</h4>
+                            <p>Users agree not to violate any applicable laws, upload harmful software or malicious code, attempt unauthorized access to systems, interfere with website functionality, misrepresent identity or information, or engage in fraudulent transactions. Violations may result in account termination and legal action.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">12. Privacy</h4>
+                            <p>Your use of our services is also governed by our Privacy Policy. By using our website, you consent to the collection and use of information in accordance with our Privacy Policy.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">13. Third-Party Services</h4>
+                            <p>Our website may contain links to third-party websites, platforms, or services. Turt Industry is not responsible for third-party content, external websites, third-party policies, or services provided by external organizations. Users access third-party services at their own risk.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">14. Limitation of Liability</h4>
+                            <p>To the maximum extent permitted by law, Turt Industry shall not be liable for indirect damages, consequential damages, loss of profits, loss of data, business interruptions, or service disruptions arising from the use or inability to use our products, services, or website.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">15. Warranty Disclaimer</h4>
+                            <p>Except where explicitly stated, all products and services are provided on an "as-is" and "as-available" basis. Turt Industry makes no guarantees regarding continuous availability, error-free operation, compatibility with all systems, or uninterrupted service performance.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">16. Force Majeure</h4>
+                            <p>Turt Industry shall not be held responsible for delays or failures caused by circumstances beyond reasonable control, including natural disasters, government actions, wars, labor disputes, internet outages, or supply chain disruptions.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">17. Changes to Terms</h4>
+                            <p>We reserve the right to update or modify these Terms and Conditions at any time. Changes become effective immediately upon publication on our website. Continued use of our services constitutes acceptance of the updated terms.</p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">18. Governing Law</h4>
+                            <p>These Terms and Conditions shall be governed by and interpreted in accordance with the laws of Sri Lanka, without regard to conflict of law principles. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts of Sri Lanka.</p>
+                        </div>
+
+                        <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl space-y-2 font-mono text-[11px]">
+                            <h4 class="text-zinc-300 font-bold uppercase tracking-wider text-xs font-sans mb-1">19. Contact Information</h4>
+                            <p>For questions regarding these Terms and Conditions, please contact: Turt Industry</p>
+                            <p>📧 Email: turtindustry@gmail.com</p>
+                            <p>📱 WhatsApp: +94 74 052 3507</p>
+                            <p>📍 Colombo, Sri Lanka</p>
+                        </div>
+                        <p class="text-center font-bold text-zinc-300 text-xs pt-2">By accessing or using Turt Industry's website and services, you acknowledge that you have read, understood, and agreed to these Terms & Conditions.</p>
+                    </div>`;
+                break;
+            case 'privacy':
+                titleText = "Privacy Policy";
+                bodyHTML = `
+                    <div class="space-y-6 text-xs text-zinc-400">
+                        <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                            <span class="font-mono text-[10px] uppercase text-zinc-500">Security Privacy Protocol</span>
+                            <span class="font-mono text-[10px] text-blue-400 uppercase font-bold">Last Updated: June 2026</span>
+                        </div>
+                        <p class="text-zinc-300">At Turt Industry, we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, store, and safeguard your information when you visit our website, use our services, purchase our products, or interact with our platform. By accessing or using our website and services, you agree to the practices described in this Privacy Policy.</p>
+                        
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">1. Information We Collect</h4>
+                            <p>We may collect Personal Information that you voluntarily provide (Full Name, Email, Phone, Shipping Address, Billing Info, Company, Login Data), Technical Information automatically collected when visiting (IP Address, Browser Type, Device Data, Cookies, Usage History), and Order & Transaction Information (Product selections, custom config details, payment history, shipping logs).</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">2. How We Use Your Information</h4>
+                            <p>We use collected data to process and fulfill orders, provide core client support, manage configurations, optimize website infrastructure performance, personalize UX layers, trigger system updates, combat fraudulent transactions, and comply rigidly with global security laws.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">3. Cookies and Tracking Technologies</h4>
+                            <p>Our infrastructure uses cookies to optimize website performance nodes, recall specific user preferences, analyze global visitor telemetry, and reinforce security arrays. Users can disable tracking modules in terminal browser configurations if required.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">4. Information Sharing</h4>
+                            <p>Turt Industry does not sell, rent, or trade your personal information. Data packets are distributed exclusively to trusted logistics, payment processing, or legal nodes under strict compliance conditions to safeguard user transmission workflows.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">5. Data Security</h4>
+                            <p>We integrate robust technical and organizational security protocols to mitigate data loss, misuse, modification, or unauthorized infrastructure breach. Please note that no data pipeline across network routing nodes is completely unbreachable.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">6. Account Security</h4>
+                            <p>Users remain fully accountable for password obfuscation, credential preservation, and signaling any structural vulnerabilities. Turt Industry denies liability for perimeter breaches stemming from client-side vector negligence.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">7. Third-Party Services</h4>
+                            <p>External links to auxiliary platforms operate entirely beyond our operational ecosystem. Clients are advised to audit external policy matrices independently before deploying sensitive operational records.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">8. Children's Privacy</h4>
+                            <p>Our networks are strictly calibrated for operators above the age threshold of 13. Any micro-data logs indexing minors discovered inside cache stacks will be immediately scrubbed upon recognition.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">9. Data Retention</h4>
+                            <p>Personal identities are cached exclusively for processing fulfillment lifecycles, clearing architectural regulations, or arbitrating transactional disputes before undergoing automated secure sanitization routines.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">10. Your Rights</h4>
+                            <p>Subject to region jurisdictions, users retain standard permissions to review, rectify, delete, or retrieve historical data footprints from our server infrastructure stacks upon submission of secure tokens.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">11. Marketing Communications</h4>
+                            <p>With authorization parameters active, we may push automated logs profiling upcoming prototype releases, company announcements, or technical optimization insights. Operators can revoke these telemetry streams dynamically.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">12. International Data Processing</h4>
+                            <p>Information transfers seamlessly across global routing frameworks where our computational clusters reside, managed under lawful framework guarantees.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">13. Changes to This Privacy Policy</h4>
+                            <p>We maintain permissions to edit this documentation block dynamically. Sustained interaction with platform modules constitutes programmatic confirmation of amended clauses.</p>
+                        </div>
+
+                        <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl font-mono text-[11px] space-y-1">
+                            <h4 class="text-zinc-300 font-bold uppercase tracking-wider text-xs font-sans mb-1">14. Contact Us</h4>
+                            <p>Turt Industry</p>
+                            <p>📧 Email: turtindustry@gmail.com</p>
+                            <p>📱 WhatsApp: +94 74 052 3507</p>
+                            <p>📍 Colombo, Sri Lanka</p>
+                        </div>
+                        <div class="text-center font-bold text-zinc-200 uppercase tracking-wide pt-2">Turt Industry — Building Technology with Trust</div>
+                    </div>`;
+                break;
+            case 'refund':
+                titleText = "Refund Policy";
+                bodyHTML = `
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                            <span class="font-mono text-[10px] uppercase text-zinc-500">Commercial Operations Guideline</span>
+                            <span class="font-mono text-[10px] text-blue-400 uppercase font-bold">Last Updated: June 2026</span>
+                        </div>
+                        <p class="text-zinc-200">At Turt Industry, customer satisfaction is important to us. If you are not satisfied with your purchase, please review our refund policy below.</p>
+                        
+                        <div class="p-5 bg-zinc-950 border border-white/5 rounded-xl space-y-3">
+                            <h4 class="text-blue-400 font-bold uppercase tracking-wider text-xs"><i class="fa-solid fa-circle-check mr-2"></i>Eligibility for Refunds</h4>
+                            <ul class="space-y-2 text-xs text-zinc-400">
+                                <li>• Refund requests must be made within 7 days of receiving the product.</li>
+                                <li>• Products must be unused, undamaged, and returned in their original packaging.</li>
+                                <li>• Proof of purchase is required for all refund requests.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-5 bg-zinc-900/60 border border-white/5 rounded-xl space-y-3">
+                            <h4 class="text-red-400 font-bold uppercase tracking-wider text-xs"><i class="fa-solid fa-circle-xmark mr-2"></i>Non-Refundable Items</h4>
+                            <ul class="space-y-2 text-xs text-zinc-400">
+                                <li>• Customized or personalized products.</li>
+                                <li>• Products damaged due to misuse or improper handling.</li>
+                                <li>• Digital products or services that have already been delivered.</li>
+                            </ul>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">Damaged or Defective Products</h4>
+                            <p class="text-zinc-400 text-xs">If you receive a defective or damaged product, please contact us within 48 hours of delivery with photos and order details. We will review the issue and arrange a replacement or refund where applicable.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">Refund Processing</h4>
+                            <p class="text-zinc-400 text-xs">Approved refunds will be processed through the original payment method within 7–14 business days, depending on your payment provider.</p>
+                        </div>
+                        
+                        <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl font-mono text-xs space-y-1">
+                            <span class="font-sans font-bold uppercase tracking-widest text-[10px] text-zinc-500 block">Contact Node</span>
+                            <p>📧 Email: turtindustry@gmail.com</p>
+                            <p>📱 WhatsApp: +94 74 052 3507</p>
+                        </div>
+                        <p class="text-center text-[10px] uppercase font-mono tracking-widest text-zinc-600">Turt Industry reserves the right to approve or reject refund requests based on the conditions outlined above</p>
+                    </div>`;
+                break;
+            case 'sentinel':
+                titleText = "SENTINEL GATEWAY Architecture";
+                bodyHTML = `
+                    <div class="space-y-6">
+                        <p class="text-zinc-200 text-base italic">SENTINEL GATEWAY is Turt Industry's advanced intelligent security platform, designed to provide next-generation protection for digital infrastructure, connected devices, and critical systems. Built with AI-driven monitoring capabilities, Sentinel Gateway continuously analyzes network activity, identifies potential threats, and responds to security risks in real time.</p>
+                        <p class="text-zinc-400">Engineered for reliability and performance, the system combines smart threat detection, automated defense mechanisms, and centralized monitoring to create a secure and resilient environment for businesses and organizations. Its adaptive security architecture allows it to evolve alongside emerging cyber threats, ensuring continuous protection in an ever-changing digital landscape.</p>
+                        <p class="text-zinc-400">Whether safeguarding enterprise networks, smart facilities, or future technology ecosystems, Sentinel Gateway represents Turt Industry's commitment to building secure, intelligent, and future-ready solutions.</p>
+                        
+                        <div class="p-5 bg-zinc-950 border border-blue-500/20 rounded-2xl">
+                            <h4 class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-3 font-mono">Key Architectural Features</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-300">
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-brain text-blue-500"></i> AI-Powered Threat Detection</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-eye text-blue-500"></i> Real-Time Security Monitoring</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-fingerprint text-blue-500"></i> Intelligent Access Control</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-shield text-blue-500"></i> Automated Risk Response</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-network-wired text-blue-500"></i> Secure Network Management</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-building-shield text-blue-500"></i> Scalable Enterprise Protection</div>
+                            </div>
+                        </div>
+                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">SENTINEL GATEWAY — Protecting Tomorrow's Technology, Today.</div>
+                    </div>`;
+                break;
+            case 'exo':
+                titleText = "EXO-FRAME V2 Overview";
+                bodyHTML = `
+                    <div class="space-y-6">
+                        <p class="text-zinc-200 text-base italic">EXO-FRAME V2 is a next-generation industrial exoskeleton system engineered to enhance human strength, endurance, and operational efficiency in demanding work environments. Designed with advanced mechanical support technology and intelligent motion assistance, the system helps reduce physical strain while improving productivity and workplace safety.</p>
+                        <p class="text-zinc-400">Built using high-strength lightweight materials, EXO-FRAME V2 provides seamless movement support for lifting, carrying, and performing repetitive tasks. Its adaptive assistance technology responds to user movements in real time, delivering enhanced control, stability, and comfort throughout extended operations.</p>
+                        <p class="text-zinc-400">Whether used in manufacturing facilities, construction sites, logistics operations, or advanced industrial environments, EXO-FRAME V2 represents the future of human-machine collaboration, empowering workers to achieve more with greater precision and reduced fatigue.</p>
+                        
+                        <div class="p-5 bg-zinc-950 border border-blue-500/20 rounded-2xl">
+                            <h4 class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-3 font-mono">Key Structural Features</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-300">
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-person-running text-blue-500"></i> Advanced Motion Assistance System</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-cubes text-blue-500"></i> Lightweight Titanium-Alloy Structure</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-dumbbell text-blue-500"></i> Enhanced Strength & Endurance Support</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-chair text-blue-500"></i> Ergonomic Comfort Design</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-scale-balanced text-blue-500"></i> Intelligent Load Distribution</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-trowel-bricks text-blue-500"></i> Industrial-Grade Durability</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-gauge-high text-blue-500"></i> Real-Time Performance Monitoring</div>
+                            </div>
+                        </div>
+                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">EXO-FRAME V2 — Empowering Human Potential Through Innovation</div>
+                    </div>`;
+                break;
+            case 'synaplink':
+                titleText = "Synaplink Cerebro Array Core";
+                bodyHTML = `
+                    <div class="space-y-6">
+                        <p class="text-zinc-200 text-base italic">Synaplink Cerebro Array is an advanced neural intelligence platform designed to revolutionize the connection between humans, data, and intelligent systems. Built around cutting-edge neural processing technology, the platform enables seamless communication, real-time cognitive analysis, and enhanced decision-making capabilities across complex digital environments.</p>
+                        <p class="text-zinc-400">Engineered to process vast amounts of information with exceptional speed and accuracy, Synaplink Cerebro Array utilizes adaptive learning algorithms and intelligent neural frameworks to optimize performance, predict outcomes, and support advanced automation. Its scalable architecture makes it suitable for research institutions, enterprise systems, smart infrastructure, and future-focused technology applications.</p>
+                        <p class="text-zinc-400">By combining artificial intelligence with next-generation neural computing principles, Synaplink Cerebro Array represents a significant step toward creating smarter, more connected, and highly responsive technological ecosystems.</p>
+                        
+                        <div class="p-5 bg-zinc-950 border border-blue-500/20 rounded-2xl">
+                            <h4 class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-3 font-mono">Key Core Features</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-300">
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-microchip text-blue-500"></i> Advanced Neural Processing Engine</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-brain text-blue-500"></i> Real-Time Cognitive Analytics</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-code-branch text-blue-500"></i> Adaptive Learning Algorithms</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-bolt-lightning text-blue-500"></i> High-Speed Data Integration</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-circle-nodes text-blue-500"></i> Intelligent Decision Support Systems</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-network-wired text-blue-500"></i> Scalable Enterprise Architecture</div>
+                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-gears text-blue-500"></i> Future-Ready AI Framework</div>
+                            </div>
+                        </div>
+                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">Synaplink Cerebro Array — Connecting Intelligence Beyond Boundaries.</div>
+                    </div>`;
+                break;
+            case 'nexa':
+                titleText = "NEXA Master Unit Framework";
+                bodyHTML = `
+                    <div class="space-y-6">
+                        <p class="text-zinc-200 text-base italic">NEXA Master Unit is Turt Industry's flagship intelligent control and automation platform, designed to serve as the central command core for advanced digital ecosystems. Combining artificial intelligence, real-time analytics, and autonomous decision-making capabilities, NEXA Master Unit enables seamless coordination between connected devices, systems, and networks.</p>
+                        <p class="text-zinc-400">Built to manage complex operations with speed and precision, the platform continuously monitors system performance, processes critical data, and executes intelligent responses to optimize efficiency and reliability. Its adaptive architecture allows organizations to integrate multiple technologies into a unified and scalable environment.</p>
+                        <p class="text-zinc-400">Whether powering smart infrastructure, industrial automation, enterprise operations, or future-generation technology networks, NEXA Master Unit acts as the brain behind intelligent ecosystems, delivering unmatched control, connectivity, and performance.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl">
+                                <h4 class="text-blue-400 font-bold uppercase text-[11px] font-mono mb-2">Key Core Features</h4>
+                                <ul class="space-y-1.5 text-xs text-zinc-300">
+                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Centralized AI Command System</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Real-Time Data Processing & Analytics</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Autonomous Decision-Making Engine</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Smart Network Integration</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Advanced System Monitoring</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Scalable Infrastructure Management</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Secure and Reliable Operations</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl">
+                                <h4 class="text-purple-400 font-bold uppercase text-[11px] font-mono mb-2">Target Applications</h4>
+                                <ul class="space-y-1.5 text-xs text-zinc-300">
+                                    <li><i class="fa-solid fa-city mr-2 text-purple-500"></i> Smart Cities & Infrastructure</li>
+                                    <li><i class="fa-solid fa-industry mr-2 text-purple-500"></i> Industrial Automation</li>
+                                    <li><i class="fa-solid fa-briefcase mr-2 text-purple-500"></i> Enterprise Management Systems</li>
+                                    <li><i class="fa-solid fa-laptop-code mr-2 text-purple-500"></i> Connected Device Networks</li>
+                                    <li><i class="fa-solid fa-tower-broadcast mr-2 text-purple-500"></i> Intelligent Operations Centers</li>
+                                    <li><i class="fa-solid fa-microchip mr-2 text-purple-500"></i> Future Technology Ecosystems</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">NEXA Master Unit — The Intelligence Behind Every Connection.</div>
+                    </div>`;
+                break;
+            case 'arc':
+                titleText = "ARC UNIT Energy Array";
+                bodyHTML = `
+                    <div class="space-y-6">
+                        <p class="text-zinc-200 text-base italic">ARC UNIT is an advanced energy management and power distribution system engineered to deliver reliable, efficient, and intelligent energy solutions for modern technological environments. Designed as the core power backbone for high-performance systems, ARC UNIT combines innovative energy optimization technologies with real-time monitoring capabilities to ensure maximum operational efficiency.</p>
+                        <p class="text-zinc-400">Built to support next-generation infrastructure, the system intelligently regulates power flow, monitors energy consumption, and enhances overall system stability. Its adaptive architecture enables seamless integration with industrial facilities, smart infrastructure, research platforms, and advanced technology ecosystems.</p>
+                        <p class="text-zinc-400">With a focus on performance, sustainability, and reliability, ARC UNIT provides the foundation required to power complex operations while maintaining optimal energy efficiency and long-term operational resilience.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                            <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl">
+                                <h4 class="text-blue-400 font-bold uppercase text-[11px] font-mono mb-2">Key System Features</h4>
+                                <ul class="space-y-1.5 text-xs text-zinc-300">
+                                    <li><i class="fa-solid fa-bolt text-blue-500 mr-2"></i> Intelligent Energy Management</li>
+                                    <li><i class="fa-solid fa-gauge mr-2 text-blue-500"></i> Real-Time Power Monitoring</li>
+                                    <li><i class="fa-solid fa-network-wired mr-2 text-blue-500"></i> High-Efficiency Distribution System</li>
+                                    <li><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i> Adaptive Load Optimization</li>
+                                    <li><i class="fa-solid fa-shield-halved mr-2 text-blue-500"></i> Advanced Safety & Protection Protocols</li>
+                                    <li><i class="fa-solid fa-cubes mr-2 text-blue-500"></i> Scalable Infrastructure Integration</li>
+                                    <li><i class="fa-solid fa-magnifying-glass-chart mr-2 text-blue-500"></i> Continuous Performance Analytics</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl">
+                                <h4 class="text-purple-400 font-bold uppercase text-[11px] font-mono mb-2">Applications</h4>
+                                <ul class="space-y-1.5 text-xs text-zinc-300">
+                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Smart Infrastructure Systems</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Industrial Operations</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Research & Development Facilities</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Data Processing Centers</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Advanced Technology Platforms</li>
+                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Enterprise Energy Management</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">ARC UNIT — Powering Innovation Through Intelligent Energy.</div>
+                    </div>`;
+                break;
+        }
+
+        titleEl.innerText = titleText;
+        bodyEl.innerHTML = bodyHTML;
+        window.toggleModal('directory-panel-modal');
     };
     
 </script>
