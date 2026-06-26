@@ -489,9 +489,8 @@
     <div class="project-card-h" data-project="novacore"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="snap-text text-blue-400 font-mono text-[10px] uppercase block">[ NOVA CORE ]</span><h3 class="snap-text text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="snap-text text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="snap-text view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
     <div class="project-card-h" data-project="cybercore"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="snap-text text-blue-400 font-mono text-[10px] uppercase block">[ Cyber-Core ]</span><h3 class="snap-text text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="snap-text text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="snap-text view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
     <div class="project-card-h" data-project="titan">
-    <div class="card-inner titan-bg" style="position: relative; overflow: hidden; width: 100%; height: 100%;">
-        <img id="project-img-1" src="assets/placeholder.jpg" alt="TITAN">
-        <div class="card-info-bg" style="position: absolute; inset: 0; z-index: 10;">
+    <div class="card-inner titan-bg" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');">
+        <div class="card-info-bg">
             <span class="snap-text text-blue-400 font-mono text-[10px] uppercase block">[ TITAN Dynamics ]</span>
             <h3 class="snap-text text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3>
             <p class="snap-text text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p>
@@ -505,9 +504,8 @@
     <div class="project-card-h" data-project="novacore"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800');"><div class="card-info-bg"><span class="snap-text text-blue-400 font-mono text-[10px] uppercase block">[ NOVA CORE ]</span><h3 class="snap-text text-2xl font-black uppercase italic mt-1 text-white">ARC UNIT</h3><p class="snap-text text-zinc-400 text-xs mt-2 leading-relaxed">Zero-point Energy Fusion Backbone.</p><div class="snap-text view-specs-btn" onclick="handleConsultation()">ENERGY SPECS</div></div></div></div>
     <div class="project-card-h" data-project="cybercore"><div class="card-inner" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');"><div class="card-info-bg"><span class="snap-text text-blue-400 font-mono text-[10px] uppercase block">[ Cyber-Core ]</span><h3 class="snap-text text-2xl font-black uppercase italic mt-1 text-white">SENTINEL GATEWAY</h3><p class="snap-text text-zinc-400 text-xs mt-2 leading-relaxed">AI-Driven Security protocols.</p><div class="snap-text view-specs-btn" onclick="handleConsultation()">MONITOR LOGIC</div></div></div></div>
     <div class="project-card-h" data-project="titan">
-    <div class="card-inner titan-bg" style="position: relative; overflow: hidden; width: 100%; height: 100%;">
-        <img id="project-img-1" src="assets/placeholder.jpg" alt="TITAN">
-        <div class="card-info-bg" style="position: absolute; inset: 0; z-index: 10;">
+    <div class="card-inner titan-bg" style="--bg-img: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800');">
+        <div class="card-info-bg">
             <span class="snap-text text-blue-400 font-mono text-[10px] uppercase block">[ TITAN Dynamics ]</span>
             <h3 class="snap-text text-2xl font-black uppercase italic mt-1 text-white">EXO-FRAME V2</h3>
             <p class="snap-text text-zinc-400 text-xs mt-2 leading-relaxed">Industrial enhancement systems.</p>
@@ -1422,19 +1420,20 @@
     onValue(project1Ref, (snapshot) => {
         const imageUrl = snapshot.val();
         if (imageUrl) {
-            // Rendu TITAN images-kum source-ah mattrum
-            const img1 = document.getElementById("project-img-1");
-            const img2 = document.getElementById("project-img-2");
+            // Track-la irukka 'titan-bg' class target panrom
+            const titanCards = document.querySelectorAll('.titan-bg');
             
-            if (img1) img1.src = imageUrl;
-            if (img2) img2.src = imageUrl;
-            
+            titanCards.forEach((card) => {
+                // Inline style custom CSS variable (--bg-img) mathurom
+                card.style.setProperty('--bg-img', `url('${imageUrl}')`);
+            });
             console.log("TITAN Slider Loop Images Updated via Firebase, Boss!");
         }
     }, (error) => {
         console.error("Database parsing failed: ", error);
     });
     // ========================================================
+    
     window.isLoggedIn = false;
 
     window.toggleModal = (id) => {
