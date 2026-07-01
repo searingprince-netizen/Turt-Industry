@@ -2404,5 +2404,220 @@
     
 </script>
 
+<!-- ==========================================================================
+     OFFLINE GRAVITY & THANOS SNAP FEATURE (BY FRIDYI AI)
+     ========================================================================== -->
+<style>
+    .thanos-snap-hide {
+        opacity: 0 !important;
+        filter: blur(30px) grayscale(100%) brightness(0.3) !important;
+        transform: translate3d(var(--snap-x, 50px), var(--snap-y, -60px), 0) rotate(var(--snap-r, 15deg)) scale(0.8) !important;
+        transition: opacity 2s ease-out, filter 2s ease-out, transform 2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        pointer-events: none !important;
+    }
+    .offline-physics-active {
+        z-index: 99999 !important;
+        pointer-events: none !important;
+    }
+</style>
+
+<script>
+    (function() {
+        let physicsElements = [];
+        let isOffline = false;
+        let animationFrameId = null;
+        let gravity = { x: 0, y: 0.6 };
+
+        // Listen for device orientation to change gravity vector in mobile
+        window.addEventListener('deviceorientation', function(e) {
+            if (!isOffline) return;
+            if (e.beta === null || e.gamma === null) return;
+            
+            // beta: front-to-back tilt (-180 to 180 deg)
+            // gamma: left-to-right tilt (-90 to 90 deg)
+            let b = e.beta * Math.PI / 180;
+            let g = e.gamma * Math.PI / 180;
+            
+            // Map tilt to x and y gravity vectors dynamically
+            // When rotated, text shifts realistically like things inside a container!
+            gravity.x = Math.sin(g) * 0.8;
+            gravity.y = Math.sin(b) * 0.8;
+        });
+
+        function applyThanosSnap() {
+            const track = document.querySelector('.project-slider-track');
+            if (track) track.style.animationPlayState = 'paused';
+            
+            const snapTargets = document.querySelectorAll('.project-card-h, .project-card, button, .view-specs-btn, a.bg-blue-600');
+            snapTargets.forEach(function(el) {
+                const rx = (Math.random() - 0.5) * 140;
+                const ry = -50 - Math.random() * 120;
+                const rr = (Math.random() - 0.5) * 50;
+                const delay = Math.random() * 0.4;
+                
+                el.style.setProperty('--snap-x', rx + 'px');
+                el.style.setProperty('--snap-y', ry + 'px');
+                el.style.setProperty('--snap-r', rr + 'deg');
+                el.style.transitionDelay = delay + 's';
+                
+                el.classList.add('thanos-snap-hide');
+            });
+        }
+
+        function reverseThanosSnap() {
+            const track = document.querySelector('.project-slider-track');
+            if (track) track.style.animationPlayState = '';
+            
+            const snapped = document.querySelectorAll('.thanos-snap-hide');
+            snapped.forEach(function(el) {
+                el.style.transitionDelay = '0s';
+                el.classList.remove('thanos-snap-hide');
+            });
+            
+            setTimeout(function() {
+                const allTargets = document.querySelectorAll('.project-card-h, .project-card, button, .view-specs-btn, a.bg-blue-600');
+                allTargets.forEach(function(el) {
+                    el.style.removeProperty('--snap-x');
+                    el.style.removeProperty('--snap-y');
+                    el.style.removeProperty('--snap-r');
+                    el.style.transitionDelay = '';
+                });
+            }, 2000);
+        }
+
+        function initOfflinePhysics() {
+            physicsElements = [];
+            const elements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, li, span, label, .text-sheen');
+            
+            elements.forEach(function(el) {
+                // Avoid elements within snapped containers or interactive assets
+                if (el.closest('.project-card-h') || el.closest('.project-card') || el.closest('button') || el.closest('a') || el.closest('.bot-frame') || el.closest('.ai-screen') || el.closest('#hover-specs-panel')) {
+                    return;
+                }
+                if (!el.innerText.trim() || el.offsetWidth === 0 || el.offsetHeight === 0) return;
+                
+                const rect = el.getBoundingClientRect();
+                
+                physicsElements.push({
+                    element: el,
+                    x0: rect.left + window.scrollX,
+                    y0: rect.top + window.scrollY,
+                    tx: 0,
+                    ty: 0,
+                    vx: (Math.random() - 0.5) * 5,
+                    vy: -Math.random() * 6,
+                    width: rect.width,
+                    height: rect.height,
+                    angle: 0,
+                    vAngle: (Math.random() - 0.5) * 0.2,
+                    bounce: -0.5 - Math.random() * 0.2
+                });
+                
+                el.style.willChange = 'transform';
+                el.style.transition = 'none';
+                el.classList.add('offline-physics-active');
+            });
+        }
+
+        function updatePhysics() {
+            if (!isOffline) return;
+            
+            const viewWidth = window.innerWidth;
+            const viewHeight = window.innerHeight;
+            const scrollX = window.scrollX;
+            const scrollY = window.scrollY;
+            
+            physicsElements.forEach(function(p) {
+                p.vy += gravity.y;
+                p.vx += gravity.x;
+                
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+                
+                p.tx += p.vx;
+                p.ty += p.vy;
+                
+                let cx = p.x0 + p.tx - scrollX;
+                let cy = p.y0 + p.ty - scrollY;
+                
+                if (cx < 0) {
+                    cx = 0;
+                    p.tx = cx + scrollX - p.x0;
+                    p.vx *= p.bounce;
+                    p.vAngle += p.vx * 0.05;
+                } else if (cx > viewWidth - p.width) {
+                    cx = viewWidth - p.width;
+                    p.tx = cx + scrollX - p.x0;
+                    p.vx *= p.bounce;
+                    p.vAngle -= p.vx * 0.05;
+                }
+                
+                if (cy < 0) {
+                    cy = 0;
+                    p.ty = cy + scrollY - p.y0;
+                    p.vy *= p.bounce;
+                } else if (cy > viewHeight - p.height) {
+                    cy = viewHeight - p.height;
+                    p.ty = cy + scrollY - p.y0;
+                    p.vy *= p.bounce;
+                    
+                    p.vx *= 0.93; // Ground friction
+                    p.angle += p.vx * 0.04;
+                    p.vAngle *= 0.88;
+                }
+                
+                p.angle += p.vAngle;
+                p.vAngle *= 0.97;
+                
+                p.element.style.transform = 'translate3d(' + p.tx + 'px, ' + p.ty + 'px, 0) rotate(' + p.angle + 'rad)';
+            });
+            
+            animationFrameId = requestAnimationFrame(updatePhysics);
+        }
+
+        function restoreOnlineState() {
+            physicsElements.forEach(function(p) {
+                p.element.style.transition = 'transform 1.5s cubic-bezier(0.19, 1, 0.22, 1)';
+                p.element.style.transform = 'translate3d(0px, 0px, 0) rotate(0rad)';
+            });
+            
+            setTimeout(function() {
+                physicsElements.forEach(function(p) {
+                    p.element.style.transition = '';
+                    p.element.style.transform = '';
+                    p.element.style.willChange = '';
+                    p.element.classList.remove('offline-physics-active');
+                });
+                physicsElements = [];
+            }, 1500);
+        }
+
+        function toggleNetworkState(online) {
+            if (online) {
+                if (!isOffline) return;
+                isOffline = false;
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                restoreOnlineState();
+                reverseThanosSnap();
+            } else {
+                if (isOffline) return;
+                isOffline = true;
+                applyThanosSnap();
+                initOfflinePhysics();
+                updatePhysics();
+            }
+        }
+
+        window.addEventListener('online', function() { toggleNetworkState(true); });
+        window.addEventListener('offline', function() { toggleNetworkState(false); });
+
+        // Initial check for loading offline
+        if (!navigator.onLine) {
+            window.addEventListener('load', function() {
+                setTimeout(function() { toggleNetworkState(false); }, 1200);
+            });
+        }
+    })();
+</script>
 </body>
 </html>
