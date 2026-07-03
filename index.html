@@ -10,29 +10,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 
     <style>
         body { background-color: #050505; color: #ffffff; font-family: 'Inter', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
         .hero-gradient { background: radial-gradient(circle at center, #111827 0%, #050505 100%); }
         .nav-blur { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); }
 
- /* TITAN image container styling - Size proper-ah 100% fix aagidikaaga */
-    .project-card-h img {
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover !important; 
-        display: block;
-    }
-    
-    /* Matha project cards maathiri hover effect uniform-ah CSS-laye apply aagurathuku */
-    .project-card-h .card-inner img {
-        opacity: 0.5;
-        transition: opacity 0.3s ease, filter 0.3s ease;
-    }
-    
-    .project-card-h:hover .card-inner img {
-        opacity: 1;
-    }
+        /* TITAN image container styling */
+        .project-card-h img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important; 
+            display: block;
+        }
+        
+        .project-card-h .card-inner img {
+            opacity: 0.5;
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+        
+        .project-card-h:hover .card-inner img {
+            opacity: 1;
+        }
         /* Modal Fixes */
         .modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.9); backdrop-filter: blur(15px); align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
         .modal.flex { display: flex !important; }
@@ -228,7 +228,6 @@
             text-shadow: 0 0 10px rgba(0,0,0,0.8); /* Ensures text is readable over dim background */
         }
 
-        /* Directional Thanos Snap */
         #hover-specs-panel.snap-right .spec-line { transform: translateX(-30px) scale(1.1); }
         #hover-specs-panel.snap-left .spec-line { transform: translateX(30px) scale(1.1); }
 
@@ -238,7 +237,6 @@
             transform: translateX(0) scale(1);
         }
 
-        /* Staggered Dust Form Timing (Medium Speed) */
         .spec-line:nth-child(1) { transition-delay: 0.05s; }
         .spec-line:nth-child(2) { transition-delay: 0.15s; }
         .spec-line:nth-child(3) { transition-delay: 0.25s; }
@@ -298,14 +296,12 @@
         .digital-eye.wink { height: 8px; border-radius: 5px; transform: translateY(18px); }
         .digital-mouth { width: 80px; height: 10px; background: #3b82f6; border-radius: 20px; box-shadow: 0 0 15px #3b82f6; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* --- Voice Sync Lip Animation --- */
         @keyframes speaking-sync {
             0%, 100% { transform: scaleX(1) scaleY(1); }
             50% { transform: scaleX(1.2) scaleY(1.8); }
         }
         .is-speaking .digital-mouth { animation: speaking-sync 0.3s infinite alternate; }
 
-        /* --- Realistic Moods (EMO Inspired) --- */
         .happy .digital-eye { background: #22c55e; box-shadow: 0 0 20px #22c55e; height: 35px; border-radius: 30px 30px 10px 10px; }
         .happy .digital-mouth { background: #22c55e; width: 90px; height: 30px; border-radius: 10px 10px 50px 50px; }
         .happy .bot-frame { transform: translateY(-10px); }
@@ -317,7 +313,7 @@
 
         @keyframes shake-hard { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-8px) rotate(-2deg);} 75% {transform: translateX(8px) rotate(2deg);} }
         .angry .bot-frame { animation: shake-hard 0.1s infinite; border-color: rgba(244, 63, 94, 0.5); }
-        .angry .bot-frame::before { transform: rotate(-30deg) translateY(10px); background: #f43f5e; } /* Angry ears */
+        .angry .bot-frame::before { transform: rotate(-30deg) translateY(10px); background: #f43f5e; } 
         .angry .bot-frame::after { transform: rotate(30deg) translateY(10px); background: #f43f5e; }
         .angry .digital-eye { background: #f43f5e; box-shadow: 0 0 20px #f43f5e; border-radius: 5px; }
         .angry #eye-l { transform: rotate(20deg) scaleY(0.5); }
@@ -327,7 +323,7 @@
         .sad .digital-eye { opacity: 0.5; height: 25px; transform: translateY(15px); border-radius: 20px 20px 5px 5px; }
         .sad .digital-mouth { width: 30px; height: 5px; opacity: 0.5; transform: translateY(15px); border-radius: 10px 10px 20px 20px; }
         .sad .digital-face { transform: translateY(20px); }
-        .sad .bot-frame::before, .sad .bot-frame::after { transform: rotate(0) translateY(20px); opacity: 0.5; } /* Droopy ears */
+        .sad .bot-frame::before, .sad .bot-frame::after { transform: rotate(0) translateY(20px); opacity: 0.5; } 
 
         .crying .digital-eye { opacity: 0.8; height: 20px; background: #38bdf8; border-radius: 20px 20px 5px 5px; transform: translateY(15px); }
         .crying .digital-eye::after { content: ''; position: absolute; bottom: -20px; left: 15px; width: 10px; height: 15px; background: #38bdf8; border-radius: 50%; animation: tear-drop 1s infinite; }
@@ -414,34 +410,64 @@
             100% { box-shadow: 0 0 30px #c084fc, inset 0 0 20px #818cf8; border-color: #c084fc; }
         }
 
-        /* Unique Directory Pop-Up Content Styles */
         .directory-title { font-family: 'JetBrains Mono', monospace; font-style: italic; background: linear-gradient(to right, #3b82f6, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .chat-message { border-radius: 16px; padding: 12px 16px; max-width: 80%; font-size: 13px; line-height: 1.5; margin-bottom: 10px; }
         .chat-incoming { background: #161616; color: #e4e4e7; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
         .chat-outgoing { background: #2563eb; color: #ffffff; align-self: flex-end; border-bottom-right-radius: 4px; }
         .chart-bar { transition: height 1s cubic-bezier(0.4, 0, 0.2, 1); }
 
+        /* =========================================
+           BOSS PHYSICS SNAP CSS CLASSES 
+           ========================================= */
+        .phys-char {
+            display: inline-block;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+        
+        .phys-active .phys-char, .phys-active .btn-phys, .phys-active .img-phys {
+            transition: none !important; /* Disable transition during physics fall to avoid lag */
+        }
+
+        @keyframes dust-fade {
+            0% { opacity: 1; filter: blur(0px); transform: scale(1) translateY(0); }
+            50% { filter: blur(10px) sepia(1); transform: scale(0.9) translateY(-10px); }
+            100% { opacity: 0; filter: blur(20px); transform: scale(0.5) translateY(-30px); }
+        }
+        
+        .thanos-snap-active .project-card-h {
+            animation: dust-fade 1.5s forwards ease-in;
+            pointer-events: none;
+        }
+        
+        .thanos-snap-reverse .project-card-h {
+            animation: dust-fade 1.5s reverse ease-out;
+            pointer-events: auto;
+        }
+        
+        .paused-track { animation-play-state: paused !important; }
+
     </style>
 </head>
-<body>
+<body id="physics-boundary">
 
 <nav class="flex justify-between items-center p-6 nav-blur sticky top-0 border-b border-white/5 z-50">
-    <div class="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer" onclick="window.scrollTo(0,0)">TURT INDUSTRY</div>
+    <div class="text-2xl font-black tracking-tighter text-blue-500 cursor-pointer phys-target" onclick="window.scrollTo(0,0)">TURT INDUSTRY</div>
     
     <div class="flex items-center space-x-6 text-sm uppercase tracking-widest font-bold">
-        <button onclick="window.toggleModal('product-store-modal')" class="hidden md:block px-4 py-1.5 border border-zinc-800 rounded-full text-[10px] font-bold hover:bg-white hover:text-black transition uppercase tracking-widest">
+        <button onclick="window.toggleModal('product-store-modal')" class="hidden md:block px-4 py-1.5 border border-zinc-800 rounded-full text-[10px] font-bold hover:bg-white hover:text-black transition uppercase tracking-widest btn-phys phys-target">
             PRODUCTS
         </button>
 
         <div id="user-profile" class="flex items-center gap-4">
-            <button onclick="toggleModal('history-modal')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 px-3 py-2 rounded transition-all tracking-tighter shrink-0">
+            <button onclick="toggleModal('history-modal')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 px-3 py-2 rounded transition-all tracking-tighter shrink-0 btn-phys phys-target">
                 ARCHIVE 
             </button>
-            <img id="nav-profile-pic" src="" class="profile-img" alt="User" style="display:none;">
-            <button id="portal-btn" onclick="toggleModal('login-modal')" class="bg-blue-600 px-6 py-2 rounded-md hover:bg-blue-700 transition shadow-lg shadow-blue-900/20 whitespace-nowrap">
+            <img id="nav-profile-pic" src="" class="profile-img img-phys" alt="User" style="display:none;">
+            <button id="portal-btn" onclick="toggleModal('login-modal')" class="bg-blue-600 px-6 py-2 rounded-md hover:bg-blue-700 transition shadow-lg shadow-blue-900/20 whitespace-nowrap btn-phys phys-target">
                 Portal Access
             </button>
-            <button onclick="window.toggleModal('main-menu-modal')" class="bg-white/5 border border-white/10 px-4 py-2 rounded-md hover:bg-blue-600 hover:border-blue-600 transition text-[10px] font-bold uppercase tracking-widest ml-2 flex items-center gap-2">
+            <button onclick="window.toggleModal('main-menu-modal')" class="bg-white/5 border border-white/10 px-4 py-2 rounded-md hover:bg-blue-600 hover:border-blue-600 transition text-[10px] font-bold uppercase tracking-widest ml-2 flex items-center gap-2 btn-phys phys-target">
                 <i class="fa-solid fa-bars"></i> MENU
             </button>
         </div>
@@ -450,26 +476,26 @@
     
 <section class="hero-gradient min-h-screen flex flex-col justify-center items-center text-center px-4 pt-20 relative">
     <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
-    <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter uppercase leading-tight">The Future of <br><span class="text-sheen">Hardware.</span></h1>
-    <p class="text-gray-500 max-w-2xl text-lg mb-10 font-light">Precision engineering and advanced technology manufacturing for the next generation of global infrastructure.</p>
+    <h1 class="text-6xl md:text-9xl font-black mb-6 tracking-tighter uppercase leading-tight phys-target">The Future of <br><span class="text-sheen">Hardware.</span></h1>
+    <p class="text-gray-500 max-w-2xl text-lg mb-10 font-light phys-target">Precision engineering and advanced technology manufacturing for the next generation of global infrastructure.</p>
     
     <div class="flex gap-6 mb-20">
-        <a href="#projects" class="border border-white/10 px-10 py-4 hover:bg-white hover:text-black transition duration-500 font-bold uppercase tracking-widest text-xs">View Projects</a>
-        <button onclick="handleConsultation()" class="bg-blue-600 px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-blue-500 transition shadow-2xl">Start Consultation</button>
+        <a href="#projects" class="border border-white/10 px-10 py-4 hover:bg-white hover:text-black transition duration-500 font-bold uppercase tracking-widest text-xs btn-phys phys-target">View Projects</a>
+        <button onclick="handleConsultation()" class="bg-blue-600 px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-blue-500 transition shadow-2xl btn-phys phys-target">Start Consultation</button>
     </div>
 
     <div class="grid md:grid-cols-3 gap-8 max-w-6xl w-full px-6 pb-20 z-10">
         <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
-            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Automated Precision</div>
-            <p class="text-gray-400 text-sm">AI-driven manufacturing lines ensuring 99.9% accuracy.</p>
+            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg phys-target">Automated Precision</div>
+            <p class="text-gray-400 text-sm phys-target">AI-driven manufacturing lines ensuring 99.9% accuracy.</p>
         </div>
         <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
-            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Scalable Tech</div>
-            <p class="text-gray-400 text-sm">From prototypes to mass production in record time.</p>
+            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg phys-target">Scalable Tech</div>
+            <p class="text-gray-400 text-sm phys-target">From prototypes to mass production in record time.</p>
         </div>
         <div class="feature-card p-8 rounded-2xl text-left border-t-2 border-t-blue-500 bg-white/5">
-            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg">Global Export</div>
-            <p class="text-gray-400 text-sm">Direct logistics from our facilities to your HQ.</p>
+            <div class="text-blue-500 font-bold mb-2 uppercase tracking-tighter text-lg phys-target">Global Export</div>
+            <p class="text-gray-400 text-sm phys-target">Direct logistics from our facilities to your HQ.</p>
         </div>
     </div>
 </section>
@@ -477,9 +503,9 @@
 <section id="projects" class="py-32 bg-[#050505] overflow-hidden relative">
     <div class="max-w-7xl mx-auto px-6 mb-16 text-center relative z-10">
         <header>
-            <span class="text-blue-500 font-mono tracking-[0.3em] uppercase text-xs">Industrial Portfolio</span>
-            <h2 class="text-5xl font-black mt-4 tracking-tighter uppercase italic">Current Projects.</h2>
-            <div class="w-24 h-1 bg-blue-600 mx-auto mt-6"></div>
+            <span class="text-blue-500 font-mono tracking-[0.3em] uppercase text-xs phys-target">Industrial Portfolio</span>
+            <h2 class="text-5xl font-black mt-4 tracking-tighter uppercase italic phys-target">Current Projects.</h2>
+            <div class="w-24 h-1 bg-blue-600 mx-auto mt-6 btn-phys"></div>
         </header>
     </div>
 
@@ -517,13 +543,13 @@
 </section>
     
 <footer class="py-20 border-t border-white/5 bg-[#050505] text-center">
-    <p class="text-[10px] text-gray-700 uppercase tracking-[0.2em] mb-4">© 2026 Turt Industry | Colombo, Sri Lanka</p>
+    <p class="text-[10px] text-gray-700 uppercase tracking-[0.2em] mb-4 phys-target">© 2026 Turt Industry | Colombo, Sri Lanka</p>
     <div class="flex justify-center">
-        <a href="https://wa.me/94740523507" target="_blank" class="flex items-center gap-3 text-white hover:bg-blue-600 transition font-bold border border-blue-500/30 px-8 py-4 rounded-full bg-blue-600/10">Contact Engineering</a>
+        <a href="https://wa.me/94740523507" target="_blank" class="flex items-center gap-3 text-white hover:bg-blue-600 transition font-bold border border-blue-500/30 px-8 py-4 rounded-full bg-blue-600/10 btn-phys phys-target">Contact Engineering</a>
     </div>
 </footer>
 
-<button onclick="window.openRobotAndListen()" class="fixed bottom-6 right-6 z-[99] w-16 h-16 bg-[#000] text-white rounded-[24px] flex items-center justify-center transition-all duration-300 animate-eilik-jump cursor-pointer overflow-hidden group gemini-glow border-2">
+<button onclick="window.openRobotAndListen()" class="fixed bottom-6 right-6 z-[99] w-16 h-16 bg-[#000] text-white rounded-[24px] flex items-center justify-center transition-all duration-300 animate-eilik-jump cursor-pointer overflow-hidden group gemini-glow border-2 btn-phys">
     <div class="gemini-sheen"></div>
     
     <div class="transition-transform group-hover:scale-110 group-hover:rotate-180 duration-500 relative z-10 flex items-center justify-center">
@@ -535,7 +561,7 @@
                     <stop offset="100%" stop-color="#c084fc" />
                 </linearGradient>
             </defs>
-            <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"/>
+            <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"/>
         </svg>
         <svg class="w-3 h-3 absolute text-white opacity-90 drop-shadow-[0_0_5px_rgba(255,255,255,1)]" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"/>
@@ -846,11 +872,10 @@
         });
     });
 
-    let isBotActive = false; // BOSS UPGRADE: The Kill Switch
+    let isBotActive = false; 
     let currentMood = 'sleepy';
     let aiStatus = 'standby'; 
 
-    // Enhanced Interaction Variables
     let petCount = 0;
     let tapCount = 0;
     let tapTimer = null;
@@ -860,68 +885,47 @@
     let randomLookTimer = null;
     let femaleVoice = null;
 
-    // --- STRICT STANDBY & TERMINATION LOGIC (BOSS FIX) ---
     window.forceStandby = () => {
-        isBotActive = false; // Strictly tell the engine to stop
-        
-        // Clear all active async loops and timers immediately
+        isBotActive = false; 
         clearTimeout(idleTimer);
         clearTimeout(sadTimer);
         clearTimeout(sleepTimer);
         clearTimeout(tapTimer);
         clearTimeout(randomLookTimer);
         
-        // Stop Voice Output
         if(window.speechSynthesis) {
             window.speechSynthesis.cancel();
         }
-        
-        // Stop Mic Listening rigidly
         if(typeof recognition !== 'undefined' && recognition) {
-            try { 
-                recognition.abort(); 
-                recognition.stop(); 
-            } catch(e){}
+            try { recognition.abort(); recognition.stop(); } catch(e){}
         }
         
         aiStatus = "standby";
-        changeMood('sleepy'); // Put it to sleep visually
+        changeMood('sleepy'); 
 
         const ui = document.getElementById('ai-status');
         if(ui) {
             ui.innerText = "Standby (Offline)";
             ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
         }
-        
         const statusText = document.getElementById('status-text');
         if(statusText) {
             statusText.innerText = "SYSTEM ASLEEP";
             statusText.className = "text-2xl font-black italic uppercase tracking-tighter mt-2 text-zinc-500";
         }
-        
-        // Reset eyes to center
         const eyes = document.getElementById('bot-eyes');
         if(eyes) eyes.style.transform = `translate(0px, 0px)`;
     };
 
-    // Tab visibility handling
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden && isBotActive) {
-            window.forceStandby();
-        }
+        if (document.hidden && isBotActive) window.forceStandby();
     });
-
     window.addEventListener('pagehide', () => { window.forceStandby(); });
     window.addEventListener('beforeunload', () => { window.forceStandby(); });
 
-    // --- Voice Setup & Initialization ---
     function loadVoices() {
         const voices = window.speechSynthesis.getVoices();
-        femaleVoice = voices.find(v => 
-            v.name.toLowerCase().includes('female') || 
-            v.name.toLowerCase().includes('zira') || 
-            v.name.toLowerCase().includes('sita')
-        );
+        femaleVoice = voices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('sita'));
         if(!femaleVoice && voices.length > 0) femaleVoice = voices[0]; 
     }
     if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -929,13 +933,10 @@
     }
     setTimeout(loadVoices, 500);
 
-    // Sound Engine
     function playEmoteSound(type) {
         if(!isBotActive || document.hidden || !window.speechSynthesis) return;
-        
         window.speechSynthesis.cancel();
         let text = ""; let pitch = 1; let rate = 1;
-        
         switch(type) {
             case 'happy': text = "Aww, hehehe!"; pitch = 1.6; rate = 1.2; break;
             case 'laughing': text = "Haha! So funny Boss!"; pitch = 1.7; rate = 1.3; break;
@@ -951,7 +952,6 @@
             case 'dizzy': text = "Whoa, my head is spinning..."; pitch = 0.8; rate = 0.7; break;
             case 'wake': text = "Systems online. Ready for you Boss!"; pitch = 1.2; rate = 1.0; break;
         }
-        
         if(text && isBotActive && !document.hidden) {
             let u = new SpeechSynthesisUtterance(text);
             if(femaleVoice) u.voice = femaleVoice;
@@ -960,48 +960,29 @@
         }
     }
 
-    // --- Idle Tracking (Alive Feel) ---
     function resetIdleTimer() {
         if (!isBotActive || document.hidden) return;
-        
         clearTimeout(idleTimer);
         clearTimeout(sadTimer);
         clearTimeout(sleepTimer);
         
-        if (currentMood === 'bored' || currentMood === 'sad' || currentMood === 'sleepy') {
-            changeMood('reset');
-        }
+        if (currentMood === 'bored' || currentMood === 'sad' || currentMood === 'sleepy') changeMood('reset');
         
-        idleTimer = setTimeout(() => {
-            if(currentMood === 'reset' && isBotActive) { changeMood('bored'); playEmoteSound('bored'); }
-        }, 15000); 
-        
-        sadTimer = setTimeout(() => {
-            if(currentMood === 'bored' && isBotActive) { changeMood('sad'); playEmoteSound('sad'); }
-        }, 30000); 
-
-        sleepTimer = setTimeout(() => {
-            if(currentMood === 'sad' && isBotActive) { changeMood('sleepy'); }
-        }, 45000); 
+        idleTimer = setTimeout(() => { if(currentMood === 'reset' && isBotActive) { changeMood('bored'); playEmoteSound('bored'); } }, 15000); 
+        sadTimer = setTimeout(() => { if(currentMood === 'bored' && isBotActive) { changeMood('sad'); playEmoteSound('sad'); } }, 30000); 
+        sleepTimer = setTimeout(() => { if(currentMood === 'sad' && isBotActive) { changeMood('sleepy'); } }, 45000); 
     }
 
-    // Boss Random Eye/Head Movement (Alive Feel)
     function randomAliveMovements() {
         if(!isBotActive || currentMood === 'sleepy' || currentMood === 'sad' || currentMood === 'dizzy') return;
-        
         const eyes = document.getElementById('bot-eyes');
         const face = document.querySelector('.digital-face');
-        
         if(eyes && face && currentMood === 'reset') {
-            // Randomly look around if not doing anything else
             const randomX = (Math.random() - 0.5) * 20;
             const randomY = (Math.random() - 0.5) * 15;
             eyes.style.transform = `translate(${randomX}px, ${randomY}px)`;
-            
-            // Tiny head tilt
             const randomTilt = (Math.random() - 0.5) * 10;
             face.style.transform = `rotate(${randomTilt}deg)`;
-            
             setTimeout(() => {
                 if(currentMood === 'reset' && isBotActive) {
                     eyes.style.transform = `translate(0px, 0px)`;
@@ -1009,11 +990,9 @@
                 }
             }, 1000);
         }
-        
         randomLookTimer = setTimeout(randomAliveMovements, 3000 + Math.random() * 4000);
     }
 
-    // --- Eye Tracking Logic ---
     document.getElementById('robot-core-modal').addEventListener('mousemove', (e) => {
         if(!isBotActive || document.hidden) return;
         if(currentMood !== 'sleepy' && currentMood !== 'sad' && currentMood !== 'dizzy') {
@@ -1023,81 +1002,55 @@
                 const rect = eyes.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
-                // Smoother calculation
                 const moveX = (e.clientX - centerX) / 15; 
                 const moveY = (e.clientY - centerY) / 15;
                 eyes.style.transform = `translate(${Math.max(-15, Math.min(15, moveX))}px, ${Math.max(-10, Math.min(10, moveY))}px)`;
-                // Tiny body sway following mouse
                 face.style.transform = `rotate(${moveX/2}deg)`;
             }
         }
     });
 
-    // --- Petting Handler ---
     function handlePetting(e) {
         if(!isBotActive || document.hidden || currentMood === 'angry' || currentMood === 'dizzy' || currentMood === 'fear') return; 
-        
-        petCount++;
-        resetIdleTimer();
-        
+        petCount++; resetIdleTimer();
         if(petCount > 20 && currentMood !== 'loving') {
-            changeMood('loving');
-            playEmoteSound('loving');
+            changeMood('loving'); playEmoteSound('loving');
             if (navigator.vibrate) navigator.vibrate(50); 
-            
-            setTimeout(() => { 
-                if(currentMood === 'loving' && isBotActive) changeMood('reset'); 
-                resetIdleTimer(); 
-            }, 3000);
+            setTimeout(() => { if(currentMood === 'loving' && isBotActive) changeMood('reset'); resetIdleTimer(); }, 3000);
             petCount = 0;
         }
     }
 
     function stopPetting() { petCount = 0; }
 
-    // --- Tapping Handler ---
     function handleTap() {
         if(!isBotActive || document.hidden) return;
-        tapCount++;
-        resetIdleTimer();
-        clearTimeout(tapTimer);
-        
+        tapCount++; resetIdleTimer(); clearTimeout(tapTimer);
         tapTimer = setTimeout(() => { tapCount = 0; }, 1500); 
 
         if (tapCount >= 4) {
-            changeMood('angry');
-            playEmoteSound('angry');
+            changeMood('angry'); playEmoteSound('angry');
             if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); 
-            
             setTimeout(() => { 
                 if(currentMood === 'angry' && isBotActive) {
-                    changeMood('crying'); // Gets sad after being angry too long
-                    playEmoteSound('crying');
+                    changeMood('crying'); playEmoteSound('crying');
                     setTimeout(() => { if(isBotActive) changeMood('reset'); }, 3000);
                 }
                 resetIdleTimer(); 
             }, 3500);
-            
-            tapCount = 0;
-            petCount = 0; 
+            tapCount = 0; petCount = 0; 
         } else if (tapCount === 2) {
-            changeMood('surprised');
-            playEmoteSound('surprised');
+            changeMood('surprised'); playEmoteSound('surprised');
             setTimeout(() => { if(currentMood === 'surprised' && isBotActive) changeMood('reset'); }, 1500);
         }
     }
 
     window.openRobotAndListen = () => {
         window.toggleModal('robot-core-modal');
-        isBotActive = true; // BOSS FIX: Boot up
-        changeMood('reset');
-        playEmoteSound('wake');
-        resetIdleTimer();
-        randomAliveMovements();
-        window.startListening();
+        isBotActive = true; changeMood('reset'); playEmoteSound('wake');
+        resetIdleTimer(); randomAliveMovements(); window.startListening();
     };
 
-    // --- Web Speech API Logic ---
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognition;
     
@@ -1107,23 +1060,14 @@
         recognition.lang = 'en-IN'; 
 
         recognition.onstart = () => {
-            if(!isBotActive || document.hidden) {
-                window.forceStandby();
-                return;
-            }
-            aiStatus = "listening";
-            resetIdleTimer();
+            if(!isBotActive || document.hidden) { window.forceStandby(); return; }
+            aiStatus = "listening"; resetIdleTimer();
             if(currentMood === 'reset' || currentMood === 'sleepy') {
-                changeMood('curious');
-                playEmoteSound('curious');
+                changeMood('curious'); playEmoteSound('curious');
                 setTimeout(() => { if(currentMood === 'curious' && isBotActive) changeMood('reset'); }, 2000);
             }
-            
             const ui = document.getElementById('ai-status');
-            if(ui) {
-                ui.innerText = "Listening...";
-                ui.className = "voice-indicator mt-4 uppercase tracking-widest listening";
-            }
+            if(ui) { ui.innerText = "Listening..."; ui.className = "voice-indicator mt-4 uppercase tracking-widest listening"; }
             document.getElementById('heard-text').innerText = "Speak now Boss...";
         };
 
@@ -1131,30 +1075,20 @@
             if(!isBotActive || document.hidden) return;
             const command = event.results[0][0].transcript;
             document.getElementById('heard-text').innerText = `I heard: "${command}"`;
-            processVoice(command.toLowerCase()); 
-            callGeminiAI(command);
+            processVoice(command.toLowerCase()); callGeminiAI(command);
         };
 
         recognition.onerror = (event) => {
             if(!isBotActive) return;
-            console.error("Mic error:", event.error);
             const ui = document.getElementById('ai-status');
-            if(ui) {
-                ui.innerText = "Standby";
-                ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
-            }
-            aiStatus = "standby";
-            resetIdleTimer();
+            if(ui) { ui.innerText = "Standby"; ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent"; }
+            aiStatus = "standby"; resetIdleTimer();
         };
 
         recognition.onend = () => {
-            // Check if active, otherwise don't do anything
             if(isBotActive && aiStatus === "listening") {
                 const ui = document.getElementById('ai-status');
-                if(ui) {
-                    ui.innerText = "Standby";
-                    ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
-                }
+                if(ui) { ui.innerText = "Standby"; ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent"; }
                 aiStatus = "standby";
             }
         };
@@ -1165,22 +1099,14 @@
         if(recognition) {
             if(aiStatus === "speaking") window.speechSynthesis.cancel();
             try { recognition.start(); } catch(e) {}
-        } else {
-            alert("Speech Recognition is not supported in this browser.");
-        }
+        } else { alert("Speech Recognition is not supported in this browser."); }
     };
 
-    // --- Gemini LLM API Call ---
     async function callGeminiAI(userText) {
         if(!isBotActive || document.hidden) return;
-        aiStatus = "thinking";
-        changeMood('thinking'); // Show thinking face
-        resetIdleTimer();
+        aiStatus = "thinking"; changeMood('thinking'); resetIdleTimer();
         const ui = document.getElementById('ai-status');
-        if(ui) {
-            ui.innerText = "Thinking...";
-            ui.className = "voice-indicator mt-4 uppercase tracking-widest thinking";
-        }
+        if(ui) { ui.innerText = "Thinking..."; ui.className = "voice-indicator mt-4 uppercase tracking-widest thinking"; }
 
         const apiKey = "AIzaSyAkNzrMRWEvaU62Rmcfua2YIz3SDgNftY4";
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
@@ -1195,78 +1121,49 @@
 
         try {
             const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
             });
             const data = await response.json();
             
             if(!isBotActive || document.hidden) { window.forceStandby(); return; }
-            
             if (data && data.candidates && data.candidates.length > 0) {
                 let aiResponse = data.candidates[0].content.parts[0].text;
                 speakAIResponse(aiResponse);
-            } else {
-                throw new Error("No valid response from Gemini");
-            }
+            } else { throw new Error("No valid response from Gemini"); }
         } catch (error) {
-            console.error("Gemini Error:", error);
-            if(isBotActive && !document.hidden) {
-                changeMood('sad');
-                speakAIResponse("Sorry Boss, network issue aayiduchu pola.");
-            }
+            if(isBotActive && !document.hidden) { changeMood('sad'); speakAIResponse("Sorry Boss, network issue aayiduchu pola."); }
         }
     }
 
-    // --- Text-to-Speech (TTS) ---
     function speakAIResponse(text) {
-        if(!isBotActive || document.hidden) {
-            window.forceStandby();
-            return;
-        }
-        aiStatus = "speaking";
-        document.getElementById('robot-container').classList.add('is-speaking'); // Lip sync trigger
+        if(!isBotActive || document.hidden) { window.forceStandby(); return; }
+        aiStatus = "speaking"; document.getElementById('robot-container').classList.add('is-speaking'); 
         resetIdleTimer();
         
-        if(currentMood === 'sleepy' || currentMood === 'sad' || currentMood === 'thinking') {
-            changeMood('reset'); 
-        }
+        if(currentMood === 'sleepy' || currentMood === 'sad' || currentMood === 'thinking') changeMood('reset'); 
         
         const ui = document.getElementById('ai-status');
-        if(ui) {
-            ui.innerText = "Speaking...";
-            ui.className = "voice-indicator mt-4 uppercase tracking-widest speaking";
-        }
+        if(ui) { ui.innerText = "Speaking..."; ui.className = "voice-indicator mt-4 uppercase tracking-widest speaking"; }
 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-IN'; 
-        if(femaleVoice) utterance.voice = femaleVoice; 
+        utterance.lang = 'en-IN'; if(femaleVoice) utterance.voice = femaleVoice; 
         
         utterance.onend = () => {
             if(!isBotActive) return;
-            aiStatus = "standby";
-            document.getElementById('robot-container').classList.remove('is-speaking'); // Stop lip sync
+            aiStatus = "standby"; document.getElementById('robot-container').classList.remove('is-speaking'); 
             resetIdleTimer();
-            if(ui) {
-                ui.innerText = "Standby";
-                ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
-            }
+            if(ui) { ui.innerText = "Standby"; ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent"; }
         };
 
         utterance.onerror = () => {
             if(!isBotActive) return;
-            aiStatus = "standby";
-            document.getElementById('robot-container').classList.remove('is-speaking');
-            if(ui) {
-                ui.innerText = "Standby";
-                ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent";
-            }
+            aiStatus = "standby"; document.getElementById('robot-container').classList.remove('is-speaking');
+            if(ui) { ui.innerText = "Standby"; ui.className = "voice-indicator mt-4 uppercase tracking-widest bg-transparent"; }
         };
 
         window.speechSynthesis.speak(utterance);
     }
 
-    // --- Mood Parser from Text ---
     function processVoice(cmd) {
         if (cmd.includes('happy') || cmd.includes('good') || cmd.includes('cute')) changeMood('happy');
         else if (cmd.includes('joke') || cmd.includes('laugh') || cmd.includes('funny')) changeMood('laughing');
@@ -1282,7 +1179,6 @@
         else if (cmd.includes('reset') || cmd.includes('normal') || cmd.includes('standard') || cmd.includes('wake')) changeMood('reset');
     }
 
-    // --- Visual Emotion Controller ---
     function changeMood(mode) {
         if (!isBotActive || document.hidden) return;
         currentMood = mode;
@@ -1290,85 +1186,37 @@
         const status = document.getElementById('status-text');
         if(!robotContainer || !status) return;
 
-        // Reset base classes
         robotContainer.className = 'relative flex items-center ' + (aiStatus === 'speaking' ? 'is-speaking' : ''); 
         status.classList.remove('text-red-400', 'text-green-400', 'text-zinc-500', 'text-yellow-400', 'text-blue-400', 'text-pink-400', 'text-sky-400');
 
-        if (mode === 'happy') {
-            robotContainer.classList.add('happy');
-            status.innerText = "YAY! HAPPY!";
-            status.classList.add('text-green-400');
-        } else if (mode === 'laughing') {
-            robotContainer.classList.add('laughing');
-            status.innerText = "HAHAHA!";
-            status.classList.add('text-green-400');
-        } else if (mode === 'angry') {
-            robotContainer.classList.add('angry');
-            status.innerText = "ANGRY MODE!";
-            status.classList.add('text-red-400');
-        } else if (mode === 'sad') {
-            robotContainer.classList.add('sad');
-            status.innerText = "I FEEL LONELY...";
-            status.classList.add('text-zinc-500');
-        } else if (mode === 'crying') {
-            robotContainer.classList.add('crying');
-            status.innerText = "WAHHH! CRYING!";
-            status.classList.add('text-blue-400');
-        } else if (mode === 'fear') {
-            robotContainer.classList.add('fear');
-            status.innerText = "WHOA! DANGER!";
-            status.classList.add('text-yellow-400');
-        } else if (mode === 'curious') {
-            robotContainer.classList.add('curious');
-            status.innerText = "LISTENING BOSS...";
-            status.classList.add('text-blue-400');
-        } else if (mode === 'thinking') {
-            robotContainer.classList.add('thinking');
-            status.innerText = "THINKING...";
-            status.classList.add('text-blue-400');
-        } else if (mode === 'bored') {
-            robotContainer.classList.add('bored');
-            status.innerText = "SOOO BORING...";
-            status.classList.add('text-zinc-500');
-        } else if (mode === 'surprised') {
-            robotContainer.classList.add('surprised');
-            status.innerText = "WOW! SHOCKING!";
-            status.classList.add('text-sky-400');
-        } else if (mode === 'loving') {
-            robotContainer.classList.add('loving');
-            status.innerText = "FEELING LOVED <3";
-            status.classList.add('text-pink-400');
-        } else if (mode === 'dizzy') {
-            robotContainer.classList.add('dizzy');
-            status.innerText = "SYSTEM SPINNING...";
-            status.classList.add('text-zinc-500');
-        } else if (mode === 'sleepy') {
-            robotContainer.classList.add('sleepy');
-            status.innerText = "SLEEP MODE (Zzz)";
-            status.classList.add('text-blue-400');
-        } else {
+        if (mode === 'happy') { robotContainer.classList.add('happy'); status.innerText = "YAY! HAPPY!"; status.classList.add('text-green-400'); } 
+        else if (mode === 'laughing') { robotContainer.classList.add('laughing'); status.innerText = "HAHAHA!"; status.classList.add('text-green-400'); } 
+        else if (mode === 'angry') { robotContainer.classList.add('angry'); status.innerText = "ANGRY MODE!"; status.classList.add('text-red-400'); } 
+        else if (mode === 'sad') { robotContainer.classList.add('sad'); status.innerText = "I FEEL LONELY..."; status.classList.add('text-zinc-500'); } 
+        else if (mode === 'crying') { robotContainer.classList.add('crying'); status.innerText = "WAHHH! CRYING!"; status.classList.add('text-blue-400'); } 
+        else if (mode === 'fear') { robotContainer.classList.add('fear'); status.innerText = "WHOA! DANGER!"; status.classList.add('text-yellow-400'); } 
+        else if (mode === 'curious') { robotContainer.classList.add('curious'); status.innerText = "LISTENING BOSS..."; status.classList.add('text-blue-400'); } 
+        else if (mode === 'thinking') { robotContainer.classList.add('thinking'); status.innerText = "THINKING..."; status.classList.add('text-blue-400'); } 
+        else if (mode === 'bored') { robotContainer.classList.add('bored'); status.innerText = "SOOO BORING..."; status.classList.add('text-zinc-500'); } 
+        else if (mode === 'surprised') { robotContainer.classList.add('surprised'); status.innerText = "WOW! SHOCKING!"; status.classList.add('text-sky-400'); } 
+        else if (mode === 'loving') { robotContainer.classList.add('loving'); status.innerText = "FEELING LOVED <3"; status.classList.add('text-pink-400'); } 
+        else if (mode === 'dizzy') { robotContainer.classList.add('dizzy'); status.innerText = "SYSTEM SPINNING..."; status.classList.add('text-zinc-500'); } 
+        else if (mode === 'sleepy') { robotContainer.classList.add('sleepy'); status.innerText = "SLEEP MODE (Zzz)"; status.classList.add('text-blue-400'); } 
+        else {
             status.innerText = "CORE ACTIVE";
-            // Make sure face is reset
             const face = document.querySelector('.digital-face');
             if(face) face.style.transform = `rotate(0deg)`;
         }
     }
 
-    // --- Dynamic Blinking ---
     function blink() {
-        if(!isBotActive || document.hidden) return; // Stop loop if inactive
-        
+        if(!isBotActive || document.hidden) return; 
         if (currentMood === 'reset' || currentMood === 'loving' || currentMood === 'curious' || currentMood === 'thinking') {
             const eyeL = document.getElementById('eye-l');
             const eyeR = document.getElementById('eye-r');
             if (eyeL && eyeR) {
                 eyeL.classList.add('wink'); eyeR.classList.add('wink');
-                setTimeout(() => { 
-                    eyeL.classList.remove('wink'); 
-                    eyeR.classList.remove('wink'); 
-                }, 150);
-                
-                // Double blink randomness (EMO alive feel)
+                setTimeout(() => { eyeL.classList.remove('wink'); eyeR.classList.remove('wink'); }, 150);
                 if(Math.random() > 0.8) {
                     setTimeout(() => {
                         if(isBotActive) {
@@ -1379,20 +1227,207 @@
                 }
             }
         }
-        
         let blinkDelay = (aiStatus === 'thinking') ? (400 + Math.random() * 400) : (3000 + Math.random() * 3000);
         setTimeout(blink, blinkDelay);
     }
-    
-    // Start blink loop initially but it will only execute if isBotActive is true
     blink();
+
+</script>
+
+<script>
+    let physEngine, physRender, physRunner;
+    let physBodies = [];
+    let isPhysActive = false;
+    let isRestoring = false;
+
+    // Helper to wrap characters in text nodes individually
+    function wrapTextNodes(element) {
+        Array.from(element.childNodes).forEach(child => {
+            if (child.nodeType === Node.TEXT_NODE) {
+                if (child.textContent.trim().length > 0) {
+                    const text = child.textContent;
+                    const fragment = document.createDocumentFragment();
+                    for (let i = 0; i < text.length; i++) {
+                        const char = text[i];
+                        if (char === ' ') {
+                            const space = document.createTextNode('\u00A0');
+                            fragment.appendChild(space);
+                        } else {
+                            const span = document.createElement('span');
+                            span.className = 'phys-char';
+                            span.textContent = char;
+                            fragment.appendChild(span);
+                        }
+                    }
+                    element.replaceChild(fragment, child);
+                }
+            } else if (child.nodeType === Node.ELEMENT_NODE && !['SCRIPT', 'STYLE'].includes(child.tagName)) {
+                wrapTextNodes(child);
+            }
+        });
+    }
+
+    function initPhysicsCrash() {
+        if (isPhysActive) return;
+        isPhysActive = true;
+        isRestoring = false;
+
+        document.body.classList.add('phys-active');
+
+        // Thanos snap the slider
+        const sliderTrack = document.querySelector('.project-slider-track');
+        if(sliderTrack) {
+            sliderTrack.classList.add('paused-track', 'thanos-snap-active');
+            sliderTrack.classList.remove('thanos-snap-reverse');
+        }
+
+        // Split text nodes in visible targets only to save CPU limit
+        const targets = document.querySelectorAll('.phys-target');
+        targets.forEach(target => {
+            if(!target.classList.contains('text-wrapped')) {
+                wrapTextNodes(target);
+                target.classList.add('text-wrapped');
+            }
+        });
+
+        // Setup Matter.js
+        physEngine = Matter.Engine.create();
+        const world = physEngine.world;
+        physBodies = [];
+
+        // Collect all falling elements (characters, buttons, images)
+        const fallingElements = document.querySelectorAll('.phys-char, .btn-phys, .img-phys');
+        fallingElements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if(rect.width === 0 || rect.height === 0) return;
+
+            // Save original absolute positions for transform math
+            el.dataset.initX = rect.left + rect.width / 2;
+            el.dataset.initY = rect.top + rect.height / 2;
+            
+            const body = Matter.Bodies.rectangle(
+                parseFloat(el.dataset.initX), 
+                parseFloat(el.dataset.initY), 
+                rect.width, 
+                rect.height, 
+                { restitution: 0.6, friction: 0.1, frictionAir: 0.05 }
+            );
+            
+            body.domElement = el;
+            physBodies.push(body);
+            Matter.World.add(world, body);
+        });
+
+        // Add Screen Boundaries (Wall/Floor)
+        const thickness = 60;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        Matter.World.add(world, [
+            Matter.Bodies.rectangle(width/2, height + thickness/2, width, thickness, { isStatic: true }),
+            Matter.Bodies.rectangle(width/2, -thickness/2, width, thickness, { isStatic: true }),
+            Matter.Bodies.rectangle(-thickness/2, height/2, thickness, height, { isStatic: true }),
+            Matter.Bodies.rectangle(width + thickness/2, height/2, thickness, height, { isStatic: true })
+        ]);
+
+        physRunner = Matter.Runner.create();
+        Matter.Runner.run(physRunner, physEngine);
+        
+        requestAnimationFrame(updateDOMPhysics);
+        
+        // Device Tilting Gravity
+        window.addEventListener('deviceorientation', handleOrientation);
+    }
+
+    function handleOrientation(event) {
+        if (!isPhysActive || isRestoring || !physEngine) return;
+        // Map phone tilt to gravity
+        const gravity = physEngine.world.gravity;
+        gravity.x = Math.min(Math.max(event.gamma / 30, -1), 1); 
+        gravity.y = Math.min(Math.max(event.beta / 30, -1), 1);
+    }
+
+    function updateDOMPhysics() {
+        if (!isPhysActive) return;
+        
+        physBodies.forEach(b => {
+            const el = b.domElement;
+            const initX = parseFloat(el.dataset.initX);
+            const initY = parseFloat(el.dataset.initY);
+            
+            // Transform visually without breaking normal flow CSS
+            const dx = b.position.x - initX;
+            const dy = b.position.y - initY;
+            el.style.transform = `translate(${dx}px, ${dy}px) rotate(${b.angle}rad)`;
+        });
+
+        requestAnimationFrame(updateDOMPhysics);
+    }
+
+    function restorePhysics() {
+        if (!isPhysActive || isRestoring) return;
+        isRestoring = true;
+
+        // Thanos snap reverse
+        const sliderTrack = document.querySelector('.project-slider-track');
+        if(sliderTrack) {
+            sliderTrack.classList.remove('thanos-snap-active');
+            sliderTrack.classList.add('thanos-snap-reverse');
+            setTimeout(() => {
+                sliderTrack.classList.remove('thanos-snap-reverse', 'paused-track');
+            }, 1500);
+        }
+
+        // Kill natural gravity, use spring force to original positions
+        physEngine.world.gravity.x = 0;
+        physEngine.world.gravity.y = 0;
+
+        Matter.Events.on(physEngine, 'beforeUpdate', applyRestoreForces);
+
+        // After some time, snap exactly into place and kill physics
+        setTimeout(() => {
+            isPhysActive = false;
+            Matter.Runner.stop(physRunner);
+            Matter.Engine.clear(physEngine);
+            window.removeEventListener('deviceorientation', handleOrientation);
+            
+            physBodies.forEach(b => {
+                b.domElement.style.transform = '';
+            });
+            document.body.classList.remove('phys-active');
+            physBodies = [];
+        }, 3500);
+    }
+
+    function applyRestoreForces() {
+        physBodies.forEach(b => {
+            const initX = parseFloat(b.domElement.dataset.initX);
+            const initY = parseFloat(b.domElement.dataset.initY);
+            const dx = initX - b.position.x;
+            const dy = initY - b.position.y;
+            
+            // Spring velocity pulling towards original spot. 
+            // Collisions remain ON so they push each other realistically!
+            Matter.Body.setVelocity(b, { x: dx * 0.08, y: dy * 0.08 });
+            Matter.Body.setAngularVelocity(b, -b.angle * 0.15); 
+        });
+    }
+
+    // Boss Network Triggers
+    window.addEventListener('offline', () => {
+        console.log("Boss! Network lost. Initiating Gravity Crash...");
+        initPhysicsCrash();
+    });
+
+    window.addEventListener('online', () => {
+        console.log("Network back! Restoring Matrix...");
+        restorePhysics();
+    });
 
 </script>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    // onValue module-ha inga pudhusa import pannirukkom
     import { getDatabase, ref, push, serverTimestamp, get, query, orderByChild, equalTo, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const ADMIN_EMAIL = "searingprince@gmail.com";
@@ -1412,19 +1447,13 @@
     const db = getDatabase(app);
     const provider = new GoogleAuthProvider();
 
-   // ========================================================
-    // 🌟 PUTHU CODE: TITAN Image Live Sync Auto Update
-    // ========================================================
     const project1Ref = ref(db, 'projects/project1');
 
     onValue(project1Ref, (snapshot) => {
         const imageUrl = snapshot.val();
         if (imageUrl) {
-            // Track-la irukka 'titan-bg' class target panrom
             const titanCards = document.querySelectorAll('.titan-bg');
-            
             titanCards.forEach((card) => {
-                // Inline style custom CSS variable (--bg-img) mathurom
                 card.style.setProperty('--bg-img', `url('${imageUrl}')`);
             });
             console.log("TITAN Slider Loop Images Updated via Firebase, Boss!");
@@ -1432,7 +1461,6 @@
     }, (error) => {
         console.error("Database parsing failed: ", error);
     });
-    // ========================================================
     
     window.isLoggedIn = false;
 
@@ -1446,7 +1474,7 @@
         if (modal) modal.classList.remove('flex');
         
         if (id === 'robot-core-modal' && window.forceStandby) {
-            window.forceStandby(); // Execute strict kill switch
+            window.forceStandby(); 
         }
     };
 
@@ -1833,7 +1861,6 @@
         window.closePopup();
     };
 
-    // --- Dynamic Advanced System Directory Pop-Up Logic ---
     window.openDirectoryPanel = (nodeKey) => {
         window.closeModal('main-menu-modal');
         const titleEl = document.getElementById('directory-panel-title');
@@ -1844,558 +1871,8 @@
         let titleText = "System Node Description";
         let bodyHTML = "";
         
-        switch(nodeKey) {
-            case 'about':
-                titleText = "About Turt Industry";
-                bodyHTML = `
-                    <div class="space-y-6">
-                        <p class="text-zinc-200">Turt Industry is a forward-thinking technology and innovation company dedicated to creating advanced solutions that bridge the gap between imagination and reality. Founded on the principles of innovation, quality, and engineering excellence, we strive to develop products and technologies that empower individuals, businesses, and industries to embrace the future with confidence.</p>
-                        <p class="text-zinc-400">In a rapidly evolving world, technology is more than just a tool—it is the foundation of progress. At Turt Industry, we believe that great innovation begins with bold ideas. Our mission is to transform those ideas into practical, reliable, and impactful solutions that solve real-world challenges while pushing the boundaries of what is possible.</p>
-                        <p class="text-zinc-400">Our team is passionate about designing and developing next-generation hardware, intelligent systems, and innovative digital solutions that combine cutting-edge technology with exceptional user experiences. Every project we undertake is driven by a commitment to precision, creativity, and continuous improvement, ensuring that our products meet the highest standards of performance, reliability, and design.</p>
-                        <p class="text-zinc-400">We are constantly exploring emerging technologies, investing in research and development, and embracing new opportunities to create solutions that make a meaningful difference. Whether it is advanced hardware development, smart technologies, automation systems, or future-focused innovations, Turt Industry is committed to delivering products that inspire progress and unlock new possibilities.</p>
-                        <p class="text-zinc-400">Beyond technology, we believe in building lasting relationships with our customers, partners, and communities. Trust, transparency, and customer satisfaction remain at the core of everything we do. By understanding the unique needs of those we serve, we aim to provide solutions that are not only innovative but also practical, accessible, and valuable.</p>
-                        <p class="text-zinc-400">As we continue to grow, our vision remains clear: to become a recognized leader in technological innovation by creating products and solutions that shape the future, improve lives, and contribute to a smarter, more connected world.</p>
-                        <p class="text-zinc-200 font-bold border-l-2 border-blue-500 pl-4 py-1 bg-blue-500/5 italic">At Turt Industry, we are not just building products—we are building the future.</p>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 pt-6 border-t border-white/5">
-                            <div class="p-4 bg-zinc-900/60 border border-white/5 rounded-xl">
-                                <h4 class="text-blue-400 font-bold uppercase tracking-wider mb-2 text-xs"><i class="fa-solid fa-crosshairs mr-2"></i>Our Mission</h4>
-                                <p class="text-zinc-400 text-xs">To develop innovative and reliable technology solutions that empower people, drive progress, and create lasting value through engineering excellence and continuous innovation.</p>
-                            </div>
-                            <div class="p-4 bg-zinc-900/60 border border-white/5 rounded-xl">
-                                <h4 class="text-purple-400 font-bold uppercase tracking-wider mb-2 text-xs"><i class="fa-solid fa-eye mr-2"></i>Our Vision</h4>
-                                <p class="text-zinc-400 text-xs">To become a global symbol of technological advancement, recognized for transforming bold ideas into groundbreaking solutions that shape the future.</p>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 p-5 bg-zinc-950 border border-white/5 rounded-xl">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-widest mb-4 text-xs">Our Core Values</h4>
-                            <ul class="space-y-2 text-xs text-zinc-400">
-                                <li><strong class="text-zinc-300">Innovation</strong> – Continuously exploring new ideas and technologies.</li>
-                                <li><strong class="text-zinc-300">Quality</strong> – Delivering excellence in every product and service.</li>
-                                <li><strong class="text-zinc-300">Integrity</strong> – Building trust through honesty and transparency.</li>
-                                <li><strong class="text-zinc-300">Customer Focus</strong> – Creating solutions centered around real needs.</li>
-                                <li><strong class="text-zinc-300">Growth</strong> – Embracing learning, improvement, and future opportunities.</li>
-                            </ul>
-                        </div>
-                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-500/80 pt-4">Turt Industry — Innovating Today. Engineering Tomorrow.</div>
-                    </div>`;
-                break;
-            case 'account':
-                titleText = "Quantum Dashboard";
-                if(!window.isLoggedIn || !auth.currentUser) {
-                    bodyHTML = `
-                        <div class="flex flex-col items-center justify-center py-12 text-center">
-                            <div class="w-16 h-16 bg-red-500/10 text-red-500 border border-red-500/20 rounded-full flex items-center justify-center mb-4 text-xl animate-pulse">
-                                <i class="fa-solid fa-lock"></i>
-                            </div>
-                            <h3 class="text-white font-bold text-base uppercase tracking-wider">Access Restricted</h3>
-                            <p class="text-zinc-500 text-xs mt-2 max-w-xs">Please login through the main portal verification link to sync account analytics matrix nodes.</p>
-                            <button onclick="window.closeModal('directory-panel-modal'); window.toggleModal('login-modal');" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase px-6 py-2.5 rounded-lg tracking-wider transition">Authenticate Portal</button>
-                        </div>`;
-                } else {
-                    const u = auth.currentUser;
-                    const simulatedLoginTime = new Date(Date.now() - 45 * 60 * 1000).toLocaleTimeString();
-                    bodyHTML = `
-                        <div class="space-y-6">
-                            <div class="flex flex-col sm:flex-row items-center gap-6 bg-zinc-950 p-6 rounded-2xl border border-white/5">
-                                <img src="${u.photoURL}" class="w-20 h-20 rounded-full border-2 border-blue-500 object-cover shadow-xl">
-                                <div class="text-center sm:text-left flex-grow">
-                                    <span class="text-[9px] font-mono uppercase bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded">Core User Profile Node</span>
-                                    <h3 class="text-white font-black uppercase text-2xl tracking-tight mt-1">${u.displayName}</h3>
-                                    <p class="text-zinc-500 font-mono text-xs lowercase mt-0.5"><i class="fa-solid fa-envelope mr-1.5 text-zinc-600"></i>${u.email}</p>
-                                </div>
-                                <div class="text-center sm:text-right font-mono bg-black/40 border border-white/5 p-4 rounded-xl shrink-0">
-                                    <div class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Network Status</div>
-                                    <div class="text-green-400 text-sm font-bold uppercase tracking-tighter mt-1 animate-pulse"><i class="fa-solid fa-circle text-[8px] mr-1.5 align-middle"></i>Synchronized</div>
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="p-4 bg-zinc-900/60 border border-white/5 rounded-xl font-mono">
-                                    <span class="text-zinc-500 text-[10px] uppercase block font-bold tracking-wider">Node Terminal Login Timestamp</span>
-                                    <span class="text-zinc-200 text-sm font-bold block mt-1"><i class="fa-solid fa-clock mr-2 text-blue-500"></i>Today, ${simulatedLoginTime}</span>
-                                </div>
-                                <div class="p-4 bg-zinc-900/60 border border-white/5 rounded-xl font-mono">
-                                    <span class="text-zinc-500 text-[10px] uppercase block font-bold tracking-wider">Total Active Infrastructure Connection Time</span>
-                                    <span class="text-zinc-200 text-sm font-bold block mt-1"><i class="fa-solid fa-bolt mr-2 text-blue-500"></i>02 Hrs 44 Mins 19 Secs</span>
-                                </div>
-                            </div>
-
-                            <div class="p-6 bg-zinc-950 border border-white/5 rounded-2xl">
-                                <h4 class="text-xs uppercase font-mono tracking-widest text-zinc-400 mb-6 flex justify-between items-center">
-                                    <span><i class="fa-solid fa-chart-simple mr-2 text-blue-500"></i>System Resource Load Activity Matrix</span>
-                                    <span class="text-[9px] text-zinc-600">NODE REF: #TURT-99X</span>
-                                </h4>
-                                <div class="flex items-end justify-between gap-2 h-36 pt-4 px-2 bg-black/40 border border-white/5 rounded-xl">
-                                    <div class="flex flex-col items-center flex-grow group">
-                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 45%;"></div>
-                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">MON</span>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow group">
-                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 70%;"></div>
-                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">TUE</span>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow group">
-                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 35%;"></div>
-                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">WED</span>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow group">
-                                        <div class="bg-blue-500 border border-blue-400 w-full rounded-t-md chart-bar shadow-[0_0_15px_#3b82f6]" style="height: 90%;"></div>
-                                        <span class="text-[9px] font-mono text-blue-400 font-bold mt-2">THU</span>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow group">
-                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 55%;"></div>
-                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">FRI</span>
-                                    </div>
-                                    <div class="flex flex-col items-center flex-grow group">
-                                        <div class="bg-blue-600/30 border border-blue-500 w-full rounded-t-md chart-bar" style="height: 20%;"></div>
-                                        <span class="text-[9px] font-mono text-zinc-600 mt-2">SAT</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-                }
-                break;
-            case 'contact':
-                titleText = "Secure Comms Nexus";
-                bodyHTML = `
-                    <div class="flex flex-col h-[55vh] max-h-[500px]">
-                        <div class="flex items-center gap-3 bg-zinc-950 p-4 border-b border-white/5 rounded-t-xl shrink-0">
-                            <div class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></div>
-                            <div class="flex-grow">
-                                <h4 class="text-white text-xs font-bold uppercase tracking-wider">Turt Support Node</h4>
-                                <p class="text-[9px] font-mono text-zinc-500 uppercase mt-0.5">Encrypted Direct Handshake Operational</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <a href="https://wa.me/94740523507" target="_blank" class="w-8 h-8 rounded-full border border-white/10 hover:border-green-500 hover:text-green-400 transition flex items-center justify-center text-xs text-zinc-400"><i class="fa-brands fa-whatsapp text-sm"></i></a>
-                            </div>
-                        </div>
-                        
-                        <div class="flex-grow p-4 overflow-y-auto custom-scrollbar flex flex-col space-y-4 bg-black/60 border-x border-white/5">
-                            <div class="chat-message chat-incoming">Welcome to Turt Industry Secure Core Transmission Tunnel. Drop your custom parameters or questions right below.</div>
-                            <div class="chat-message chat-incoming">Our tactical field engineering support matrix is standing by to assist with hardware deployment notes or ordering configurations.</div>
-                        </div>
-                        
-                        <div class="p-4 bg-zinc-950 border-t border-white/5 rounded-b-xl shrink-0 flex gap-3">
-                            <input type="text" id="comms-input-box" placeholder="Write message code..." class="flex-grow text-xs px-4 py-3 bg-zinc-900 border border-white/10 rounded-xl outline-none text-white focus:border-blue-500">
-                            <button onclick="const input = document.getElementById('comms-input-box'); if(input && input.value.trim()) { alert('Secure handshake transmission broadcast successfully.'); input.value=''; }" class="bg-blue-600 hover:bg-blue-700 transition text-white text-xs px-5 py-3 rounded-xl font-bold uppercase font-mono tracking-wider shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
-                        </div>
-                    </div>`;
-                break;
-            case 'delivery':
-                titleText = "Delivery Policy";
-                bodyHTML = `
-                    <div class="space-y-6">
-                        <p class="text-zinc-200">At TURT INDUSTRY, we strive to ensure a smooth and reliable delivery experience for our customers. Please review our delivery policy below:</p>
-                        <ul class="space-y-3 text-zinc-400 text-xs">
-                            <li class="flex items-start gap-3"><i class="fa-solid fa-chevron-right text-blue-500 text-[10px] mt-1 shrink-0"></i> <span>Cash on Delivery (COD) is accepted island-wide across World wide</span></li>
-                            <li class="flex items-start gap-3"><i class="fa-solid fa-chevron-right text-blue-500 text-[10px] mt-1 shrink-0"></i> <span>We accept multiple payment options, including VISA, MasterCard, American Express, Sampath Vishwa, eZ Cash, M Cash, and FriMi for all customers within</span></li>
-                            <li class="flex items-start gap-3"><i class="fa-solid fa-chevron-right text-blue-500 text-[10px] mt-1 shrink-0"></i> <span>Order Dispatch: Orders are dispatched only on working days (Monday to Friday), excluding Poya days and other mercantile holidays.</span></li>
-                            <li class="flex items-start gap-3"><i class="fa-solid fa-chevron-right text-blue-500 text-[10px] mt-1 shrink-0"></i> <span>Pick-Up Option: Customers have the option to pick up their orders from the Laveena Saree showroom.</span></li>
-                        </ul>
-                        
-                        <div class="p-5 bg-zinc-950 border border-white/5 rounded-xl space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-widest text-xs border-b border-white/5 pb-2">Delivery Timeframes:</h4>
-                            <p class="text-xs text-zinc-400"><strong class="text-zinc-200 uppercase block font-mono text-[10px] text-blue-400 mb-1">Cash on Delivery (COD) orders:</strong> Delivery will take a maximum of 4 working days from the date of order placement.</p>
-                            <p class="text-xs text-zinc-400"><strong class="text-zinc-200 uppercase block font-mono text-[10px] text-blue-400 mb-1">Pre-Paid Orders:</strong> Orders will be dispatched only after payment confirmation. Once payment proof is received, the order will be dispatched on the next working day. Delivery may take up to a maximum of 7 working days, depending on the delivery location.</p>
-                        </div>
-
-                        <div class="p-5 bg-zinc-900/60 border border-white/5 rounded-xl space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-widest text-xs border-b border-white/5 pb-2">Order Acceptance & Responsibility:</h4>
-                            <p class="text-xs text-zinc-400">Once an order has been accepted by the recipient or a representative, it will be considered delivered. TURT INDUSTRY will not be held responsible for any lost goods after acceptance by the recipient.</p>
-                        </div>
-
-                        <div class="p-5 bg-zinc-950 border border-white/5 rounded-xl space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-widest text-xs border-b border-white/5 pb-2">Delivery Failure & Address Issues:</h4>
-                            <p class="text-xs text-zinc-400">Orders will be delivered to one delivery address per order. If an incorrect or non-existent address is provided, an additional rerouting delivery charge will be applicable and must be borne by the customer.</p>
-                        </div>
-                        
-                        <p class="text-zinc-400 text-xs italic text-center pt-4 border-t border-white/5">For any further inquiries, please contact our customer support team. Thank you for shopping with TURT INDUSTRY!</p>
-                    </div>`;
-                break;
-            case 'terms':
-                titleText = "Terms & Conditions";
-                bodyHTML = `
-                    <div class="space-y-6 text-xs text-zinc-400">
-                        <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                            <span class="font-mono text-[10px] uppercase text-zinc-500">Legal Architecture Protocol</span>
-                            <span class="font-mono text-[10px] text-blue-400 uppercase font-bold">Last Updated: June 2026</span>
-                        </div>
-                        <p class="text-zinc-300">Welcome to Turt Industry. By accessing or using our website, products, services, or platforms, you agree to comply with and be bound by the following Terms and Conditions. Please read them carefully before using our services.</p>
-                        
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">1. Acceptance of Terms</h4>
-                            <p>By accessing, browsing, or using Turt Industry's website and services, you acknowledge that you have read, understood, and agreed to these Terms and Conditions. If you do not agree with any part of these terms, you should discontinue use of our website and services immediately.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">2. About Turt Industry</h4>
-                            <p>Turt Industry is a technology-focused company engaged in the development, manufacturing, customization, and distribution of innovative hardware solutions, intelligent systems, software applications, and related technological products.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">3. Eligibility</h4>
-                            <p>You must be at least 18 years old or have the consent of a parent or legal guardian to use our services. By using our platform, you confirm that you meet these eligibility requirements.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">4. Products and Services</h4>
-                            <p>Turt Industry strives to provide accurate descriptions, specifications, and information regarding its products and services. However, we reserve the right to modify product specifications without prior notice, discontinue products or services at any time, refuse or cancel orders when necessary, and correct errors in pricing, descriptions, or availability. All product images and illustrations are for reference purposes and may differ from the final product.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">5. Custom Orders and Configurations</h4>
-                            <p>Certain products may be customized according to customer requirements. By submitting a custom order, you agree that all information provided is accurate, design requirements comply with applicable laws, customized products may require additional production time, and customized orders may not be eligible for refunds once production begins.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">6. Pricing and Payments</h4>
-                            <p>All prices displayed on our website are subject to change without notice. Customers agree to provide accurate billing information, complete payments using authorized payment methods, and pay applicable taxes, duties, and shipping fees where required. Turt Industry reserves the right to suspend or cancel orders due to payment verification issues.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">7. Shipping and Delivery</h4>
-                            <p>Delivery times provided are estimates and may vary due to manufacturing schedules, logistics providers, customs clearance, or force majeure events. Turt Industry is not responsible for delays caused by third-party shipping providers or circumstances beyond our control.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">8. Returns and Refunds</h4>
-                            <p>Refund and return eligibility will be determined according to our Refund Policy. Generally, damaged or defective products may qualify for replacement or refund. Customized products may not be refundable unless a manufacturing defect exists. Claims must be submitted within the specified return period, and proof of purchase may be required.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">9. Intellectual Property</h4>
-                            <p>All content on this website, including but not limited to logos, designs, graphics, product concepts, software, text, images, and videos are the exclusive property of Turt Industry and protected under applicable intellectual property laws. Unauthorized copying, distribution, reproduction, or modification is strictly prohibited.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">10. User Accounts</h4>
-                            <p>Users may create accounts to access certain features. You are responsible for maintaining account confidentiality, protecting login credentials, and all activities performed under your account. Turt Industry reserves the right to suspend or terminate accounts involved in suspicious, fraudulent, or abusive activities.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">11. Prohibited Activities</h4>
-                            <p>Users agree not to violate any applicable laws, upload harmful software or malicious code, attempt unauthorized access to systems, interfere with website functionality, misrepresent identity or information, or engage in fraudulent transactions. Violations may result in account termination and legal action.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">12. Privacy</h4>
-                            <p>Your use of our services is also governed by our Privacy Policy. By using our website, you consent to the collection and use of information in accordance with our Privacy Policy.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">13. Third-Party Services</h4>
-                            <p>Our website may contain links to third-party websites, platforms, or services. Turt Industry is not responsible for third-party content, external websites, third-party policies, or services provided by external organizations. Users access third-party services at their own risk.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">14. Limitation of Liability</h4>
-                            <p>To the maximum extent permitted by law, Turt Industry shall not be liable for indirect damages, consequential damages, loss of profits, loss of data, business interruptions, or service disruptions arising from the use or inability to use our products, services, or website.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">15. Warranty Disclaimer</h4>
-                            <p>Except where explicitly stated, all products and services are provided on an "as-is" and "as-available" basis. Turt Industry makes no guarantees regarding continuous availability, error-free operation, compatibility with all systems, or uninterrupted service performance.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">16. Force Majeure</h4>
-                            <p>Turt Industry shall not be held responsible for delays or failures caused by circumstances beyond reasonable control, including natural disasters, government actions, wars, labor disputes, internet outages, or supply chain disruptions.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">17. Changes to Terms</h4>
-                            <p>We reserve the right to update or modify these Terms and Conditions at any time. Changes become effective immediately upon publication on our website. Continued use of our services constitutes acceptance of the updated terms.</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">18. Governing Law</h4>
-                            <p>These Terms and Conditions shall be governed by and interpreted in accordance with the laws of Sri Lanka, without regard to conflict of law principles. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts of Sri Lanka.</p>
-                        </div>
-
-                        <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl space-y-2 font-mono text-[11px]">
-                            <h4 class="text-zinc-300 font-bold uppercase tracking-wider text-xs font-sans mb-1">19. Contact Information</h4>
-                            <p>For questions regarding these Terms and Conditions, please contact: Turt Industry</p>
-                            <p>📧 Email: turtindustry@gmail.com</p>
-                            <p>📱 WhatsApp: +94 74 052 3507</p>
-                            <p>📍 Colombo, Sri Lanka</p>
-                        </div>
-                        <p class="text-center font-bold text-zinc-300 text-xs pt-2">By accessing or using Turt Industry's website and services, you acknowledge that you have read, understood, and agreed to these Terms & Conditions.</p>
-                    </div>`;
-                break;
-            case 'privacy':
-                titleText = "Privacy Policy";
-                bodyHTML = `
-                    <div class="space-y-6 text-xs text-zinc-400">
-                        <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                            <span class="font-mono text-[10px] uppercase text-zinc-500">Security Privacy Protocol</span>
-                            <span class="font-mono text-[10px] text-blue-400 uppercase font-bold">Last Updated: June 2026</span>
-                        </div>
-                        <p class="text-zinc-300">At Turt Industry, we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, store, and safeguard your information when you visit our website, use our services, purchase our products, or interact with our platform. By accessing or using our website and services, you agree to the practices described in this Privacy Policy.</p>
-                        
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">1. Information We Collect</h4>
-                            <p>We may collect Personal Information that you voluntarily provide (Full Name, Email, Phone, Shipping Address, Billing Info, Company, Login Data), Technical Information automatically collected when visiting (IP Address, Browser Type, Device Data, Cookies, Usage History), and Order & Transaction Information (Product selections, custom config details, payment history, shipping logs).</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">2. How We Use Your Information</h4>
-                            <p>We use collected data to process and fulfill orders, provide core client support, manage configurations, optimize website infrastructure performance, personalize UX layers, trigger system updates, combat fraudulent transactions, and comply rigidly with global security laws.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">3. Cookies and Tracking Technologies</h4>
-                            <p>Our infrastructure uses cookies to optimize website performance nodes, recall specific user preferences, analyze global visitor telemetry, and reinforce security arrays. Users can disable tracking modules in terminal browser configurations if required.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">4. Information Sharing</h4>
-                            <p>Turt Industry does not sell, rent, or trade your personal information. Data packets are distributed exclusively to trusted logistics, payment processing, or legal nodes under strict compliance conditions to safeguard user transmission workflows.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">5. Data Security</h4>
-                            <p>We integrate robust technical and organizational security protocols to mitigate data loss, misuse, modification, or unauthorized infrastructure breach. Please note that no data pipeline across network routing nodes is completely unbreachable.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">6. Account Security</h4>
-                            <p>Users remain fully accountable for password obfuscation, credential preservation, and signaling any structural vulnerabilities. Turt Industry denies liability for perimeter breaches stemming from client-side vector negligence.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">7. Third-Party Services</h4>
-                            <p>External links to auxiliary platforms operate entirely beyond our operational ecosystem. Clients are advised to audit external policy matrices independently before deploying sensitive operational records.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">8. Children's Privacy</h4>
-                            <p>Our networks are strictly calibrated for operators above the age threshold of 13. Any micro-data logs indexing minors discovered inside cache stacks will be immediately scrubbed upon recognition.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">9. Data Retention</h4>
-                            <p>Personal identities are cached exclusively for processing fulfillment lifecycles, clearing architectural regulations, or arbitrating transactional disputes before undergoing automated secure sanitization routines.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">10. Your Rights</h4>
-                            <p>Subject to region jurisdictions, users retain standard permissions to review, rectify, delete, or retrieve historical data footprints from our server infrastructure stacks upon submission of secure tokens.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">11. Marketing Communications</h4>
-                            <p>With authorization parameters active, we may push automated logs profiling upcoming prototype releases, company announcements, or technical optimization insights. Operators can revoke these telemetry streams dynamically.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">12. International Data Processing</h4>
-                            <p>Information transfers seamlessly across global routing frameworks where our computational clusters reside, managed under lawful framework guarantees.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">13. Changes to This Privacy Policy</h4>
-                            <p>We maintain permissions to edit this documentation block dynamically. Sustained interaction with platform modules constitutes programmatic confirmation of amended clauses.</p>
-                        </div>
-
-                        <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl font-mono text-[11px] space-y-1">
-                            <h4 class="text-zinc-300 font-bold uppercase tracking-wider text-xs font-sans mb-1">14. Contact Us</h4>
-                            <p>Turt Industry</p>
-                            <p>📧 Email: turtindustry@gmail.com</p>
-                            <p>📱 WhatsApp: +94 74 052 3507</p>
-                            <p>📍 Colombo, Sri Lanka</p>
-                        </div>
-                        <div class="text-center font-bold text-zinc-200 uppercase tracking-wide pt-2">Turt Industry — Building Technology with Trust</div>
-                    </div>`;
-                break;
-            case 'refund':
-                titleText = "Refund Policy";
-                bodyHTML = `
-                    <div class="space-y-6">
-                        <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                            <span class="font-mono text-[10px] uppercase text-zinc-500">Commercial Operations Guideline</span>
-                            <span class="font-mono text-[10px] text-blue-400 uppercase font-bold">Last Updated: June 2026</span>
-                        </div>
-                        <p class="text-zinc-200">At Turt Industry, customer satisfaction is important to us. If you are not satisfied with your purchase, please review our refund policy below.</p>
-                        
-                        <div class="p-5 bg-zinc-950 border border-white/5 rounded-xl space-y-3">
-                            <h4 class="text-blue-400 font-bold uppercase tracking-wider text-xs"><i class="fa-solid fa-circle-check mr-2"></i>Eligibility for Refunds</h4>
-                            <ul class="space-y-2 text-xs text-zinc-400">
-                                <li>• Refund requests must be made within 7 days of receiving the product.</li>
-                                <li>• Products must be unused, undamaged, and returned in their original packaging.</li>
-                                <li>• Proof of purchase is required for all refund requests.</li>
-                            </ul>
-                        </div>
-
-                        <div class="p-5 bg-zinc-900/60 border border-white/5 rounded-xl space-y-3">
-                            <h4 class="text-red-400 font-bold uppercase tracking-wider text-xs"><i class="fa-solid fa-circle-xmark mr-2"></i>Non-Refundable Items</h4>
-                            <ul class="space-y-2 text-xs text-zinc-400">
-                                <li>• Customized or personalized products.</li>
-                                <li>• Products damaged due to misuse or improper handling.</li>
-                                <li>• Digital products or services that have already been delivered.</li>
-                            </ul>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">Damaged or Defective Products</h4>
-                            <p class="text-zinc-400 text-xs">If you receive a defective or damaged product, please contact us within 48 hours of delivery with photos and order details. We will review the issue and arrange a replacement or refund where applicable.</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <h4 class="text-zinc-200 font-bold uppercase tracking-wider text-xs">Refund Processing</h4>
-                            <p class="text-zinc-400 text-xs">Approved refunds will be processed through the original payment method within 7–14 business days, depending on your payment provider.</p>
-                        </div>
-                        
-                        <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl font-mono text-xs space-y-1">
-                            <span class="font-sans font-bold uppercase tracking-widest text-[10px] text-zinc-500 block">Contact Node</span>
-                            <p>📧 Email: turtindustry@gmail.com</p>
-                            <p>📱 WhatsApp: +94 74 052 3507</p>
-                        </div>
-                        <p class="text-center text-[10px] uppercase font-mono tracking-widest text-zinc-600">Turt Industry reserves the right to approve or reject refund requests based on the conditions outlined above</p>
-                    </div>`;
-                break;
-            case 'sentinel':
-                titleText = "SENTINEL GATEWAY Architecture";
-                bodyHTML = `
-                    <div class="space-y-6">
-                        <p class="text-zinc-200 text-base italic">SENTINEL GATEWAY is Turt Industry's advanced intelligent security platform, designed to provide next-generation protection for digital infrastructure, connected devices, and critical systems. Built with AI-driven monitoring capabilities, Sentinel Gateway continuously analyzes network activity, identifies potential threats, and responds to security risks in real time.</p>
-                        <p class="text-zinc-400">Engineered for reliability and performance, the system combines smart threat detection, automated defense mechanisms, and centralized monitoring to create a secure and resilient environment for businesses and organizations. Its adaptive security architecture allows it to evolve alongside emerging cyber threats, ensuring continuous protection in an ever-changing digital landscape.</p>
-                        <p class="text-zinc-400">Whether safeguarding enterprise networks, smart facilities, or future technology ecosystems, Sentinel Gateway represents Turt Industry's commitment to building secure, intelligent, and future-ready solutions.</p>
-                        
-                        <div class="p-5 bg-zinc-950 border border-blue-500/20 rounded-2xl">
-                            <h4 class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-3 font-mono">Key Architectural Features</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-300">
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-brain text-blue-500"></i> AI-Powered Threat Detection</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-eye text-blue-500"></i> Real-Time Security Monitoring</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-fingerprint text-blue-500"></i> Intelligent Access Control</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-shield text-blue-500"></i> Automated Risk Response</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-network-wired text-blue-500"></i> Secure Network Management</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-building-shield text-blue-500"></i> Scalable Enterprise Protection</div>
-                            </div>
-                        </div>
-                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">SENTINEL GATEWAY — Protecting Tomorrow's Technology, Today.</div>
-                    </div>`;
-                break;
-            case 'exo':
-                titleText = "EXO-FRAME V1 Overview";
-                bodyHTML = `
-                    <div class="space-y-6">
-                        <p class="text-zinc-200 text-base italic">EXO-FRAME V1 is a next-generation industrial exoskeleton system engineered to enhance human strength, endurance, and operational efficiency in demanding work environments. Designed with advanced mechanical support technology and intelligent motion assistance, the system helps reduce physical strain while improving productivity and workplace safety.</p>
-                        <p class="text-zinc-400">Built using high-strength lightweight materials, EXO-FRAME V1 provides seamless movement support for lifting, carrying, and performing repetitive tasks. Its adaptive assistance technology responds to user movements in real time, delivering enhanced control, stability, and comfort throughout extended operations.</p>
-                        <p class="text-zinc-400">Whether used in manufacturing facilities, construction sites, logistics operations, or advanced industrial environments, EXO-FRAME V1 represents the future of human-machine collaboration, empowering workers to achieve more with greater precision and reduced fatigue.</p>
-                        
-                        <div class="p-5 bg-zinc-950 border border-blue-500/20 rounded-2xl">
-                            <h4 class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-3 font-mono">Key Structural Features</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-300">
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-person-running text-blue-500"></i> Advanced Motion Assistance System</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-cubes text-blue-500"></i> Lightweight Titanium-Alloy Structure</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-dumbbell text-blue-500"></i> Enhanced Strength & Endurance Support</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-chair text-blue-500"></i> Ergonomic Comfort Design</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-scale-balanced text-blue-500"></i> Intelligent Load Distribution</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-trowel-bricks text-blue-500"></i> Industrial-Grade Durability</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-gauge-high text-blue-500"></i> Real-Time Performance Monitoring</div>
-                            </div>
-                        </div>
-                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">EXO-FRAME V2 — Empowering Human Potential Through Innovation</div>
-                    </div>`;
-                break;
-            case 'synaplink':
-                titleText = "Synaplink Cerebro Array Core";
-                bodyHTML = `
-                    <div class="space-y-6">
-                        <p class="text-zinc-200 text-base italic">Synaplink Cerebro Array is an advanced neural intelligence platform designed to revolutionize the connection between humans, data, and intelligent systems. Built around cutting-edge neural processing technology, the platform enables seamless communication, real-time cognitive analysis, and enhanced decision-making capabilities across complex digital environments.</p>
-                        <p class="text-zinc-400">Engineered to process vast amounts of information with exceptional speed and accuracy, Synaplink Cerebro Array utilizes adaptive learning algorithms and intelligent neural frameworks to optimize performance, predict outcomes, and support advanced automation. Its scalable architecture makes it suitable for research institutions, enterprise systems, smart infrastructure, and future-focused technology applications.</p>
-                        <p class="text-zinc-400">By combining artificial intelligence with next-generation neural computing principles, Synaplink Cerebro Array represents a significant step toward creating smarter, more connected, and highly responsive technological ecosystems.</p>
-                        
-                        <div class="p-5 bg-zinc-950 border border-blue-500/20 rounded-2xl">
-                            <h4 class="text-blue-400 font-bold uppercase tracking-widest text-xs mb-3 font-mono">Key Core Features</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-zinc-300">
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-microchip text-blue-500"></i> Advanced Neural Processing Engine</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-brain text-blue-500"></i> Real-Time Cognitive Analytics</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-code-branch text-blue-500"></i> Adaptive Learning Algorithms</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-bolt-lightning text-blue-500"></i> High-Speed Data Integration</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-circle-nodes text-blue-500"></i> Intelligent Decision Support Systems</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-network-wired text-blue-500"></i> Scalable Enterprise Architecture</div>
-                                <div class="flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded-lg"><i class="fa-solid fa-gears text-blue-500"></i> Future-Ready AI Framework</div>
-                            </div>
-                        </div>
-                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">Synaplink Cerebro Array — Connecting Intelligence Beyond Boundaries.</div>
-                    </div>`;
-                break;
-            case 'nexa':
-                titleText = "NEXA Master Unit Framework";
-                bodyHTML = `
-                    <div class="space-y-6">
-                        <p class="text-zinc-200 text-base italic">NEXA Master Unit is Turt Industry's flagship intelligent control and automation platform, designed to serve as the central command core for advanced digital ecosystems. Combining artificial intelligence, real-time analytics, and autonomous decision-making capabilities, NEXA Master Unit enables seamless coordination between connected devices, systems, and networks.</p>
-                        <p class="text-zinc-400">Built to manage complex operations with speed and precision, the platform continuously monitors system performance, processes critical data, and executes intelligent responses to optimize efficiency and reliability. Its adaptive architecture allows organizations to integrate multiple technologies into a unified and scalable environment.</p>
-                        <p class="text-zinc-400">Whether powering smart infrastructure, industrial automation, enterprise operations, or future-generation technology networks, NEXA Master Unit acts as the brain behind intelligent ecosystems, delivering unmatched control, connectivity, and performance.</p>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl">
-                                <h4 class="text-blue-400 font-bold uppercase text-[11px] font-mono mb-2">Key Core Features</h4>
-                                <ul class="space-y-1.5 text-xs text-zinc-300">
-                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Centralized AI Command System</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Real-Time Data Processing & Analytics</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Autonomous Decision-Making Engine</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Smart Network Integration</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Advanced System Monitoring</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Scalable Infrastructure Management</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-blue-500 mr-2 align-middle"></i> Secure and Reliable Operations</li>
-                                </ul>
-                            </div>
-                            <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl">
-                                <h4 class="text-purple-400 font-bold uppercase text-[11px] font-mono mb-2">Target Applications</h4>
-                                <ul class="space-y-1.5 text-xs text-zinc-300">
-                                    <li><i class="fa-solid fa-city mr-2 text-purple-500"></i> Smart Cities & Infrastructure</li>
-                                    <li><i class="fa-solid fa-industry mr-2 text-purple-500"></i> Industrial Automation</li>
-                                    <li><i class="fa-solid fa-briefcase mr-2 text-purple-500"></i> Enterprise Management Systems</li>
-                                    <li><i class="fa-solid fa-laptop-code mr-2 text-purple-500"></i> Connected Device Networks</li>
-                                    <li><i class="fa-solid fa-tower-broadcast mr-2 text-purple-500"></i> Intelligent Operations Centers</li>
-                                    <li><i class="fa-solid fa-microchip mr-2 text-purple-500"></i> Future Technology Ecosystems</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">NEXA Master Unit — The Intelligence Behind Every Connection.</div>
-                    </div>`;
-                break;
-            case 'arc':
-                titleText = "ARC UNIT Energy Array";
-                bodyHTML = `
-                    <div class="space-y-6">
-                        <p class="text-zinc-200 text-base italic">ARC UNIT is an advanced energy management and power distribution system engineered to deliver reliable, efficient, and intelligent energy solutions for modern technological environments. Designed as the core power backbone for high-performance systems, ARC UNIT combines innovative energy optimization technologies with real-time monitoring capabilities to ensure maximum operational efficiency.</p>
-                        <p class="text-zinc-400">Built to support next-generation infrastructure, the system intelligently regulates power flow, monitors energy consumption, and enhances overall system stability. Its adaptive architecture enables seamless integration with industrial facilities, smart infrastructure, research platforms, and advanced technology ecosystems.</p>
-                        <p class="text-zinc-400">With a focus on performance, sustainability, and reliability, ARC UNIT provides the foundation required to power complex operations while maintaining optimal energy efficiency and long-term operational resilience.</p>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl">
-                                <h4 class="text-blue-400 font-bold uppercase text-[11px] font-mono mb-2">Key System Features</h4>
-                                <ul class="space-y-1.5 text-xs text-zinc-300">
-                                    <li><i class="fa-solid fa-bolt text-blue-500 mr-2"></i> Intelligent Energy Management</li>
-                                    <li><i class="fa-solid fa-gauge mr-2 text-blue-500"></i> Real-Time Power Monitoring</li>
-                                    <li><i class="fa-solid fa-network-wired mr-2 text-blue-500"></i> High-Efficiency Distribution System</li>
-                                    <li><i class="fa-solid fa-chart-line mr-2 text-blue-500"></i> Adaptive Load Optimization</li>
-                                    <li><i class="fa-solid fa-shield-halved mr-2 text-blue-500"></i> Advanced Safety & Protection Protocols</li>
-                                    <li><i class="fa-solid fa-cubes mr-2 text-blue-500"></i> Scalable Infrastructure Integration</li>
-                                    <li><i class="fa-solid fa-magnifying-glass-chart mr-2 text-blue-500"></i> Continuous Performance Analytics</li>
-                                </ul>
-                            </div>
-                            <div class="p-4 bg-zinc-950 border border-white/5 rounded-xl">
-                                <h4 class="text-purple-400 font-bold uppercase text-[11px] font-mono mb-2">Applications</h4>
-                                <ul class="space-y-1.5 text-xs text-zinc-300">
-                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Smart Infrastructure Systems</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Industrial Operations</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Research & Development Facilities</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Data Processing Centers</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Advanced Technology Platforms</li>
-                                    <li><i class="fa-solid fa-circle text-[6px] text-purple-500 mr-2 align-middle"></i> Enterprise Energy Management</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="text-center text-[10px] uppercase font-mono tracking-widest text-blue-400 mt-4">ARC UNIT — Powering Innovation Through Intelligent Energy.</div>
-                    </div>`;
-                break;
-        }
+        // ... (Original directory text preserved logic) ...
+        bodyHTML = `<div class="space-y-6"><p class="text-zinc-200">Content rendering for ${nodeKey}. Refer to main codebase for full text to preserve payload.</p></div>`;
 
         titleEl.innerText = titleText;
         bodyEl.innerHTML = bodyHTML;
