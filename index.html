@@ -980,193 +980,6 @@
             } catch(e){}
         }
 
-// 1. Firebase App மற்றும் Realtime Database-ஐ Initialize செய்தல்
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    // இமேஜ் தரவுகளை தற்காலிகமாகச் சேமிக்க ஒரு குளோபல் வேரியபிள்
-    let uploadedImagesBase64 = [];
-
-    // ==========================================
-    // MODULE-COMPATIBLE GLOBAL FUNCTIONS
-    // ==========================================
-
-    // MODAL-ஐ ஓபன் செய்யும் ஃபங்க்ஷன்
-    window.showForm = function(formId) {
-        const targetForm = document.getElementById(formId);
-        if (targetForm) {
-            targetForm.classList.add('flex');
-            if (formId === 'bug-report-form') {
-                detectDevice(); // ஓபன் ஆகும்போதே மொபைல் மாடலைக் கண்டறியும்
-            }
-        }
-    };
-
-    // DEVICE MODEL DETECT செய்யும் ஃபங்க்ஷன்
-    function detectDevice() {
-        const ua = navigator.userAgent;
-        let model = "Unknown Device Platform";
-        
-        if (/android/i.test(ua)) {
-            const match = ua.match(/Android\s([^\s;]+)/);
-            model = `Android Device (${match ? match[0] : 'Generic Android'})`;
-        } else if (/iPhone|iPad|iPod/i.test(ua)) {
-            model = "Apple iOS Device";
-        } else if (/Windows/i.test(ua)) {
-            model = "Windows System PC";
-        } else if (/Macintosh/i.test(ua)) {
-            model = "macOS Workstation";
-        }
-        
-        document.getElementById('bug-device-model').value = model;
-    }
-
-// 1. BUG REPORT VALIDATION
-    window.validateBugForm = function() {
-        const description = document.getElementById('bug-description').value.trim();
-        const submitBtn = document.getElementById('bug-submit-btn');
-        
-        // குறைந்தபட்சம் 10 எழுத்துக்கள் இருந்தால் மட்டுமே சப்மிட் பட்டன் ஆன் ஆகும்
-        if (description.length >= 10) {
-            submitBtn.disabled = false;
-        } else {
-            submitBtn.disabled = true;
-        }
-    };
-
-    window.submitBugReport = function() {
-        const deviceModel = document.getElementById('bug-device-model').value;
-        const bugDescription = document.getElementById('bug-description').value.trim();
-
-        // Firebase Realtime DB-ல் 'bug_reports' என்ற நோடிற்குள் புஷ் செய்தல்
-        const bugRef = ref(database, 'bug_reports');
-        push(bugRef, {
-            deviceModel: deviceModel,
-            description: bugDescription,
-            timestamp: serverTimestamp()
-        })
-        .then(() => {
-            alert("Bug Report submitted directly to Firebase!");
-            document.getElementById('bug-description').value = '';
-            document.getElementById('bug-submit-btn').disabled = true;
-            document.getElementById('bug-report-form').classList.remove('flex'); // மூடிவிடுதல்
-        })
-        .catch((error) => {
-            console.error("Firebase Sync Error:", error);
-            alert("Error saving data.");
-        });
-    };
-
-
-    // 2. REPLACEMENT REQUEST (IMEI SEARCH & UPLOAD)
-    window.fetchDeviceDetails = function() {
-        const deviceKey = document.getElementById('search-device-key').value.trim();
-        if (!deviceKey) return alert("Please enter a device key.");
-
-        // 'turt phone/RF8R40XSQ0M' போன்ற நோடில் இருந்து விபரங்களை எடுத்தல்
-        const deviceRef = ref(database, 'turt phone/' + deviceKey);
-        get(deviceRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                
-                // டேட்டாவை HTML லேபிள்களுக்கு மாற்றுதல்
-                document.getElementById('view-phone-name').innerText = data.phone_name || "N/A";
-                document.getElementById('view-model-number').innerText = data.model_number || "N/A";
-                document.getElementById('view-owner-name').innerText = data.owner_name || "N/A";
-                document.getElementById('view-imei-1').innerText = data['imei-1'] || "N/A";
-                document.getElementById('view-imei-2').innerText = data['imei-2'] || "N/A";
-
-                // படிவத்தின் அடுத்த பகுதிகளைக் காண்பித்தல்
-                document.getElementById('device-details-section').style.display = 'block';
-                document.getElementById('replacement-fields').style.display = 'block';
-            } else {
-                alert("Device key not found in Firebase database!");
-                document.getElementById('device-details-section').style.display = 'none';
-                document.getElementById('replacement-fields').style.display = 'none';
-            }
-        }).catch((error) => console.error("Database fetch failed:", error));
-    };
-
-    // இமேஜ் சைஸ் மற்றும் கவுண்ட் வேலிடேஷன் (< 2MB & Max 3 Photos)
-    window.handleImageUpload = function() {
-        const fileInput = document.getElementById('photo-uploads');
-        const errorEl = document.getElementById('file-error');
-        
-        errorEl.innerText = ""; 
-        uploadedImagesBase64 = []; 
-        const files = fileInput.files;
-
-        if (files.length > 3) {
-            errorEl.innerText = "Error: You can only upload a maximum of 3 photos.";
-            fileInput.value = "";
-            window.validateReplacementForm();
-            return;
-        }
-
-        let processed = 0;
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].size > 2 * 1024 * 1024) { // 2MB Check
-                errorEl.innerText = `Error: "${files[i].name}" is larger than 2MB limit.`;
-                fileInput.value = "";
-                uploadedImagesBase64 = [];
-                window.validateReplacementForm();
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedImagesBase64.push(e.target.result);
-                processed++;
-                if (processed === files.length) {
-                    window.validateReplacementForm(); // இமேஜ் கன்வெர்ட் ஆனதும் ஃபார்ம் வேலிடேட் செய்யும்
-                }
-            };
-            reader.readAsDataURL(files[i]);
-        }
-    };
-
-    window.validateReplacementForm = function() {
-        const replaceItem = document.getElementById('replace-item').value.trim();
-        const damageReason = document.getElementById('damage-reason').value.trim();
-        const submitBtn = document.getElementById('replacement-submit-btn');
-
-        // அனைத்தும் பூர்த்தி செய்யப்பட்டு குறைந்தபட்சம் 1 இமேஜ் இருந்தால் பட்டன் ஆன் ஆகும்
-        if (replaceItem !== "" && damageReason !== "" && uploadedImagesBase64.length > 0) {
-            submitBtn.disabled = false;
-        } else {
-            submitBtn.disabled = true;
-        }
-    };
-
-    window.submitReplacementRequest = function() {
-        const deviceKey = document.getElementById('search-device-key').value.trim();
-        const replaceItem = document.getElementById('replace-item').value.trim();
-        const damageReason = document.getElementById('damage-reason').value.trim();
-
-        // Firebase Realtime DB-ல் 'Replacement Request' நோடிற்குள் சேமித்தல்
-        const replacementRef = ref(database, 'Replacement Request');
-        push(replacementRef, {
-            deviceKey: deviceKey,
-            replacementItem: replaceItem,
-            damageReason: damageReason,
-            photos: uploadedImagesBase64, // Base64 அரே வடிவில் படங்கள் செல்லும்
-            timestamp: serverTimestamp()
-        })
-        .then(() => {
-            alert("Replacement Verification Request Saved in Firebase!");
-            
-            // படிவத்தை பழைய நிலைக்கு கொண்டு வருதல்
-            document.getElementById('search-device-key').value = '';
-            document.getElementById('replace-item').value = '';
-            document.getElementById('damage-reason').value = '';
-            document.getElementById('photo-uploads').value = '';
-            document.getElementById('device-details-section').style.display = 'none';
-            document.getElementById('replacement-fields').style.display = 'none';
-            document.getElementById('replacement-form').classList.remove('flex');
-        })
-        .catch((error) => console.error("Write error:", error));
-    };
-        
         aiStatus = "standby";
         changeMood('sleepy'); // Put it to sleep visually
 
@@ -1694,6 +1507,191 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     const provider = new GoogleAuthProvider();
+
+    // ==========================================
+    // MODULE-COMPATIBLE GLOBAL FUNCTIONS (MOVED FIX)
+    // ==========================================
+    
+    const database = db;
+
+    // இமேஜ் தரவுகளை தற்காலிகமாகச் சேமிக்க ஒரு குளோபல் வேரியபிள்
+    let uploadedImagesBase64 = [];
+
+    // MODAL-ஐ ஓபன் செய்யும் ஃபங்க்ஷன்
+    window.showForm = function(formId) {
+        const targetForm = document.getElementById(formId);
+        if (targetForm) {
+            targetForm.classList.add('flex');
+            if (formId === 'bug-report-form') {
+                detectDevice(); // ஓபன் ஆகும்போதே மொபைல் மாடலைக் கண்டறியும்
+            }
+        }
+    };
+
+    // DEVICE MODEL DETECT செய்யும் ஃபங்க்ஷன்
+    function detectDevice() {
+        const ua = navigator.userAgent;
+        let model = "Unknown Device Platform";
+        
+        if (/android/i.test(ua)) {
+            const match = ua.match(/Android\s([^\s;]+)/);
+            model = `Android Device (${match ? match[0] : 'Generic Android'})`;
+        } else if (/iPhone|iPad|iPod/i.test(ua)) {
+            model = "Apple iOS Device";
+        } else if (/Windows/i.test(ua)) {
+            model = "Windows System PC";
+        } else if (/Macintosh/i.test(ua)) {
+            model = "macOS Workstation";
+        }
+        
+        document.getElementById('bug-device-model').value = model;
+    }
+
+    // 1. BUG REPORT VALIDATION
+    window.validateBugForm = function() {
+        const description = document.getElementById('bug-description').value.trim();
+        const submitBtn = document.getElementById('bug-submit-btn');
+        
+        // குறைந்தபட்சம் 10 எழுத்துக்கள் இருந்தால் மட்டுமே சப்மிட் பட்டன் ஆன் ஆகும்
+        if (description.length >= 10) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    };
+
+    window.submitBugReport = function() {
+        const deviceModel = document.getElementById('bug-device-model').value;
+        const bugDescription = document.getElementById('bug-description').value.trim();
+
+        // Firebase Realtime DB-ல் 'bug_reports' என்ற நோடிற்குள் புஷ் செய்தல்
+        const bugRef = ref(database, 'bug_reports');
+        push(bugRef, {
+            deviceModel: deviceModel,
+            description: bugDescription,
+            timestamp: serverTimestamp()
+        })
+        .then(() => {
+            alert("Bug Report submitted directly to Firebase!");
+            document.getElementById('bug-description').value = '';
+            document.getElementById('bug-submit-btn').disabled = true;
+            document.getElementById('bug-report-form').classList.remove('flex'); // மூடிவிடுதல்
+        })
+        .catch((error) => {
+            console.error("Firebase Sync Error:", error);
+            alert("Error saving data.");
+        });
+    };
+
+
+    // 2. REPLACEMENT REQUEST (IMEI SEARCH & UPLOAD)
+    window.fetchDeviceDetails = function() {
+        const deviceKey = document.getElementById('search-device-key').value.trim();
+        if (!deviceKey) return alert("Please enter a device key.");
+
+        // 'turt phone/RF8R40XSQ0M' போன்ற நோடில் இருந்து விபரங்களை எடுத்தல்
+        const deviceRef = ref(database, 'turt phone/' + deviceKey);
+        get(deviceRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                
+                // டேட்டாவை HTML லேபிள்களுக்கு மாற்றுதல்
+                document.getElementById('view-phone-name').innerText = data.phone_name || "N/A";
+                document.getElementById('view-model-number').innerText = data.model_number || "N/A";
+                document.getElementById('view-owner-name').innerText = data.owner_name || "N/A";
+                document.getElementById('view-imei-1').innerText = data['imei-1'] || "N/A";
+                document.getElementById('view-imei-2').innerText = data['imei-2'] || "N/A";
+
+                // படிவத்தின் அடுத்த பகுதிகளைக் காண்பித்தல்
+                document.getElementById('device-details-section').style.display = 'block';
+                document.getElementById('replacement-fields').style.display = 'block';
+            } else {
+                alert("Device key not found in Firebase database!");
+                document.getElementById('device-details-section').style.display = 'none';
+                document.getElementById('replacement-fields').style.display = 'none';
+            }
+        }).catch((error) => console.error("Database fetch failed:", error));
+    };
+
+    // இமேஜ் சைஸ் மற்றும் கவுண்ட் வேலிடேஷன் (< 2MB & Max 3 Photos)
+    window.handleImageUpload = function() {
+        const fileInput = document.getElementById('photo-uploads');
+        const errorEl = document.getElementById('file-error');
+        
+        errorEl.innerText = ""; 
+        uploadedImagesBase64 = []; 
+        const files = fileInput.files;
+
+        if (files.length > 3) {
+            errorEl.innerText = "Error: You can only upload a maximum of 3 photos.";
+            fileInput.value = "";
+            window.validateReplacementForm();
+            return;
+        }
+
+        let processed = 0;
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > 2 * 1024 * 1024) { // 2MB Check
+                errorEl.innerText = `Error: "${files[i].name}" is larger than 2MB limit.`;
+                fileInput.value = "";
+                uploadedImagesBase64 = [];
+                window.validateReplacementForm();
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImagesBase64.push(e.target.result);
+                processed++;
+                if (processed === files.length) {
+                    window.validateReplacementForm(); // இமேஜ் கன்வெர்ட் ஆனதும் ஃபார்ம் வேலிடேட் செய்யும்
+                }
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    };
+
+    window.validateReplacementForm = function() {
+        const replaceItem = document.getElementById('replace-item').value.trim();
+        const damageReason = document.getElementById('damage-reason').value.trim();
+        const submitBtn = document.getElementById('replacement-submit-btn');
+
+        // அனைத்தும் பூர்த்தி செய்யப்பட்டு குறைந்தபட்சம் 1 இமேஜ் இருந்தால் பட்டன் ஆன் ஆகும்
+        if (replaceItem !== "" && damageReason !== "" && uploadedImagesBase64.length > 0) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    };
+
+    window.submitReplacementRequest = function() {
+        const deviceKey = document.getElementById('search-device-key').value.trim();
+        const replaceItem = document.getElementById('replace-item').value.trim();
+        const damageReason = document.getElementById('damage-reason').value.trim();
+
+        // Firebase Realtime DB-ல் 'Replacement Request' நோடிற்குள் சேமித்தல்
+        const replacementRef = ref(database, 'Replacement Request');
+        push(replacementRef, {
+            deviceKey: deviceKey,
+            replacementItem: replaceItem,
+            damageReason: damageReason,
+            photos: uploadedImagesBase64, // Base64 அரே வடிவில் படங்கள் செல்லும்
+            timestamp: serverTimestamp()
+        })
+        .then(() => {
+            alert("Replacement Verification Request Saved in Firebase!");
+            
+            // படிவத்தை பழைய நிலைக்கு கொண்டு வருதல்
+            document.getElementById('search-device-key').value = '';
+            document.getElementById('replace-item').value = '';
+            document.getElementById('damage-reason').value = '';
+            document.getElementById('photo-uploads').value = '';
+            document.getElementById('device-details-section').style.display = 'none';
+            document.getElementById('replacement-fields').style.display = 'none';
+            document.getElementById('replacement-form').classList.remove('flex');
+        })
+        .catch((error) => console.error("Write error:", error));
+    };
 
    // ========================================================
     // 🌟 PUTHU CODE: TITAN Image Live Sync Auto Update
@@ -2684,7 +2682,7 @@
         bodyEl.innerHTML = bodyHTML;
         window.toggleModal('directory-panel-modal');
     };
-    
+        
 </script>
 
 </body>
