@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -434,6 +433,14 @@
             PRODUCTS
         </button>
 
+        <button onclick="showForm('bug-report-form')" class="hidden md:block px-4 py-1.5 border border-red-900/50 rounded-full text-[10px] font-bold text-red-400 hover:bg-red-600 hover:text-white transition uppercase tracking-widest">
+            <i class="fa-solid fa-bug mr-1"></i> Bug Report
+        </button>
+
+        <button onclick="showForm('replacement-form')" class="hidden md:block px-4 py-1.5 border border-blue-900/50 rounded-full text-[10px] font-bold text-blue-400 hover:bg-blue-600 hover:text-white transition uppercase tracking-widest">
+            <i class="fa-solid fa-wrench mr-1"></i> Replacement Request
+        </button>
+
         <div id="user-profile" class="flex items-center gap-4">
             <button onclick="toggleModal('history-modal')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 px-3 py-2 rounded transition-all tracking-tighter shrink-0">
                 ARCHIVE 
@@ -813,6 +820,94 @@
 
 <div id="hover-specs-panel"></div>
 
+
+<div id="bug-report-form" class="modal">
+    <div class="bg-zinc-950 border border-zinc-900 w-full max-w-lg p-8 rounded-2xl relative shadow-2xl">
+        <button onclick="document.getElementById('bug-report-form').classList.remove('flex')" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-[10px] font-mono tracking-widest bg-zinc-900 px-2 py-1 rounded border border-white/5">&times; CLOSE</button>
+        
+        <div class="text-red-500 font-mono tracking-widest text-[10px] uppercase mb-1">// SYSTEM ERROR REPORT</div>
+        <h3 class="text-2xl font-black uppercase tracking-tight mb-6 flex items-center gap-2 text-white">
+            <i class="fa-solid fa-bug text-red-500"></i> Bug Report
+        </h3>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs uppercase font-mono tracking-wider text-zinc-400 mb-2">Device Model (Auto Detected):</label>
+                <input type="text" id="bug-device-model" disabled class="opacity-50 cursor-not-allowed">
+            </div>
+            
+            <div>
+                <label class="block text-xs uppercase font-mono tracking-wider text-zinc-400 mb-2">Describe the Bug / Report:</label>
+                <textarea id="bug-description" oninput="validateBugForm()" rows="4" placeholder="Type your bug here..."></textarea>
+            </div>
+            
+            <button id="bug-submit-btn" disabled onclick="submitBugReport()" class="w-full bg-red-600/10 text-red-400 border border-red-900/50 py-3.5 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-red-600 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-red-600/10 disabled:hover:text-red-400 transition duration-300">
+                Submit Report
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="replacement-form" class="modal">
+    <div class="bg-zinc-950 border border-zinc-900 w-full max-w-xl p-8 rounded-2xl relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <button onclick="document.getElementById('replacement-form').classList.remove('flex')" class="absolute top-4 right-4 text-zinc-500 hover:text-white text-[10px] font-mono tracking-widest bg-zinc-900 px-2 py-1 rounded border border-white/5">&times; CLOSE</button>
+        
+        <div class="text-blue-400 font-mono tracking-widest text-[10px] uppercase mb-1">// HARDWARE REPLACEMENT</div>
+        <h3 class="text-2xl font-black uppercase tracking-tight mb-6 flex items-center gap-2 text-white">
+            <i class="fa-solid fa-wrench text-blue-500"></i> Replacement Request
+        </h3>
+        
+        <div class="space-y-6">
+            <div class="bg-white/5 p-4 rounded-xl border border-white/5">
+                <label class="block text-xs uppercase font-mono tracking-wider text-zinc-400 mb-2">Enter Device Key (e.g., RF8R40XSQ0M):</label>
+                <div class="flex gap-2">
+                    <input type="text" id="search-device-key" placeholder="Enter Key">
+                    <button onclick="fetchDeviceDetails()" class="bg-blue-600 px-6 font-bold uppercase tracking-widest text-xs hover:bg-blue-500 transition shrink-0 rounded-lg text-white">Search</button>
+                </div>
+            </div>
+
+            <div id="device-details-section" style="display:none;" class="bg-zinc-900/50 border border-zinc-800/80 p-5 rounded-xl space-y-2">
+                <h4 class="text-xs font-mono uppercase tracking-widest text-blue-400 border-b border-zinc-800 pb-2 mb-3">Confirm Your Device Details:</h4>
+                <div class="text-sm text-zinc-300 space-y-1.5 font-mono text-xs">
+                    <p class="flex justify-between"><span class="text-zinc-500">PHONE NAME:</span> <span id="view-phone-name" class="font-bold text-white"></span></p>
+                    <p class="flex justify-between"><span class="text-zinc-500">MODEL NUMBER:</span> <span id="view-model-number" class="text-white"></span></p>
+                    <p class="flex justify-between"><span class="text-zinc-500">OWNER NAME:</span> <span id="view-owner-name" class="text-white"></span></p>
+                    <p class="flex justify-between"><span class="text-zinc-500">IMEI 1:</span> <span id="view-imei-1" class="text-zinc-400"></span></p>
+                    <p class="flex justify-between"><span class="text-zinc-500">IMEI 2:</span> <span id="view-imei-2" class="text-zinc-400"></span></p>
+                </div>
+            </div>
+
+            <div id="replacement-fields" style="display:none;" class="space-y-4 pt-2">
+                <div>
+                    <label class="block text-xs uppercase font-mono tracking-wider text-zinc-400 mb-2">What needs to be replaced?</label>
+                    <input type="text" id="replace-item" oninput="validateReplacementForm()" placeholder="e.g., Screen Display, Battery Backcover">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase font-mono tracking-wider text-zinc-400 mb-2">How did it get damaged?</label>
+                    <textarea id="damage-reason" oninput="validateReplacementForm()" rows="3" placeholder="Describe how it got damaged..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase font-mono tracking-wider text-zinc-400 mb-2">Upload Photo Samples (Max 3 photos, each &lt; 2MB):</label>
+                    <div class="relative border border-dashed border-zinc-800 rounded-xl p-6 bg-zinc-900/20 text-center hover:border-zinc-700 transition group">
+                        <input type="file" id="photo-uploads" multiple accept="image/*" onchange="handleImageUpload()" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                        <div class="text-zinc-400 text-xs py-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-xl mb-2 block text-zinc-600 group-hover:text-blue-500 transition"></i>
+                            <span class="text-blue-400 font-bold">Click to upload</span> or drag and drop images here
+                        </div>
+                    </div>
+                    <small id="file-error" class="block text-[11px] text-red-400 mt-1.5 font-mono"></small>
+                </div>
+
+                <button id="replacement-submit-btn" disabled onclick="submitReplacementRequest()" class="w-full bg-blue-600/10 text-blue-400 border border-blue-900/50 py-3.5 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-blue-600 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-blue-600/10 disabled:hover:text-blue-400 transition duration-300 mt-4">
+                    Verification Request
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    
 <script>
     // --- Hover Specs Panel Logic ---
     document.addEventListener("DOMContentLoaded", () => {
@@ -884,6 +979,193 @@
                 recognition.stop(); 
             } catch(e){}
         }
+
+// 1. Firebase App மற்றும் Realtime Database-ஐ Initialize செய்தல்
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // இமேஜ் தரவுகளை தற்காலிகமாகச் சேமிக்க ஒரு குளோபல் வேரியபிள்
+    let uploadedImagesBase64 = [];
+
+    // ==========================================
+    // MODULE-COMPATIBLE GLOBAL FUNCTIONS
+    // ==========================================
+
+    // MODAL-ஐ ஓபன் செய்யும் ஃபங்க்ஷன்
+    window.showForm = function(formId) {
+        const targetForm = document.getElementById(formId);
+        if (targetForm) {
+            targetForm.classList.add('flex');
+            if (formId === 'bug-report-form') {
+                detectDevice(); // ஓபன் ஆகும்போதே மொபைல் மாடலைக் கண்டறியும்
+            }
+        }
+    };
+
+    // DEVICE MODEL DETECT செய்யும் ஃபங்க்ஷன்
+    function detectDevice() {
+        const ua = navigator.userAgent;
+        let model = "Unknown Device Platform";
+        
+        if (/android/i.test(ua)) {
+            const match = ua.match(/Android\s([^\s;]+)/);
+            model = `Android Device (${match ? match[0] : 'Generic Android'})`;
+        } else if (/iPhone|iPad|iPod/i.test(ua)) {
+            model = "Apple iOS Device";
+        } else if (/Windows/i.test(ua)) {
+            model = "Windows System PC";
+        } else if (/Macintosh/i.test(ua)) {
+            model = "macOS Workstation";
+        }
+        
+        document.getElementById('bug-device-model').value = model;
+    }
+
+// 1. BUG REPORT VALIDATION
+    window.validateBugForm = function() {
+        const description = document.getElementById('bug-description').value.trim();
+        const submitBtn = document.getElementById('bug-submit-btn');
+        
+        // குறைந்தபட்சம் 10 எழுத்துக்கள் இருந்தால் மட்டுமே சப்மிட் பட்டன் ஆன் ஆகும்
+        if (description.length >= 10) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    };
+
+    window.submitBugReport = function() {
+        const deviceModel = document.getElementById('bug-device-model').value;
+        const bugDescription = document.getElementById('bug-description').value.trim();
+
+        // Firebase Realtime DB-ல் 'bug_reports' என்ற நோடிற்குள் புஷ் செய்தல்
+        const bugRef = ref(database, 'bug_reports');
+        push(bugRef, {
+            deviceModel: deviceModel,
+            description: bugDescription,
+            timestamp: serverTimestamp()
+        })
+        .then(() => {
+            alert("Bug Report submitted directly to Firebase!");
+            document.getElementById('bug-description').value = '';
+            document.getElementById('bug-submit-btn').disabled = true;
+            document.getElementById('bug-report-form').classList.remove('flex'); // மூடிவிடுதல்
+        })
+        .catch((error) => {
+            console.error("Firebase Sync Error:", error);
+            alert("Error saving data.");
+        });
+    };
+
+
+    // 2. REPLACEMENT REQUEST (IMEI SEARCH & UPLOAD)
+    window.fetchDeviceDetails = function() {
+        const deviceKey = document.getElementById('search-device-key').value.trim();
+        if (!deviceKey) return alert("Please enter a device key.");
+
+        // 'turt phone/RF8R40XSQ0M' போன்ற நோடில் இருந்து விபரங்களை எடுத்தல்
+        const deviceRef = ref(database, 'turt phone/' + deviceKey);
+        get(deviceRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                
+                // டேட்டாவை HTML லேபிள்களுக்கு மாற்றுதல்
+                document.getElementById('view-phone-name').innerText = data.phone_name || "N/A";
+                document.getElementById('view-model-number').innerText = data.model_number || "N/A";
+                document.getElementById('view-owner-name').innerText = data.owner_name || "N/A";
+                document.getElementById('view-imei-1').innerText = data['imei-1'] || "N/A";
+                document.getElementById('view-imei-2').innerText = data['imei-2'] || "N/A";
+
+                // படிவத்தின் அடுத்த பகுதிகளைக் காண்பித்தல்
+                document.getElementById('device-details-section').style.display = 'block';
+                document.getElementById('replacement-fields').style.display = 'block';
+            } else {
+                alert("Device key not found in Firebase database!");
+                document.getElementById('device-details-section').style.display = 'none';
+                document.getElementById('replacement-fields').style.display = 'none';
+            }
+        }).catch((error) => console.error("Database fetch failed:", error));
+    };
+
+    // இமேஜ் சைஸ் மற்றும் கவுண்ட் வேலிடேஷன் (< 2MB & Max 3 Photos)
+    window.handleImageUpload = function() {
+        const fileInput = document.getElementById('photo-uploads');
+        const errorEl = document.getElementById('file-error');
+        
+        errorEl.innerText = ""; 
+        uploadedImagesBase64 = []; 
+        const files = fileInput.files;
+
+        if (files.length > 3) {
+            errorEl.innerText = "Error: You can only upload a maximum of 3 photos.";
+            fileInput.value = "";
+            window.validateReplacementForm();
+            return;
+        }
+
+        let processed = 0;
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > 2 * 1024 * 1024) { // 2MB Check
+                errorEl.innerText = `Error: "${files[i].name}" is larger than 2MB limit.`;
+                fileInput.value = "";
+                uploadedImagesBase64 = [];
+                window.validateReplacementForm();
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImagesBase64.push(e.target.result);
+                processed++;
+                if (processed === files.length) {
+                    window.validateReplacementForm(); // இமேஜ் கன்வெர்ட் ஆனதும் ஃபார்ம் வேலிடேட் செய்யும்
+                }
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    };
+
+    window.validateReplacementForm = function() {
+        const replaceItem = document.getElementById('replace-item').value.trim();
+        const damageReason = document.getElementById('damage-reason').value.trim();
+        const submitBtn = document.getElementById('replacement-submit-btn');
+
+        // அனைத்தும் பூர்த்தி செய்யப்பட்டு குறைந்தபட்சம் 1 இமேஜ் இருந்தால் பட்டன் ஆன் ஆகும்
+        if (replaceItem !== "" && damageReason !== "" && uploadedImagesBase64.length > 0) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    };
+
+    window.submitReplacementRequest = function() {
+        const deviceKey = document.getElementById('search-device-key').value.trim();
+        const replaceItem = document.getElementById('replace-item').value.trim();
+        const damageReason = document.getElementById('damage-reason').value.trim();
+
+        // Firebase Realtime DB-ல் 'Replacement Request' நோடிற்குள் சேமித்தல்
+        const replacementRef = ref(database, 'Replacement Request');
+        push(replacementRef, {
+            deviceKey: deviceKey,
+            replacementItem: replaceItem,
+            damageReason: damageReason,
+            photos: uploadedImagesBase64, // Base64 அரே வடிவில் படங்கள் செல்லும்
+            timestamp: serverTimestamp()
+        })
+        .then(() => {
+            alert("Replacement Verification Request Saved in Firebase!");
+            
+            // படிவத்தை பழைய நிலைக்கு கொண்டு வருதல்
+            document.getElementById('search-device-key').value = '';
+            document.getElementById('replace-item').value = '';
+            document.getElementById('damage-reason').value = '';
+            document.getElementById('photo-uploads').value = '';
+            document.getElementById('device-details-section').style.display = 'none';
+            document.getElementById('replacement-fields').style.display = 'none';
+            document.getElementById('replacement-form').classList.remove('flex');
+        })
+        .catch((error) => console.error("Write error:", error));
+    };
         
         aiStatus = "standby";
         changeMood('sleepy'); // Put it to sleep visually
