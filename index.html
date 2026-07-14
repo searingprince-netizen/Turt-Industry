@@ -92,7 +92,7 @@
             animation-play-state: paused;
         }
 
-        /* --- Boss Updates: Track Hover Dimming --- */
+        /* --- Track Hover Dimming --- */
         .project-slider-track:hover .project-card-h {
             opacity: 0.2;
             filter: blur(5px) grayscale(60%);
@@ -145,7 +145,7 @@
         .card-inner:hover::before { opacity: 1; }
         .card-inner:hover { border-color: #3b82f6; }
 
-        /* --- Boss Updates: Thanos Snap Effect (Card Inner) --- */
+        /* --- Thanos Snap Effect (Card Inner) --- */
         .card-info-bg {
             position: relative;
             z-index: 5;
@@ -194,7 +194,7 @@
             cursor: pointer;
         }
 
-        /* --- Boss Updates: Text Sheening --- */
+        /* --- Text Sheening --- */
         .text-sheen {
             background: linear-gradient(120deg, #3b82f6 0%, #3b82f6 40%, #ffffff 50%, #3b82f6 60%, #3b82f6 100%);
             background-size: 200% auto;
@@ -942,7 +942,7 @@
         });
     });
 
-    let isBotActive = false; // BOSS UPGRADE: The Kill Switch
+    let isBotActive = false; // The Kill Switch
     let currentMood = 'sleepy';
     let aiStatus = 'standby'; 
 
@@ -956,7 +956,7 @@
     let randomLookTimer = null;
     let femaleVoice = null;
 
-    // --- STRICT STANDBY & TERMINATION LOGIC (BOSS FIX) ---
+    // --- STRICT STANDBY & TERMINATION LOGIC ---
     window.forceStandby = () => {
         isBotActive = false; // Strictly tell the engine to stop
         
@@ -1081,7 +1081,7 @@
         }, 45000); 
     }
 
-    // Boss Random Eye/Head Movement (Alive Feel)
+    // Random Eye/Head Movement (Alive Feel)
     function randomAliveMovements() {
         if(!isBotActive || currentMood === 'sleepy' || currentMood === 'sad' || currentMood === 'dizzy') return;
         
@@ -1185,7 +1185,7 @@
 
     window.openRobotAndListen = () => {
         window.toggleModal('robot-core-modal');
-        isBotActive = true; // BOSS FIX: Boot up
+        isBotActive = true; // Boot up
         changeMood('reset');
         playEmoteSound('wake');
         resetIdleTimer();
@@ -1514,21 +1514,21 @@
     
     const database = db;
 
-    // இமேஜ் தரவுகளை தற்காலிகமாகச் சேமிக்க ஒரு குளோபல் வேரியபிள்
+    // A global variable to temporarily store image data
     let uploadedImagesBase64 = [];
 
-    // MODAL-ஐ ஓபன் செய்யும் ஃபங்க்ஷன்
+    // Function that opens the modal
     window.showForm = function(formId) {
         const targetForm = document.getElementById(formId);
         if (targetForm) {
             targetForm.classList.add('flex');
             if (formId === 'bug-report-form') {
-                detectDevice(); // ஓபன் ஆகும்போதே மொபைல் மாடலைக் கண்டறியும்
+                detectDevice(); //Detects the mobile model as soon as it opens
             }
         }
     };
 
-    // DEVICE MODEL DETECT செய்யும் ஃபங்க்ஷன்
+    // Function that detects DEVICE MODEL
     function detectDevice() {
         const ua = navigator.userAgent;
         let model = "Unknown Device Platform";
@@ -1552,7 +1552,7 @@
         const description = document.getElementById('bug-description').value.trim();
         const submitBtn = document.getElementById('bug-submit-btn');
         
-        // குறைந்தபட்சம் 10 எழுத்துக்கள் இருந்தால் மட்டுமே சப்மிட் பட்டன் ஆன் ஆகும்
+        // The submit button will only be on if there are at least 10 characters
         if (description.length >= 10) {
             submitBtn.disabled = false;
         } else {
@@ -1564,7 +1564,7 @@
         const deviceModel = document.getElementById('bug-device-model').value;
         const bugDescription = document.getElementById('bug-description').value.trim();
 
-        // Firebase Realtime DB-ல் 'bug_reports' என்ற நோடிற்குள் புஷ் செய்தல்
+        // Pushing into the 'bug_reports' node in Firebase Realtime DB
         const bugRef = ref(database, 'bug_reports');
         push(bugRef, {
             deviceModel: deviceModel,
@@ -1575,7 +1575,7 @@
             alert("Bug Report submitted directly to Firebase!");
             document.getElementById('bug-description').value = '';
             document.getElementById('bug-submit-btn').disabled = true;
-            document.getElementById('bug-report-form').classList.remove('flex'); // மூடிவிடுதல்
+            document.getElementById('bug-report-form').classList.remove('flex'); // Closing
         })
         .catch((error) => {
             console.error("Firebase Sync Error:", error);
@@ -1589,20 +1589,20 @@
         const deviceKey = document.getElementById('search-device-key').value.trim();
         if (!deviceKey) return alert("Please enter a device key.");
 
-        // 'turt phone/RF8R40XSQ0M' போன்ற நோடில் இருந்து விபரங்களை எடுத்தல்
+        // Taking information from nodes like 'turt phone/Serial Number'
         const deviceRef = ref(database, 'turt phone/' + deviceKey);
         get(deviceRef).then((snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 
-                // டேட்டாவை HTML லேபிள்களுக்கு மாற்றுதல்
+                // டConverting a sheet to HTML labels
                 document.getElementById('view-phone-name').innerText = data.phone_name || "N/A";
                 document.getElementById('view-model-number').innerText = data.model_number || "N/A";
                 document.getElementById('view-owner-name').innerText = data.owner_name || "N/A";
                 document.getElementById('view-imei-1').innerText = data['imei-1'] || "N/A";
                 document.getElementById('view-imei-2').innerText = data['imei-2'] || "N/A";
 
-                // படிவத்தின் அடுத்த பகுதிகளைக் காண்பித்தல்
+                // Showing the next parts of the form
                 document.getElementById('device-details-section').style.display = 'block';
                 document.getElementById('replacement-fields').style.display = 'block';
             } else {
@@ -1613,7 +1613,7 @@
         }).catch((error) => console.error("Database fetch failed:", error));
     };
 
-    // இமேஜ் சைஸ் மற்றும் கவுண்ட் வேலிடேஷன் (< 2MB & Max 3 Photos)
+    // Image size and count validation (< 2MB & Max 3 Photos)
     window.handleImageUpload = function() {
         const fileInput = document.getElementById('photo-uploads');
         const errorEl = document.getElementById('file-error');
@@ -1644,7 +1644,7 @@
                 uploadedImagesBase64.push(e.target.result);
                 processed++;
                 if (processed === files.length) {
-                    window.validateReplacementForm(); // இமேஜ் கன்வெர்ட் ஆனதும் ஃபார்ம் வேலிடேட் செய்யும்
+                    window.validateReplacementForm(); // Once the image is converted, the form will be validated
                 }
             };
             reader.readAsDataURL(files[i]);
@@ -1656,7 +1656,7 @@
         const damageReason = document.getElementById('damage-reason').value.trim();
         const submitBtn = document.getElementById('replacement-submit-btn');
 
-        // அனைத்தும் பூர்த்தி செய்யப்பட்டு குறைந்தபட்சம் 1 இமேஜ் இருந்தால் பட்டன் ஆன் ஆகும்
+        // Once everything is completed and there is at least 1 image, the button will turn on
         if (replaceItem !== "" && damageReason !== "" && uploadedImagesBase64.length > 0) {
             submitBtn.disabled = false;
         } else {
@@ -1669,19 +1669,19 @@
         const replaceItem = document.getElementById('replace-item').value.trim();
         const damageReason = document.getElementById('damage-reason').value.trim();
 
-        // Firebase Realtime DB-ல் 'Replacement Request' நோடிற்குள் சேமித்தல்
+        // Saving inside the 'Replacement Request' node in Firebase Realtime DB
         const replacementRef = ref(database, 'Replacement Request');
         push(replacementRef, {
             deviceKey: deviceKey,
             replacementItem: replaceItem,
             damageReason: damageReason,
-            photos: uploadedImagesBase64, // Base64 அரே வடிவில் படங்கள் செல்லும்
+            photos: uploadedImagesBase64, //Images go in Base64 format
             timestamp: serverTimestamp()
         })
         .then(() => {
             alert("Replacement Verification Request Saved in Firebase!");
             
-            // படிவத்தை பழைய நிலைக்கு கொண்டு வருதல்
+            // Restoring the form to its old state
             document.getElementById('search-device-key').value = '';
             document.getElementById('replace-item').value = '';
             document.getElementById('damage-reason').value = '';
@@ -1701,11 +1701,11 @@
     onValue(project1Ref, (snapshot) => {
         const imageUrl = snapshot.val();
         if (imageUrl) {
-            // Track-la irukka 'titan-bg' class target panrom
+            // We are targeting the 'titan-bg' class in the track
             const titanCards = document.querySelectorAll('.titan-bg');
             
             titanCards.forEach((card) => {
-                // Inline style custom CSS variable (--bg-img) mathurom
+                // Only the inline style custom CSS variable (--bg-img)
                 card.style.setProperty('--bg-img', `url('${imageUrl}')`);
             });
             console.log("TITAN Slider Loop Images Updated via Firebase, Boss!");
