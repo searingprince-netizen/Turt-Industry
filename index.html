@@ -1362,7 +1362,7 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    // --- Mood Parser from Text ---
+    // --- Mood Parser from Text ---f
     function processVoice(cmd) {
         if (cmd.includes('happy') || cmd.includes('good') || cmd.includes('cute')) changeMood('happy');
         else if (cmd.includes('joke') || cmd.includes('laugh') || cmd.includes('funny')) changeMood('laughing');
@@ -1739,15 +1739,24 @@
         }
     };
 
-    window.loginWithGoogle = async () => {
+window.loginWithGoogle = async () => {
         try {
+            // Force Google to show the account selector
             provider.setCustomParameters({ prompt: 'select_account' });
-            await signInWithPopup(auth, provider);
-        } catch (e) { 
-            console.error("Auth Error: " + e.message); 
+            
+            // Execute sign-in
+            const result = await signInWithPopup(auth, provider);
+            window.isLoggedIn = true;
+            
+            // Close modal on success
+            window.closeModal('login-modal');
+            console.log("Authentication successful, Boss!");
+            
+        } catch (error) {
+            console.error("Auth Error:", error);
         }
     };
-
+    
     window.logout = async () => {
         try { 
             await auth.signOut(); 
@@ -2684,6 +2693,5 @@
     };
         
 </script>
-
 </body>
 </html>
